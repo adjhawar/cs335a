@@ -50,7 +50,7 @@
 #define PAREN_S		35
 #define PAREN_E		36
 
-//defining the math operators
+//defining the assignment operators
 #define OP_ASS		37
 #define OP_ADD_ASS	38
 #define OP_SUB_ASS      39
@@ -62,10 +62,14 @@
 #define OP_AND_ASS      45
 #define OP_OR_ASS       46
 #define OP_XOR_ASS      47
-#define OP_CON_Q        48
-#define OP_ZRSH         49
+#define OP_ZRSH_ASS	48
+
+//defining the conditional operators
+#define OP_CON_Q        49
 #define OP_CON_AND      50
 #define OP_CON_OR       51
+
+//defining the relational operators
 #define OP_OR           52
 #define OP_XOR          53
 #define OP_AND          54
@@ -75,6 +79,8 @@
 #define OP_LES          58
 #define OP_GEQ          59
 #define OP_LEQ          60
+
+//defining the math operators
 #define OP_RSH          61
 #define OP_LSH          62
 #define OP_ADD          63
@@ -85,4 +91,4 @@
 #define OP_INC          68
 #define OP_DEC          69
 #define OP_DOT          70             
-
+#define OP_ZRSH		71

@@ -47,9 +47,46 @@
 \(			return PAREN_S;
 \)			return PAREN_E;
 
-[+\-*/%][=]		return OP_MATH_ASS;
 =			return OP_ASS;
-[+\-*/%]		return OP_MATH;
+"+="			return OP_ADD_ASS;
+"-="			return OP_SUB_ASS;
+"*="			return OP_MUL_ASS;
+"/="			return OP_DIV_ASS;
+"%="			return OP_MOD_ASS;
+"<<="			return OP_LSH_ASS;
+">>="			return OP_RSH_ASS;
+"&="			return OP_AND_ASS;
+"|="			return OP_OR_ASS;
+"^="			return OP_XOR_ASS;
+">>>="			return OP_ZRSH_ASS;
+
+[?]			return OP_CON_Q;
+"&&"			return OP_CON_AND;
+"||"			return OP_CON_OR;
+
+|			return OP_OR;
+^			return OP_XOR;
+&			return OP_AND;
+==			return OP_EQ;
+!=			return OP_NEQ;
+>=			return OP_GEQ;
+<=			return OP_LEQ;
+>			return OP_GRE;
+<			return OP_LES;
+
+
+">>"			return OP_RSH;
+"<<"			return OP_LSH;
+\+			return OP_ADD;
+-			return OP_SUB;
+*			return OP_MUL;
+/			return OP_DIV;
+\%			return OP_MOD;
+"\+\+"			return OP_INC;
+"--"			return OP_DEC;
+\.			return OP_DOT;
+">>>"			return OP_ZRSH;
+
 
 
 %%
