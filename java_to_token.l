@@ -87,11 +87,12 @@
 \.			return OP_DOT;
 ">>>"			return OP_ZRSH;
 
+[\"].*[\"]		return STR_LIT;
+[\'][\\]?[.][\']	return CHAR_LIT;
 [0][xX][0-9a-fA-F]+	return INT_LIT_H;
 [0][0-7]+		return INT_LIT_O;
 [0-9]*[.][0-9]+		return FLOAT_LIT;
 [0-9]+			return INT_LIT_D;
-[\'][\\]?[.][\']	return CHAR_LIT;
 
 %%
 
