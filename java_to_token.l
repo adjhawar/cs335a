@@ -47,7 +47,6 @@
 \(			return PAREN_S;
 \)			return PAREN_E;
 
-=			return OP_ASS;
 "+="			return OP_ADD_ASS;
 "-="			return OP_SUB_ASS;
 "*="			return OP_MUL_ASS;
@@ -59,6 +58,7 @@
 "|="			return OP_OR_ASS;
 "^="			return OP_XOR_ASS;
 ">>>="			return OP_ZRSH_ASS;
+=			return OP_ASS;
 
 [?]			return OP_CON_Q;
 "&&"			return OP_CON_AND;
