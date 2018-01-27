@@ -92,3 +92,11 @@
 #define OP_DEC          69
 #define OP_DOT          70             
 #define OP_ZRSH		71
+
+//defining literals
+#define INT_LIT_D	72
+#define INT_LIT_O	73
+#define INT_LIT_H	74
+#define FLOAT_LIT	75
+#define CHAR_LIT	76
+#define STR_LIT		77
