@@ -64,23 +64,23 @@
 "&&"			return OP_CON_AND;
 "||"			return OP_CON_OR;
 
-|			return OP_OR;
-^			return OP_XOR;
+\|			return OP_OR;
+\^			return OP_XOR;
 &			return OP_AND;
 ==			return OP_EQ;
 !=			return OP_NEQ;
 >=			return OP_GEQ;
-<=			return OP_LEQ;
+[<][=]			return OP_LEQ;
 >			return OP_GRE;
-<			return OP_LES;
+[<]			return OP_LES;
 
 
 ">>"			return OP_RSH;
 "<<"			return OP_LSH;
-\+			return OP_ADD;
+[+]			return OP_ADD;
 -			return OP_SUB;
-*			return OP_MUL;
-/			return OP_DIV;
+\*			return OP_MUL;
+\/			return OP_DIV;
 \%			return OP_MOD;
 "\+\+"			return OP_INC;
 "--"			return OP_DEC;
