@@ -63,7 +63,7 @@
 #define OP_OR_ASS       46
 #define OP_XOR_ASS      47
 #define OP_CON_Q        48
-#define OP_CON_C        49
+#define OP_ZRSH         49
 #define OP_CON_AND      50
 #define OP_CON_OR       51
 #define OP_OR           52
@@ -75,16 +75,14 @@
 #define OP_LES          58
 #define OP_GEQ          59
 #define OP_LEQ          60
-#define OP_INSTANCE     61
-#define OP_RSH          62
-#define OP_LSH          63
-#define OP_ADD          64
-#define OP_SUB          65
-#define OP_MUL          66
-#define OP_DIV          67
-#define OP_MOD          68
-#define OP_INC          69
-#define OP_DEC          70
-#define OP_DOT          71             
- 
+#define OP_RSH          61
+#define OP_LSH          62
+#define OP_ADD          63
+#define OP_SUB          64
+#define OP_MUL          65
+#define OP_DIV          66
+#define OP_MOD          67
+#define OP_INC          68
+#define OP_DEC          69
+#define OP_DOT          70             
 
