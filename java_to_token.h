@@ -100,3 +100,6 @@
 #define FLOAT_LIT	75
 #define CHAR_LIT	76
 #define STR_LIT		77
+
+//define error
+#define ERROR		78
