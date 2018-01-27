@@ -1,4 +1,4 @@
-classes adit{
+class adit{
 	void main(){
 		int a=1;
 		print("Hello world");
