@@ -51,6 +51,40 @@
 #define PAREN_E		36
 
 //defining the math operators
-#define OP_MATH_ASS	37
-#define OP_ASS		38
-#define OP_MATH		39
+#define OP_ASS		37
+#define OP_ADD_ASS	38
+#define OP_SUB_ASS      39
+#define OP_DIV_ASS      40
+#define OP_MUL_ASS      41
+#define OP_MOD_ASS      42
+#define OP_LSH_ASS      43
+#define OP_RSH_ASS      44
+#define OP_AND_ASS      45
+#define OP_OR_ASS       46
+#define OP_XOR_ASS      47
+#define OP_CON_Q        48
+#define OP_CON_C        49
+#define OP_CON_AND      50
+#define OP_CON_OR       51
+#define OP_OR           52
+#define OP_XOR          53
+#define OP_AND          54
+#define OP_EQ           55
+#define OP_NEQ          56
+#define OP_GRE          57
+#define OP_LES          58
+#define OP_GEQ          59
+#define OP_LEQ          60
+#define OP_INSTANCE     61
+#define OP_RSH          62
+#define OP_LSH          63
+#define OP_ADD          64
+#define OP_SUB          65
+#define OP_MUL          66
+#define OP_DIV          67
+#define OP_MOD          68
+#define OP_INC          69
+#define OP_DEC          70
+#define OP_DOT          71             
+ 
+
