@@ -11,7 +11,6 @@ struct category {
 		char* lexeme ;
 		struct category* next ;
 	} ;
-<<<<<<< HEAD
 struct category* add(struct category *head)
 {
         struct category* temp = head;
@@ -19,37 +18,19 @@ struct category* add(struct category *head)
         curr->lexeme = (char *)malloc(15*sizeof(char));
       //  printf("%s hello\n",yytext);
 	strcpy(curr->lexeme,yytext);
-=======
-
-void add(struct category *head)
-{
-	struct category* curr = (struct category *)malloc(sizeof(struct category));
-	curr->lexeme = yytext;
->>>>>>> ffcd86ef962b2aa6044ebb897ce6b4346fc9a13d
 	curr->next=NULL;
-	if(head==NULL)
+	if(head==NULL){
 		head=curr;
-<<<<<<< HEAD
-                return head;
+		return head;
 	}
 	else
 	{
 		while(head->next!=NULL && strcmp(head->lexeme,yytext))
-=======
-	else
-	{
-		struct category *temp=head;
-		while(temp->next!=NULL)
->>>>>>> ffcd86ef962b2aa6044ebb897ce6b4346fc9a13d
 		{
-			temp=temp->next;
+			head=head->next;
 		}
-<<<<<<< HEAD
 		if(strcmp(head->lexeme,yytext))
 		 	head->next=curr;
-=======
-		temp->next=curr;
->>>>>>> ffcd86ef962b2aa6044ebb897ce6b4346fc9a13d
 	}
         return temp ;
 }
@@ -126,3 +107,4 @@ int main(void){
 	}     
 	return 0;
 }
+
