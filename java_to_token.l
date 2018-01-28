@@ -95,6 +95,7 @@
 [0][xX][0-9a-fA-F]+	return INT_LIT_H;
 [0][0-7]+		return INT_LIT_O;
 [0-9]+			return INT_LIT_D;
+.			;
 
 %%
 
