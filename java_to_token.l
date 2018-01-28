@@ -17,6 +17,7 @@
 "int"			return INT;
 "false"			return F;
 "null"			return N;
+"string"		return STRING;
 "void"			return VOID;
 
 "break"			return BREAK;
@@ -94,7 +95,7 @@
 \"([\\][\"]|[^"])*\"    return STR_LIT;
 \'[\\]?.[\']		return CHAR_LIT;
 \'.|\"[^"]*		return ERROR;
-[0-9]*[.][0-9]+		return FLOAT_LIT;
+[0-9]*[.][0-9]+([eE][+-]?[0-9]+)?		return FLOAT_LIT;
 [0][xX][0-9a-fA-F]+	return INT_LIT_H;
 [0][0-7]+		return INT_LIT_O;
 [0-9]+			return INT_LIT_D;

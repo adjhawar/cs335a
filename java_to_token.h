@@ -109,3 +109,4 @@
 #define PRINT		80
 #define SCAN		81
 #define OP_NEG		82
+#define STRING		83
