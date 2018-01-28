@@ -35,6 +35,9 @@
 
 "final"			return CONST;
 
+"print"			return PRINT;
+"scan"			return SCAN;
+
 [a-zA-Z_$][a-zA-Z0-9_]*	return ID;
 ;			return TRM;
 ,			return SEP;
@@ -69,9 +72,9 @@
 &			return OP_AND;
 ==			return OP_EQ;
 !=			return OP_NEQ;
->=			return OP_GEQ;
-[<][=]			return OP_LEQ;
->			return OP_GRE;
+[>]=			return OP_GEQ;
+[<]=			return OP_LEQ;
+[>]			return OP_GRE;
 [<]			return OP_LES;
 
 
@@ -96,6 +99,7 @@
 [0][0-7]+		return INT_LIT_O;
 [0-9]+			return INT_LIT_D;
 .			;
+
 
 %%
 

@@ -101,5 +101,10 @@
 #define CHAR_LIT	76
 #define STR_LIT		77
 
-//define error
+//define error and ignore
 #define ERROR		78
+#define IGN		79
+
+//define print and scan
+#define PRINT		80
+#define SCAN		81
