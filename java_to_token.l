@@ -12,11 +12,11 @@
 "boolean"		return BOOL;
 "byte"			return BYTE;
 "char"			return CHAR;
-"double"		return DOUBLE;
+"true"			return T;
 "float"			return FLOAT;
 "int"			return INT;
-"long"			return LONG;
-"short"			return SHORT;
+"false"			return F;
+"null"			return N;
 "void"			return VOID;
 
 "break"			return BREAK;
@@ -76,6 +76,7 @@
 [<]=			return OP_LEQ;
 [>]			return OP_GRE;
 [<]			return OP_LES;
+!			return OP_NEG;
 
 
 ">>"			return OP_RSH;

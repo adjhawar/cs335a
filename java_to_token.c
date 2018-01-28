@@ -50,13 +50,13 @@ void Print_lex(struct category *head)
 
 int main(void){
 
-	int ntoken,vtoken, occur[82]={0};
+	int ntoken,vtoken, occur[83]={0};
 
 	struct category *Id=NULL, *Lit_d=NULL,*Lit_o=NULL,*Lit_h=NULL,*Flo=NULL,*Cha=NULL,*Str=NULL,*Err=NULL;
-	char tokens[82][15] = {"null", "CLASS" , "INSTANCEOF" , "NEW", "SUPER", "THIS", "BOOL", "BYTE" ,"CHAR", "DOUBLE" , "FLOAT", "INT", "LONG", "SHORT", "VOID", "BREAK", "CASE", "DEFAULT", "ELSE", "IF", "SWITCH", "CONT", "DO", "FOR", "WHILE", "RETURN", "CONST", "ID", "SEP", "TRM", "COLON", "ARRAY_S", "ARRAY_E", "BLOCK_S", "BLOCK_E", "PAREN_S", "PAREN_E", "OPP_ASS", "OPP_ADD_ASS", "OP_SUB_ASS", "OP_DIV_ASS", "OP_MUL_ASS", "OP_MOD_ASS", "OP_LSH_ASS", "OP_RSH_ASS", "OP_AND_ASS", "OP_OR_ASS", "OP_XOR_ASS", "OP_ZRSH_ASS", "OP_CON_Q", "OP_CON_AND", "OP_CON_OR", "OP_OR", "OP_XOR", "OP_AND", "OP_EQ", "OP_NEQ", "OP_GRE", "OP_LES", "OP_GEQ", "OP_LEQ", "OP_RSH", "OP_LSH", "OP_ADD", "OP_SUB", "OP_MUL","OP_DIV","OP_MOD","OP_INC","OP_DEC","OP_DOT","OP_ZRSH","INT_LIT_D","INT_LIT_O","INT_LIT_H","FLOAT_LIT","CHAR_LIT","STR_LIT","ERROR","IGN","PRINT","SCAN"} ;
+	char tokens[83][15] = {"null", "CLASS" , "INSTANCEOF" , "NEW", "SUPER", "THIS", "BOOL", "BYTE" ,"CHAR", "TRUE" , "FLOAT", "INT", "FALSE", "NULL", "VOID", "BREAK", "CASE", "DEFAULT", "ELSE", "IF", "SWITCH", "CONT", "DO", "FOR", "WHILE", "RETURN", "CONST", "ID", "SEP", "TRM", "COLON", "ARRAY_S", "ARRAY_E", "BLOCK_S", "BLOCK_E", "PAREN_S", "PAREN_E", "OPP_ASS", "OPP_ADD_ASS", "OP_SUB_ASS", "OP_DIV_ASS", "OP_MUL_ASS", "OP_MOD_ASS", "OP_LSH_ASS", "OP_RSH_ASS", "OP_AND_ASS", "OP_OR_ASS", "OP_XOR_ASS", "OP_ZRSH_ASS", "OP_CON_Q", "OP_CON_AND", "OP_CON_OR", "OP_OR", "OP_XOR", "OP_AND", "OP_EQ", "OP_NEQ", "OP_GRE", "OP_LES", "OP_GEQ", "OP_LEQ", "OP_RSH", "OP_LSH", "OP_ADD", "OP_SUB", "OP_MUL","OP_DIV","OP_MOD","OP_INC","OP_DEC","OP_DOT","OP_ZRSH","INT_LIT_D","INT_LIT_O","INT_LIT_H","FLOAT_LIT","CHAR_LIT","STR_LIT","ERROR","IGN","PRINT","SCAN","OP_NEG"} ;
 
 
-	char lexeme[82][15] = {"","class", "instanceof", "new" , "super" , "this", "boolean", "byte", "char", "double","float","int","long","short","void","break","case","default","else","if","switch","continue","do","for","while","return","final","",",",";",":","[","]","{","}","(",")","=","+=","-=","/=","*=","%=","<<=",">>=","&=","=","^=",">>>=","?","&&","||","|","^","&","==","=",">","<",">=","<=",">>","<<","+","-","*","/","%","++","--",".",">>>","","","","","","","","ign","print","scan"};
+	char lexeme[83][15] = {"","class", "instanceof", "new" , "super" , "this", "boolean", "byte", "char", "true","float","int","false","null","void","break","case","default","else","if","switch","continue","do","for","while","return","final","",",",";",":","[","]","{","}","(",")","=","+=","-=","/=","*=","%=","<<=",">>=","&=","=","^=",">>>=","?","&&","||","|","^","&","==","=",">","<",">=","<=",">>","<<","+","-","*","/","%","++","--",".",">>>","","","","","","","","","print","scan","!"};
 	ntoken=yylex();
 	while(ntoken){
 		if(lexeme[ntoken][0]=='\0') {
@@ -79,7 +79,7 @@ int main(void){
 		ntoken=yylex();
 	}
         printf("Tokens \t    Occurrances       Lexemes \n"); 
-	for(int i=1;i<82 ; i++)
+	for(int i=1;i<83 ; i++)
 	{
 		if(occur[i]>0)
 		{
@@ -97,6 +97,7 @@ int main(void){
 					case 76 : Print_lex(Cha);break;
 					case 77 : Print_lex(Str);break;
 					case 78	: Print_lex(Err);break;
+					case 79 :	
 					default : ;
 				}
 			}

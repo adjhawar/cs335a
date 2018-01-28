@@ -9,11 +9,11 @@
 #define BOOL		6
 #define BYTE		7
 #define CHAR		8
-#define DOUBLE		9
+#define T		9
 #define FLOAT		10
 #define INT		11
-#define LONG		12
-#define SHORT		13
+#define F		12
+#define N		13
 #define VOID		14
 
 //defining the switch and if-else constructs
@@ -108,3 +108,4 @@
 //define print and scan
 #define PRINT		80
 #define SCAN		81
+#define OP_NEG		82
