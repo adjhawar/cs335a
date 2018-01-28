@@ -18,7 +18,7 @@ struct category* add(struct category *head,int *count)
         curr->lexeme = (char *)malloc(15*sizeof(char));
 	strcpy(curr->lexeme,yytext);
 	curr->next=NULL;
-	if(head==NULL){
+	if(head==NULL) {
 		head=curr;
 		(*count)++;
 		return head;
@@ -39,11 +39,11 @@ struct category* add(struct category *head,int *count)
 
 void Print_lex(struct category *head)
 {
-	printf("%s",head->lexeme);
+	printf("%-24s \n",head->lexeme);
 	while(head->next!=NULL)
 	{
 		head=head->next;
-		printf("\n %s",head->lexeme);
+		printf(" \t \t\t        %s \n",head->lexeme);
 	}
 
 }
@@ -78,11 +78,12 @@ int main(void){
 			occur[ntoken]++;
 		ntoken=yylex();
 	}
+        printf("Tokens \t    Occurrances       Lexemes \n"); 
 	for(int i=1;i<82 ; i++)
 	{
 		if(occur[i]>0)
 		{
-			printf("%s  %d ",tokens[i],occur[i]);
+			printf("%-15s %-15d",tokens[i],occur[i]);
 			if(lexeme[i][0]=='\0')
 			{
                                
@@ -101,7 +102,7 @@ int main(void){
 			}
 			else
 			{
-				printf("%s \n",lexeme[i]);  
+				printf("%-24s \n",lexeme[i]);  
 
 			}
 
