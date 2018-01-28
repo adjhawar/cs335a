@@ -11,7 +11,6 @@ struct category {
 		char* lexeme ;
 		struct category* next ;
 	} ;
-<<<<<<< HEAD
 struct category* add(struct category *head)
 {
         struct category* temp = head;
@@ -19,48 +18,30 @@ struct category* add(struct category *head)
         curr->lexeme = (char *)malloc(15*sizeof(char));
       //  printf("%s hello\n",yytext);
 	strcpy(curr->lexeme,yytext);
-=======
-
-void add(struct category *head)
-{
-	struct category* curr = (struct category *)malloc(sizeof(struct category));
-	curr->lexeme = yytext;
->>>>>>> ffcd86ef962b2aa6044ebb897ce6b4346fc9a13d
 	curr->next=NULL;
-	if(head==NULL)
+	if(head==NULL) {
 		head=curr;
-<<<<<<< HEAD
                 return head;
 	}
 	else
 	{
 		while(head->next!=NULL && strcmp(head->lexeme,yytext))
-=======
-	else
-	{
-		struct category *temp=head;
-		while(temp->next!=NULL)
->>>>>>> ffcd86ef962b2aa6044ebb897ce6b4346fc9a13d
 		{
-			temp=temp->next;
+			head=head->next;
 		}
-<<<<<<< HEAD
 		if(strcmp(head->lexeme,yytext))
 		 	head->next=curr;
-=======
-		temp->next=curr;
->>>>>>> ffcd86ef962b2aa6044ebb897ce6b4346fc9a13d
 	}
         return temp ;
 }
 
 void Print_lex(struct category *head)
 {
-	printf("%s",head->lexeme);
+	printf("%-24s \n",head->lexeme);
 	while(head->next!=NULL)
 	{
 		head=head->next;
-		printf("\n %s",head->lexeme);
+		printf(" \t \t\t        %s \n",head->lexeme);
 	}
 
 }
@@ -95,11 +76,12 @@ int main(void){
 
 		ntoken=yylex();
 	}
+        printf("Tokens \t    Occurrances       Lexemes \n"); 
 	for(int i=1;i<82 ; i++)
 	{
 		if(occur[i]>0)
 		{
-			printf("%s  %d ",tokens[i],occur[i]);
+			printf("%-15s %-15d",tokens[i],occur[i]);
 			if(lexeme[i][0]=='\0')
 			{
                                
@@ -118,7 +100,7 @@ int main(void){
 			}
 			else
 			{
-				printf("%s \n",lexeme[i]);  
+				printf("%-24s \n",lexeme[i]);  
 
 			}
 
