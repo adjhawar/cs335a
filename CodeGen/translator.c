@@ -5,6 +5,7 @@
 enum InstrType{ Assignment , Function ,Jump , Pointer , Indexed_Ass , ifgoto , Goto , ret , call , label , print , scan};
 enum TACkeywords{add , sub , mul , divi , mod , gt , lt , ge , le , ne , eq , assgn , AND , OR , NEG , RSH , LSH , ZRSH };
 
+
 int size = 10;
 //Data structure to hold symbol table
 typedef struct SymtabEntry{
@@ -109,6 +110,7 @@ int main(){
 				ir[nline].out = Insert(strs[2]);
 				ir[nline].in1 = Insert(strs[3]);
 				ir[nline].in2 = Insert(strs[4]);
+
 			}
 			else if(strcmp(key,"*")==0){
 				ir[nline].typ = Assignment;
@@ -130,6 +132,25 @@ int main(){
 				ir[nline].out = Insert(strs[2]);
 				ir[nline].in1 = Insert(strs[3]);
 				ir[nline].in2 = Insert(strs[4]);
+			}
+			else if(strcmp(key,"ifgoto")==0){	//relational operators
+				ir[nline].typ = ifgoto;
+				if(!strcmp(strs[2],"=="))
+					ir[nline].op=eq;
+				else if(!strcmp(strs[2],"!="))
+					ir[nline].op=ne;
+				else if(!strcmp(strs[2],"<="))
+					ir[nline].op=le;
+				else if(!strcmp(strs[2],">="))
+					ir[nline].op=ge;
+				else if(!strcmp(strs[2],"<"))
+					ir[nline].op=lt;	
+				else if(!strcmp(strs[2],">"))
+					ir[nline].op=gt;
+				ir[nline].out = Insert(strs[3]);
+
+				ir[nline].in1 = Insert(strs[4]);
+				ir[nline].in2 = Insert(strs[5]);
 			}
 			else if(strcmp(key,"ifgoto")==0){
 				ir[nline].typ = ifgoto;
