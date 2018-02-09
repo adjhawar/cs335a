@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-enum InstrType{ Assignment , Function ,Jump , Pointer , Indexed_Ass};
-enum TACkeywords{add , sub , mul , divi , mod , gt , lt , ge , le , ne , eq , assgn , AND , OR , NEG , ifgoto , Goto , ret , call , label , print , scan };
+enum InstrType{ Assignment , Function ,Jump , Pointer , Indexed_Ass , ifgoto , Goto , ret , call , label , print , scan};
+enum TACkeywords{add , sub , mul , divi , mod , gt , lt , ge , le , ne , eq , assgn , AND , OR , NEG , RSH , LSH , ZRSH };
 
 int size = 10;
 //Data structure to hold symbol table
@@ -16,7 +16,7 @@ SymtabEntry *head=NULL, *tail=NULL;
 
 SymtabEntry* look_up(char *lex){
 	SymtabEntry *temp = head;
-	while(temp!=NULL && !strcmp(temp->lexeme,lex))
+	while(temp!=NULL && strcmp(temp->lexeme,lex))
 	{
 		temp=temp->next;
 	}
@@ -76,7 +76,7 @@ int main(){
 		int nline = 0;
 		char line[1024];
 		while (fgets(line, 1024, fptr)){
-			if (size >= nline-1) {
+			if (size == nline) {
 				size = 2*size;
 				ir = realloc(ir, size * sizeof(Instruction3AC));
 			}
@@ -91,69 +91,116 @@ int main(){
 			nline = atoi(strs[0]);
 			char *key = strs[1];
 			if(strcmp(key,"=")==0){
+				ir[nline].typ = Assignment;
 				ir[nline].op = assgn;
 				ir[nline].out = Insert(strs[2]);
 				ir[nline].in1 = Insert(strs[3]);
 			}
 			else if(strcmp(key,"+")==0){
+				ir[nline].typ = Assignment;
 				ir[nline].op = add;
 				ir[nline].out = Insert(strs[2]);
 				ir[nline].in1 = Insert(strs[3]);
-				ir[nline].in1 = Insert(strs[4]);
+				ir[nline].in2 = Insert(strs[4]);
 			}
 			else if(strcmp(key,"-")==0){
+				ir[nline].typ = Assignment;
 				ir[nline].op = sub;
 				ir[nline].out = Insert(strs[2]);
 				ir[nline].in1 = Insert(strs[3]);
-				ir[nline].in1 = Insert(strs[4]);
+				ir[nline].in2 = Insert(strs[4]);
 			}
 			else if(strcmp(key,"*")==0){
+				ir[nline].typ = Assignment;
 				ir[nline].op = mul;
 				ir[nline].out = Insert(strs[2]);
 				ir[nline].in1 = Insert(strs[3]);
-				ir[nline].in1 = Insert(strs[4]);
+				ir[nline].in2 = Insert(strs[4]);
 			}
 			else if(strcmp(key,"/")==0){
+				ir[nline].typ = Assignment;
 				ir[nline].op = divi;
 				ir[nline].out = Insert(strs[2]);
 				ir[nline].in1 = Insert(strs[3]);
-				ir[nline].in1 = Insert(strs[4]);
+				ir[nline].in2 = Insert(strs[4]);
 			}
 			else if(strcmp(key,"%")==0){
+				ir[nline].typ = Assignment;
 				ir[nline].op = mod;
 				ir[nline].out = Insert(strs[2]);
 				ir[nline].in1 = Insert(strs[3]);
-				ir[nline].in1 = Insert(strs[4]);
+				ir[nline].in2 = Insert(strs[4]);
 			}
-			else if(strcmp(key,">")==0){
+			else if(strcmp(key,"ifgoto")==0){
+				ir[nline].typ = ifgoto;
 				ir[nline].op = add;
 				ir[nline].out = Insert(strs[2]);
 				ir[nline].in1 = Insert(strs[3]);
-				ir[nline].in1 = Insert(strs[4]);
+				ir[nline].in2 = Insert(strs[4]);
 			}
-			else if(strcmp(key,"-")==0){
-				ir[nline].op = add;
+			else if(strcmp(key,"Goto")==0){
+				ir[nline].typ = Goto;
+				ir[nline].target = atoi(Insert(strs[2]));
+			}
+			else if(strcmp(key,"ret")==0){
+				ir[nline].typ = ret;
+			}
+			else if(strcmp(key,"call")==0){
+				ir[nline].typ = call;
+				ir[nline].in1 = Insert(strs[2]);
+			}
+			else if(strcmp(key,"label")==0){
+				ir[nline].typ = label;
+				ir[nline].in1 = Insert(strs[2]);
+			}
+			else if(strcmp(key,"print")==0){
+				ir[nline].typ = print;
+				ir[nline].in1 = Insert(strs[2]);
+			}
+			else if(strcmp(key,"scan")==0){
+				ir[nline].typ = scan;
+				ir[nline].in1 = Insert(strs[2]);
+			}
+			else if(strcmp(key,"&&")==0){
+				ir[nline].typ = Assignment;
+				ir[nline].op = AND;
 				ir[nline].out = Insert(strs[2]);
 				ir[nline].in1 = Insert(strs[3]);
-				ir[nline].in1 = Insert(strs[4]);
+				ir[nline].in2 = Insert(strs[4]);
 			}
-			else if(strcmp(key,"-")==0){
-				ir[nline].op = add;
+			else if(strcmp(key,"||")==0){
+				ir[nline].typ = Assignment;
+				ir[nline].op = OR;
 				ir[nline].out = Insert(strs[2]);
 				ir[nline].in1 = Insert(strs[3]);
-				ir[nline].in1 = Insert(strs[4]);
+				ir[nline].in2 = Insert(strs[4]);
 			}
-			else if(strcmp(key,"-")==0){
-				ir[nline].op = add;
+			else if(strcmp(key,"~")==0){
+				ir[nline].typ = Assignment;
+				ir[nline].op = NEG;
 				ir[nline].out = Insert(strs[2]);
 				ir[nline].in1 = Insert(strs[3]);
-				ir[nline].in1 = Insert(strs[4]);
 			}
-			else if(strcmp(key,"-")==0){
-				ir[nline].op = add;
+			else if(strcmp(key,">>")==0){
+				ir[nline].typ = Assignment;
+				ir[nline].op = RSH;
 				ir[nline].out = Insert(strs[2]);
 				ir[nline].in1 = Insert(strs[3]);
-				ir[nline].in1 = Insert(strs[4]);
+				ir[nline].in2 = Insert(strs[4]);
+			}
+			else if(strcmp(key,"<<")==0){
+				ir[nline].typ = Assignment;
+				ir[nline].op = LSH;
+				ir[nline].out = Insert(strs[2]);
+				ir[nline].in1 = Insert(strs[3]);
+				ir[nline].in2 = Insert(strs[4]);
+			}
+			else if(strcmp(key,">>>")==0){
+				ir[nline].typ = Assignment;
+				ir[nline].op = ZRSH;
+				ir[nline].out = Insert(strs[2]);
+				ir[nline].in1 = Insert(strs[3]);
+				ir[nline].in2 = Insert(strs[4]);
 			}
 		}
 	}
