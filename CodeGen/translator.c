@@ -16,7 +16,7 @@ SymtabEntry *head=NULL, *tail=NULL;
 
 SymtabEntry* look_up(char *lex){
 	SymtabEntry *temp = head;
-	while(temp!=NULL && !strcmp(temp->lexeme,lex))
+	while(temp!=NULL && strcmp(temp->lexeme,lex))
 	{
 		temp=temp->next;
 	}
@@ -127,6 +127,46 @@ int main(){
 			else if(strcmp(key,"%")==0){
 				ir[nline].typ = Assignment;
 				ir[nline].op = mod;
+				ir[nline].out = Insert(strs[2]);
+				ir[nline].in1 = Insert(strs[3]);
+				ir[nline].in1 = Insert(strs[4]);
+			}
+			else if(strcmp(key,"ifgoto")==0){	//relational operators
+				ir[nline].typ = ifgoto;
+				if(!strcmp(strs[2],"=="))
+					ir[nline].op=eq;
+				else if(!strcmp(strs[2],"!="))
+					ir[nline].op=ne;
+				else if(!strcmp(strs[2],"<="))
+					ir[nline].op=le;
+				else if(!strcmp(strs[2],">="))
+					ir[nline].op=ge;
+				else if(!strcmp(strs[2],"<"))
+					ir[nline].op=lt;	
+				else if(!strcmp(strs[2],">"))
+					ir[nline].op=gt;
+				ir[nline].out = Insert(strs[3]);
+
+				ir[nline].in1 = Insert(strs[4]);
+				ir[nline].in1 = Insert(strs[5]);
+			}
+			else if(strcmp(key,"ifgoto")==0){
+				ir[nline].typ = ifgoto;
+				ir[nline].op = add;
+				ir[nline].out = Insert(strs[2]);
+				ir[nline].in1 = Insert(strs[3]);
+				ir[nline].in1 = Insert(strs[4]);
+			}
+			else if(strcmp(key,"ifgoto")==0){
+				ir[nline].typ = ifgoto;
+				ir[nline].op = add;
+				ir[nline].out = Insert(strs[2]);
+				ir[nline].in1 = Insert(strs[3]);
+				ir[nline].in1 = Insert(strs[4]);
+			}
+			else if(strcmp(key,"ifgoto")==0){
+				ir[nline].typ = ifgoto;
+				ir[nline].op = add;
 				ir[nline].out = Insert(strs[2]);
 				ir[nline].in1 = Insert(strs[3]);
 				ir[nline].in1 = Insert(strs[4]);
