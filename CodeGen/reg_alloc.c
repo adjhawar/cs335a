@@ -1,7 +1,15 @@
-#include "stdio.h"
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "global.h"
+#include <stdbool.h>
+#include <global.h>
+
+// upadate liveness and nextuse of variables for a basic block
+void update(int i, int j){
+	for (k = j; k<i ; k--){
+
+	}
+}
 
 void reg_alloc(){
 	int *leaders = (int *) calloc(sizeof(int)*nline);
