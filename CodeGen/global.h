@@ -26,6 +26,7 @@ SymtabEntry* look_up(char *lex);
 
 SymtabEntry *head=NULL, *tail=NULL;
 
+int get_reg(SymtabEntry *y , lineno);
 
 //Data structure to hold 3ac instruction
 typedef struct Instruction3AC{

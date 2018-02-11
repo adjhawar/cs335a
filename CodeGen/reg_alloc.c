@@ -6,10 +6,10 @@
 
 // upadate liveness and nextuse of variables for a basic block
 void update(int i, int j){
-	for (k = j; k<=i ; k--){
-		SymtabEntry *out = look_up(ir[k].out);
-		SymtabEntry *in1 = look_up(ir[k].in1);
-		SymtabEntry *in2 = look_up(ir[k].in2);
+	for (int k = j; k<=i ; k--){
+		SymtabEntry *out = ir[k].out;
+		SymtabEntry *in1 = ir[k].in1;
+		SymtabEntry *in2 = ir[k].in2;
 		ir[k].out_liveness = out->liveness;
 		ir[k].out_nextuse = out->nextuse;
 		ir[k].in1_liveness = in1->liveness;
@@ -27,7 +27,7 @@ void update(int i, int j){
 }
 
 void reg_alloc(){
-	int *leaders = (int *) calloc(sizeof(int)*nline);
+	int *leaders = (int *) calloc(nline, sizeof(int));
 	leaders[0] = 1;
 	for (int i=1; i<nline; i++){
 		if(ir[i].typ == label)
@@ -36,7 +36,7 @@ void reg_alloc(){
 			leaders[i+1] = 1;
 			leaders[ir[i].target] = 1;
 		}
-		else if(i+1 < nline && (ir[i].typ == call || ir[i].typ = ret)){
+		else if(i+1 < nline && (ir[i].typ == call || ir[i].typ == ret)){
 			leaders[i+1] = 1;
 		}
 	}
@@ -49,4 +49,13 @@ void reg_alloc(){
 		i = j;
 		j++;
 	}
+}
+
+int get_reg(SymtabEntry *y , lineno){
+	
+}
+
+int main()
+{
+	return 0;
 }

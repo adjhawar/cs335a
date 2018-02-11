@@ -41,6 +41,7 @@ SymtabEntry* Insert(char* lex)
 		if(strcmp(lex, "0")==0 || strcmp(lex, "0\n")==0 || atoi(lex)) 
 			strcpy(temp->type,"const");
 		temp->next=NULL;
+		temp->add_des.reg_no = -1;
 		if(head==NULL)
 		{
 			head = temp;
