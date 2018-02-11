@@ -8,6 +8,7 @@ enum TACkeywords{add , sub , mul , divi , mod , gt , lt , ge , le , ne , eq , as
 //Register descriptor
 // eax = 0, ebx = 1, ecx = 2, edx = 3, esi = 4 , edi = 5
 
+
 SymtabEntry *reg_des[6] ; //array of pointers for register descriptor
 
 
