@@ -2,11 +2,26 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include <global.h>
+#include "global.h"
 
 // upadate liveness and nextuse of variables for a basic block
 void update(int i, int j){
-	for (k = j; k<i ; k--){
+	for (k = j; k<=i ; k--){
+		SymtabEntry *out = look_up(ir[k].out);
+		SymtabEntry *in1 = look_up(ir[k].in1);
+		SymtabEntry *in2 = look_up(ir[k].in2);
+		ir[k].out_liveness = out->liveness;
+		ir[k].out_nextuse = out->nextuse;
+		ir[k].in1_liveness = in1->liveness;
+		ir[k].in1_nextuse = in1->nextuse;
+		ir[k].in2_liveness = in2->liveness;
+		ir[k].in2_nextuse = in2->nextuse;
+		out->liveness = false;
+		out->nextuse = -1;
+		in1->liveness = true;
+		in1->nextuse = k;
+		in2->liveness = true;
+		in2->nextuse = k;		
 
 	}
 }
@@ -24,5 +39,14 @@ void reg_alloc(){
 		else if(i+1 < nline && (ir[i].typ == call || ir[i].typ = ret)){
 			leaders[i+1] = 1;
 		}
+	}
+	int i = 0,j = 1;
+	while(i<nline){
+		while(leaders[j]!=1){
+			j++;
+		}
+		update(j-1,i);
+		i = j;
+		j++;
 	}
 }

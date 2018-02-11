@@ -1,6 +1,6 @@
 //global variables
 
-enum InstrType{ Assignment , Pointer , Indexed_Ass , ifgoto , Goto , ret , call , label , print , scan, cnst};
+enum InstrType{ Assignment , Pointer , Indexed_Ass , ifgoto , Goto , ret , call , label , print , scan};
 enum TACkeywords{add , sub , mul , divi , mod , gt , lt , ge , le , ne , eq , assgn , AND , OR , NEG , RSH , LSH , ZRSH };
 
 int nline = 0;
@@ -14,13 +14,15 @@ typedef struct Add_des{
 
 //Data structure to hold symbol table
 typedef struct SymtabEntry{
-	char type[10],lexeme[100];
+	char lexeme[100];
+	char type[100];
 	Add_des add_des;
 	int nextuse;
 	bool liveness;
 	struct SymtabEntry *next;
 }SymtabEntry;
 
+SymtabEntry* look_up(char *lex);
 
 SymtabEntry *head=NULL, *tail=NULL;
 

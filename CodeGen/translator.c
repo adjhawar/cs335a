@@ -2,9 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include <global.h>
+#include "global.h"
 #include <ctype.h>
-
 
 int numbers_only(const char *s)
 {
@@ -15,10 +14,10 @@ int numbers_only(const char *s)
 	return 1;
 }
 
-
-
 SymtabEntry* look_up(char *lex){
 	SymtabEntry *temp = head;
+	if(strcmp(lex, "0")==0 || strcmp(lex, "0\n")==0 || atoi(lex)) 
+		return NULL;
 	while(temp!=NULL && strcmp(temp->lexeme,lex))
 	{
 		temp=temp->next;
@@ -36,7 +35,11 @@ SymtabEntry* Insert(char* lex)
 	else
 	{
 		SymtabEntry *temp = malloc(sizeof(SymtabEntry));
+		temp->liveness = true;
+		temp->nextuse = -1;
 		strcpy(temp->lexeme,lex);
+		if(strcmp(lex, "0")==0 || strcmp(lex, "0\n")==0 || atoi(lex)) 
+			strcpy(temp->type,"const");
 		temp->next=NULL;
 		if(head==NULL)
 		{
@@ -52,9 +55,6 @@ SymtabEntry* Insert(char* lex)
 	}
 	
 }
-
-
-
 
 
 int main(){
