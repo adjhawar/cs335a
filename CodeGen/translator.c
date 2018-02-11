@@ -2,20 +2,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-enum InstrType{ Assignment , Function ,Jump , Pointer , Indexed_Ass , ifgoto , Goto , ret , call , label , print , scan};
+enum InstrType{ Assignment , Pointer , Indexed_Ass , ifgoto , Goto , ret , call , label , print , scan};
 enum TACkeywords{add , sub , mul , divi , mod , gt , lt , ge , le , ne , eq , assgn , AND , OR , NEG , RSH , LSH , ZRSH };
 
 //Register descriptor
 // eax = 0, ebx = 1, ecx = 2, edx = 3, esi = 4 , edi = 5
 
-typedef struct Reg_des
-{
-	char lexeme[100];
-	struct Reg_des *next;
-	struct Reg_des *prev;
-}Reg_des;
-
-Reg_des *reg_des ; //array of list for register descriptor
+SymtabEntry *reg_des[6] ; //array of pointers for register descriptor
 
 
 
