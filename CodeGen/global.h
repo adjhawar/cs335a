@@ -1,14 +1,21 @@
 //global variables
 
-enum InstrType{ Assignment , Pointer , Indexed_Ass , ifgoto , Goto , ret , call , label , print , scan};
+enum InstrType{ Assignment , Pointer , Indexed_Ass , ifgoto , Goto , ret , call , label , print , scan, cnst};
 enum TACkeywords{add , sub , mul , divi , mod , gt , lt , ge , le , ne , eq , assgn , AND , OR , NEG , RSH , LSH , ZRSH };
 
 int nline = 0;
 int size = 10;
+
+// Data structure for address descriptor
+typedef struct Add_des{
+	int reg_no;
+	bool mem;
+}Add_des;
+
 //Data structure to hold symbol table
 typedef struct SymtabEntry{
 	char type[10],lexeme[100];
-
+	Add_des add_des;
 	int nextuse;
 	bool liveness;
 	struct SymtabEntry *next;
