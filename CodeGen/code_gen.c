@@ -12,7 +12,7 @@ for(int i=0;i<nline;i++)
       if(ir[i].op!=assgn)
       {
         getReg(i);
-        if(strcmp(reg_des[R_y]->lexeme,ir[i].in1->lexeme))
+/*        if(strcmp(reg_des[R_y]->lexeme,ir[i].in1->lexeme))
         {
           printf("mov %s,[%s]\n",register[R_y],ir[i].in1->lexeme);
         }
@@ -37,7 +37,7 @@ for(int i=0;i<nline;i++)
         
         
         
-        }
+        }*/
         
         printf("mov %s,%s\n",register[R_x],register[R_y]);     
       }
@@ -49,42 +49,51 @@ for(int i=0;i<nline;i++)
 
 }
   
-  void getReg(i)
-  {
-    int r;
-  if(ir[i].typ==Assignment)
-  {
-    if(ir[i].op==add || ir[i].op==sub )
-    {
-       if(ir[i]->in1->add_des.reg_no==-1)      // -1 denotes that in1's is not stored in register
-       {
-           if(ir[i]->in2->add_des.reg_no==-1)
-           {
-                r=empty_reg() ; //this function returns a empty register
-                printf("mov %s,[%s]",register[r],ir[i]->in1->lexeme);
-                ir[i]->in1->add_des.reg_no=r;
-                reg_des[r]=ir[i]->in1;
-           }
-           else
-           {
-             printf("add [%s],%s",ir[i]->in1->lexeme,register[ir[i]->in2->add_des.reg_no]);
-             //to do : update address and register descriptor
-           }
-         
-         
-       }
-    
-    
-    
-    
-    
-    }
-  
-  
-  
-  
-  
-  }
+void getReg(int i)
+{
+	int r;
+	if(ir[i].typ==Assignment)
+	{
+		if(ir[i].op==add || ir[i].op==sub || ir[i].op==and || ir[i].op==or || ir[i].op==xor)
+		{
+			if(ir[i]->in1->add_des.reg_no==-1 )      // -1 denotes that in1's is not stored in register
+			{
+				if(ir[i]->in2->add_des.reg_no==-1)
+				{
+					r=empty_reg() ; //this function returns a empty register
+					printf("mov %s,[%s]\n",register[r],ir[i]->in1->lexeme);
+					ir[i]->in1->add_des.reg_no=r;
+					reg_des[r]=ir[i]->in1;
+				}
+				printf("add [%s],%s\n",ir[i]->in1->lexeme,register[ir[i]->in2->add_des.reg_no]);
+			}
+			else if(ir[i]->in2->add_des.reg_no==-1)      // -1 denotes that in1's is not stored in register
+			{
+				if(ir[i]->in1->add_des.reg_no==-1)
+				{
+					r=empty_reg() ; //this function returns a empty register
+					printf("mov %s,[%s]\n",register[r],ir[i]->in2->lexeme);
+					ir[i]->in2->add_des.reg_no=r;
+					reg_des[r]=ir[i]->in2;
+				}
+				printf("add %s,[%s]\n",register[ir[i]->in1->add_des.reg_no],iri[i]->in2->lexeme);
+			}
+			else
+				printf("add %s,%s\n",register[ir[i]->in1->add_des.reg_no],register[ir[i]->in2->add_des.reg_no]);
+			
+		}
+
+
+
+
+
+	}
+
+
+
+
+
+}
  int empty_reg()
  {
    for(int i=0;i<6;i++)
