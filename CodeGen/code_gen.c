@@ -59,33 +59,53 @@ void getReg(int i)
 		if(ir[i].op==add || ir[i].op==sub || ir[i].op==and || ir[i].op==or || ir[i].op==xor)
 		{
 			if(ir[i]->out->add_des.reg_no==-1)
-				{
-					r=empty_reg() ; //this function returns a empty register
-					printf("\t mov %s,[%s]\n",register[r],ir[i]->out->lexeme);
-					ir[i]->out->add_des.reg_no=r;
-					reg_des[r]=ir[i]->out;
-				} //make for every operator
-			
+			{
+				r=empty_reg() ; //this function returns a empty register
+				printf("\t mov %s,[%s]\n",register[r],ir[i]->out->lexeme);
+				ir[i]->out->add_des.reg_no=r;
+				reg_des[r]=ir[i]->out;
+			} //make for every operator
+
 			if(strcmp(ir[i]->in1->type,"const")==0)
 				printf("\t add %s,%d\n",register[ir[i]->out->add_des.reg_no],atoi(ir[i]->in1->lexeme));
 			else if(ir[i]->in1->add_des.reg_no==-1)
 				printf("\t add %s,[%s]\n",register[ir[i]->out->add_des.reg_no],ir[i]->in1->lexeme);
 			else
 				printf("\t add %s.%s\n",register[ir[i]->out->add_des.reg_no],register[ir[i]->in1->add_des.reg_no]);
-			
+
 			if(strcmp(ir[i]->in1->type,"const")==0)
 				printf("\t add %s,%d\n",register[ir[i]->out->add_des.reg_no],atoi(ir[i]->in1->lexeme));
 			else if(ir[i]->in2->add_des.reg_no==-1)
 				printf("\t add %s,[%s]\n",register[ir[i]->out->add_des.reg_no],ir[i]->in2->lexeme);
 			else
 				printf("\t add %s.%s\n",register[ir[i]->out->add_des.reg_no],register[ir[i]->in2->add_des.reg_no]);
-			}
+		}
 		else if(ir[i].op==div){
 			//left
 		}
 	}
-		}
-
+	else if(ir[i].typ==call)
+		printf("\t call %s\n",ir[i].in1);
+	else if(ir[i].typ==Goto)
+		printf("\t jmp L%d\n",ir[i].target);
+	else if(ir[i].typ==ifgoto){
+		//implement the cmp call
+		switch(ir[i].op){
+			case eq:printf("\t je L%d\n",ir[i].target);
+				break;
+			case ne:printf("\t jne L%d\n",ir[i].target);
+				break;
+			case le:printf("\t jle L%d\n",ir[i].target);
+				break;
+			case ge:printf("\t jge L%d\n",ir[i].target);
+				break;
+			case lt:printf("\t jl L%d\n",ir[i].target);
+				break;
+			case gt:printf("\t jg L%d\n",ir[i].target);
+				break;}
+	}
+	else if(ir[i].typ==ret)
+		printf("\t ret\n");
 }
 
  int empty_reg()

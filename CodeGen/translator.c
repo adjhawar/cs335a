@@ -148,6 +148,7 @@ int main(){
 			else if(strcmp(key,"call")==0){
 				ir[nline].typ = call;
 				ir[nline].in1 = Insert(strs[2]);
+				ir[nline].label = true;
 			}
 			else if(strcmp(key,"label")==0){
 				ir[nline].typ = label;
