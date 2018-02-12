@@ -1,4 +1,4 @@
-/*#include <stdio.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
@@ -74,13 +74,5 @@ void reg_alloc(){
 	}
 	update(4,4);
 	free(leaders);
-}*/
-int fact_dw(int x)
-{
-int result = 1;
-do {
-result *= x;
-x--;
-} while (x > 0);
-return result;
 }
+
