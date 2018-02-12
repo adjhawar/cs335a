@@ -229,7 +229,7 @@ int main(){
 	  }
 	temp=temp->next;
 	}
-	//reg_alloc();
+	reg_alloc();
 	for(int i=0;i<nline;i++)
 		getReg(i);
 	free(ir);
