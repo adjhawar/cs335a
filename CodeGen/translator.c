@@ -213,6 +213,16 @@ int main(){
 			}
 		}
 	}
+	SymtabEntry* temp=head;            // setting up data regions for global variables
+	while(temp!=NULL)
+	{
+          printf(".DATA\n");
+	  if(strcmp(temp->type,"const"))
+	  {
+	    printf("%s  DD ?\n",temp->lexeme);
+	  }
+	temp=temp->next;
+	}
 	for(int i=0;i<nline;i++)
 		getReg(i);
 }
