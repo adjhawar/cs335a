@@ -21,13 +21,13 @@ SymtabEntry* Insert(char* lex)
 {
 	SymtabEntry *tem = look_up(lex);
 	if(tem){
-		printf(" The token already exists in the Symbol table \n");
+		printf("The token already exists in the Symbol table %s\n", tem->lexeme);
 		return tem;
 	}
 	else
 	{
 		SymtabEntry *temp = malloc(sizeof(SymtabEntry));
-		temp->liveness = true;
+		temp->liveness = false;
 		temp->nextuse = -1;
 		strcpy(temp->lexeme,lex);
 		if(strcmp(lex, "0")==0 || atoi(lex)) 

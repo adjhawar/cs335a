@@ -1,6 +1,7 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include<global.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include "global.h"
+
 char register[6][4] = { "EAX","EBX","ECX","EDX","ESI","EDI"};
 int R_x,R_y,R_z;
 void main()
@@ -60,7 +61,7 @@ void getReg(int i)
 			{
 				if(ir[i]->in2->add_des.reg_no==-1)
 				{
-					r=empty_reg() ; //this function returns a empty register
+					r=empty_reg() ; //this function returns an empty register
 					printf("mov %s,[%s]\n",register[r],ir[i]->in1->lexeme);
 					ir[i]->in1->add_des.reg_no=r;
 					reg_des[r]=ir[i]->in1;
@@ -94,16 +95,33 @@ void getReg(int i)
 
 
 }
- int empty_reg()
+ int empty_reg(SymtabEntry* a, int lineno)
  {
+  if(ir[lineno].in1 == a){
+    if(a->add_des.reg_no != -1 && ir[lineno].in1_nextuse==-1) return a->add_des.reg_no;
+  }
+  else if(ir[lineno].in2 == a){
+    if(a->add_des.reg_no != -1 && ir[lineno].in2_nextuse==-1) return a->add_des.reg_no;
+  }
+  else{
    for(int i=0;i<6;i++)
    {
-     if(reg_des[i]!=NULL)
+     if(reg_des[i] == NULL)
      {
        return i;
      }
    }
-   for(int i=0;i<6;i++)
+   int max = reg_des[0].nextuse;
+   int l = 0;
+   for (int i=0; i<6; i++){
+    if(max < reg_des[i].nextuse){
+      max = reg_des[i].nextuse;
+      l = i;
+    }
+   }
+   return l;
+ }
+   /*for(int i=0;i<6;i++)
    {
      if(reg_des[i]->add_des->mem)
      {
@@ -111,7 +129,7 @@ void getReg(int i)
      }
    }
    printf("mov [%s],%s",reg_des[1]->lexexe,register[reg_des[1]->add_des.reg_no]) // empty the register no 1 
-   return 1;
+   return 1;*/
  }
   
   
