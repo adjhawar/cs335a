@@ -75,6 +75,7 @@ int main(){
 			}
 			nline = atoi(strs[0]);
 			char *key = strs[1];
+			ir[nline].label=false;
 			if(strcmp(key,"=")==0){
 				ir[nline].typ = Assignment;
 				ir[nline].op = assgn;
@@ -134,11 +135,12 @@ int main(){
 				ir[nline].in1 = Insert(strs[3]);
 				ir[nline].in2 = Insert(strs[4]);
 				ir[nline].target = atoi(strs[5]);
+				ir[nline].label=true;
 			}
 			else if(strcmp(key,"Goto")==0){
 				ir[nline].typ = Goto;
 				ir[nline].target = atoi(strs[2]);
-				ir[atoi(strs[2])].label=1;
+				ir[atoi(strs[2])].label=true;
 			}
 			else if(strcmp(key,"ret")==0){
 				ir[nline].typ = ret;

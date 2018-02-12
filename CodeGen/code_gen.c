@@ -52,6 +52,8 @@ for(int i=0;i<nline;i++)
 void getReg(int i)
 {
 	int r;
+	if(ir[i].label==true)
+		printf("L%d\t:",ir[i].target);
 	if(ir[i].typ==Assignment)
 	{
 		if(ir[i].op==add || ir[i].op==sub || ir[i].op==and || ir[i].op==or || ir[i].op==xor)
@@ -59,24 +61,24 @@ void getReg(int i)
 			if(ir[i]->out->add_des.reg_no==-1)
 				{
 					r=empty_reg() ; //this function returns a empty register
-					printf("mov %s,[%s]\n",register[r],ir[i]->out->lexeme);
+					printf("\t mov %s,[%s]\n",register[r],ir[i]->out->lexeme);
 					ir[i]->out->add_des.reg_no=r;
 					reg_des[r]=ir[i]->out;
 				} //make for every operator
 			
 			if(strcmp(ir[i]->in1->type,"const")==0)
-				printf("add %s,%d\n",register[ir[i]->out->add_des.reg_no],atoi(ir[i]->in1->lexeme));
+				printf("\t add %s,%d\n",register[ir[i]->out->add_des.reg_no],atoi(ir[i]->in1->lexeme));
 			else if(ir[i]->in1->add_des.reg_no==-1)
-				printf("add %s,[%s]\n",register[ir[i]->out->add_des.reg_no],ir[i]->in1->lexeme);
+				printf("\t add %s,[%s]\n",register[ir[i]->out->add_des.reg_no],ir[i]->in1->lexeme);
 			else
-				printf("add %s.%s\n",register[ir[i]->out->add_des.reg_no],register[ir[i]->in1->add_des.reg_no]);
+				printf("\t add %s.%s\n",register[ir[i]->out->add_des.reg_no],register[ir[i]->in1->add_des.reg_no]);
 			
 			if(strcmp(ir[i]->in1->type,"const")==0)
-				printf("add %s,%d\n",register[ir[i]->out->add_des.reg_no],atoi(ir[i]->in1->lexeme));
+				printf("\t add %s,%d\n",register[ir[i]->out->add_des.reg_no],atoi(ir[i]->in1->lexeme));
 			else if(ir[i]->in2->add_des.reg_no==-1)
-				printf("add %s,[%s]\n",register[ir[i]->out->add_des.reg_no],ir[i]->in2->lexeme);
+				printf("\t add %s,[%s]\n",register[ir[i]->out->add_des.reg_no],ir[i]->in2->lexeme);
 			else
-				printf("add %s.%s\n",register[ir[i]->out->add_des.reg_no],register[ir[i]->in2->add_des.reg_no]);
+				printf("\t add %s.%s\n",register[ir[i]->out->add_des.reg_no],register[ir[i]->in2->add_des.reg_no]);
 			}
 		else if(ir[i].op==div){
 			//left
