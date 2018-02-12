@@ -1,4 +1,4 @@
-/*#include <stdio.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
@@ -46,9 +46,8 @@ void reg_alloc(){
 		while(leaders[j]!=1){
 			j++;
 		}
-		update(j-1,i);
+		//update(j-1,i);
 		i = j;
 		j++;
 	}
 }
-*/

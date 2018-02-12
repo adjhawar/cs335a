@@ -31,13 +31,13 @@ extern SymtabEntry *tail;
 //Data structure to hold 3ac instruction
 typedef struct Instruction3AC{
 	enum InstrType typ; // assign, goto...
-	SymtabEntry in1;
+	SymtabEntry *in1;
 	bool in1_liveness;
 	int in1_nextuse;
-	SymtabEntry in2;
+	SymtabEntry *in2;
 	bool in2_liveness;
 	int in2_nextuse;
-	SymtabEntry out;
+	SymtabEntry *out;
 	bool out_liveness;
 	int out_nextuse;
 	int target; // jump target
@@ -55,3 +55,4 @@ Instruction3AC *ir;
 
 void getReg(int i);
 int empty_reg(int i);
+void reg_alloc();
