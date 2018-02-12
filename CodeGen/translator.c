@@ -25,7 +25,6 @@ SymtabEntry* Insert(char* lex)
 {
 	SymtabEntry *tem = look_up(lex);
 	if(tem){
-		printf("The token already exists in the Symbol table %s\n", tem->lexeme);
 		return tem;
 	}
 	else
@@ -38,6 +37,7 @@ SymtabEntry* Insert(char* lex)
 			strcpy(temp->type,"const");
 		temp->next=NULL;
 		temp->add_des.reg_no = -1;
+		temp->add_des.mem=false;
 		if(head==NULL)
 		{
 			head = temp;
@@ -56,8 +56,6 @@ SymtabEntry* Insert(char* lex)
 
 
 int main(){
-	/*int nline=0, size=0;
-	SymtabEntry *head=NULL,*tail=NULL;*/
 	nline=0;
 	size=10;
 	head=NULL;
@@ -98,7 +96,7 @@ int main(){
 				ir[nline].out = Insert(strs[2]);
 				ir[nline].in1 = Insert(strs[3]);
 				ir[nline].in2 = Insert(strs[4]);
-						//printf("%s\n", ir[0].out->lexeme);
+				//printf("%s\n", ir[0].out->lexeme);
 
 			}
 			else if(strcmp(key,"-")==0){
@@ -132,27 +130,27 @@ int main(){
 			}
 			else if(strcmp(key,"ifgoto")==0){	//relational operators
 				ir[nline].typ = ifgoto;
-				if(!strcmp(strs[2],"=="))
+				if(strcmp(strs[2],"eq")==0)
 					ir[nline].op=eq;
-				else if(!strcmp(strs[2],"!="))
+				else if(strcmp(strs[2],"neq")==0)
 					ir[nline].op=ne;
-				else if(!strcmp(strs[2],"<="))
+				else if(strcmp(strs[2],"leq")==0)
 					ir[nline].op=le;
-				else if(!strcmp(strs[2],">="))
+				else if(strcmp(strs[2],"geq")==0)
 					ir[nline].op=ge;
-				else if(!strcmp(strs[2],"<"))
+				else if(strcmp(strs[2],"lt")==0)
 					ir[nline].op=lt;	
-				else if(!strcmp(strs[2],">"))
+				else if(strcmp(strs[2],"gt")==0)
 					ir[nline].op=gt;
 				ir[nline].in1 = Insert(strs[3]);
 				ir[nline].in2 = Insert(strs[4]);
 				ir[nline].target = atoi(strs[5]);
-				ir[nline].label=true;
+				ir[atoi(strs[5])-1].label=true;
 			}
 			else if(strcmp(key,"Goto")==0){
 				ir[nline].typ = Goto;
 				ir[nline].target = atoi(strs[2]);
-				ir[atoi(strs[2])].label=true;
+				ir[atoi(strs[2])-1].label=true;
 			}
 			else if(strcmp(key,"ret")==0){
 				ir[nline].typ = ret;
@@ -163,6 +161,7 @@ int main(){
 				ir[nline].label = true;
 			}
 			else if(strcmp(key,"label")==0){
+				ir[nline].label=true;
 				ir[nline].typ = label;
 				ir[nline].in1 = Insert(strs[2]);
 			}
@@ -216,23 +215,24 @@ int main(){
 				ir[nline].in2 = Insert(strs[4]);
 			}
 			nline = atoi(strs[0]);
-			
+
 		}
 	}
 	SymtabEntry* temp=head;            // setting up data regions for global variables
+	printf("section .data\n");
 	while(temp!=NULL)
 	{
-          printf(".DATA\n");
-	  if(strcmp(temp->type,"const"))
-	  {
-	    printf("%s  DD ?\n",temp->lexeme);
-	  }
-	temp=temp->next;
+		if(strcmp(temp->type,"const"))
+		{
+			printf("%s  DD  ?\n",temp->lexeme);
+		}
+		temp=temp->next;
 	}
+	printf("section .text\n");
 	//reg_alloc();
 	for(int i=0;i<nline;i++)
 		getReg(i);
 	free(ir);
 	free(head);
-		
+
 }
