@@ -50,12 +50,3 @@ void reg_alloc(){
 		j++;
 	}
 }
-
-int get_reg(SymtabEntry *y , lineno){
-	
-}
-
-int main()
-{
-	return 0;
-}

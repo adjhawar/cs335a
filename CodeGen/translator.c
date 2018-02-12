@@ -5,14 +5,6 @@
 #include "global.h"
 #include <ctype.h>
 
-int numbers_only(const char *s)
-{
-	while (*s) {
-		if (isdigit(*s++) == 0) return 0;
-	}
-
-	return 1;
-}
 
 SymtabEntry* look_up(char *lex){
 	SymtabEntry *temp = head;
@@ -38,7 +30,7 @@ SymtabEntry* Insert(char* lex)
 		temp->liveness = true;
 		temp->nextuse = -1;
 		strcpy(temp->lexeme,lex);
-		if(strcmp(lex, "0")==0 || strcmp(lex, "0\n")==0 || atoi(lex)) 
+		if(strcmp(lex, "0")==0 || atoi(lex)) 
 			strcpy(temp->type,"const");
 		temp->next=NULL;
 		temp->add_des.reg_no = -1;
@@ -74,7 +66,7 @@ int main(){
 				ir = realloc(ir, size * sizeof(Instruction3AC));
 			}
 			char *token;
-			char *rest = line;
+			char *rest = strtok(line, "\n");
 			char strs[6][100];
 			int i = 0;
 			while ((token = strtok_r(rest, ", ", &rest))){
@@ -139,17 +131,9 @@ int main(){
 					ir[nline].op=lt;	
 				else if(!strcmp(strs[2],">"))
 					ir[nline].op=gt;
-				ir[nline].out = Insert(strs[3]);
-
-				ir[nline].in1 = Insert(strs[4]);
-				ir[nline].in2 = Insert(strs[5]);
-			}
-			else if(strcmp(key,"ifgoto")==0){
-				ir[nline].typ = ifgoto;
-				ir[nline].op = add;
-				ir[nline].out = Insert(strs[2]);
 				ir[nline].in1 = Insert(strs[3]);
 				ir[nline].in2 = Insert(strs[4]);
+				ir[nline].target = atoi(strs[5]);
 			}
 			else if(strcmp(key,"Goto")==0){
 				ir[nline].typ = Goto;
