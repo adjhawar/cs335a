@@ -5,6 +5,8 @@
 #include "global.h"
 #include <ctype.h>
 
+int nline, size;
+SymtabEntry *head,*tail;
 
 SymtabEntry* look_up(char *lex){
 	SymtabEntry *temp = head;
@@ -21,13 +23,13 @@ SymtabEntry* Insert(char* lex)
 {
 	SymtabEntry *tem = look_up(lex);
 	if(tem){
-		printf(" The token already exists in the Symbol table \n");
+		printf("The token already exists in the Symbol table %s\n", tem->lexeme);
 		return tem;
 	}
 	else
 	{
 		SymtabEntry *temp = malloc(sizeof(SymtabEntry));
-		temp->liveness = true;
+		temp->liveness = false;
 		temp->nextuse = -1;
 		strcpy(temp->lexeme,lex);
 		if(strcmp(lex, "0")==0 || atoi(lex)) 
@@ -51,6 +53,12 @@ SymtabEntry* Insert(char* lex)
 
 
 int main(){
+	/*int nline=0, size=0;
+	SymtabEntry *head=NULL,*tail=NULL;*/
+	nline=0;
+	size=10;
+	head=NULL;
+	tail=NULL;
 	FILE *fptr = fopen("IL_Program.csv","r");
 	ir = malloc(size * sizeof(Instruction3AC));
 	if(fptr==NULL){
@@ -164,45 +172,47 @@ int main(){
 			}
 			else if(strcmp(key,"&")==0){
 				ir[nline].typ = Assignment;
-				ir[nline].op = AND;
+				ir[nline].op = and;
 				ir[nline].out = Insert(strs[2]);
 				ir[nline].in1 = Insert(strs[3]);
 				ir[nline].in2 = Insert(strs[4]);
 			}
 			else if(strcmp(key,"|")==0){
 				ir[nline].typ = Assignment;
-				ir[nline].op = OR;
+				ir[nline].op = or;
 				ir[nline].out = Insert(strs[2]);
 				ir[nline].in1 = Insert(strs[3]);
 				ir[nline].in2 = Insert(strs[4]);
 			}
 			else if(strcmp(key,"~")==0){
 				ir[nline].typ = Assignment;
-				ir[nline].op = NEG;
+				ir[nline].op = neg;
 				ir[nline].out = Insert(strs[2]);
 				ir[nline].in1 = Insert(strs[3]);
 			}
 			else if(strcmp(key,">>")==0){
 				ir[nline].typ = Assignment;
-				ir[nline].op = RSH;
+				ir[nline].op = rsh;
 				ir[nline].out = Insert(strs[2]);
 				ir[nline].in1 = Insert(strs[3]);
 				ir[nline].in2 = Insert(strs[4]);
 			}
 			else if(strcmp(key,"<<")==0){
 				ir[nline].typ = Assignment;
-				ir[nline].op = LSH;
+				ir[nline].op = lsh;
 				ir[nline].out = Insert(strs[2]);
 				ir[nline].in1 = Insert(strs[3]);
 				ir[nline].in2 = Insert(strs[4]);
 			}
 			else if(strcmp(key,">>>")==0){
 				ir[nline].typ = Assignment;
-				ir[nline].op = ZRSH;
+				ir[nline].op = zrsh;
 				ir[nline].out = Insert(strs[2]);
 				ir[nline].in1 = Insert(strs[3]);
 				ir[nline].in2 = Insert(strs[4]);
 			}
 		}
 	}
+	for(int i=0;i<nline;i++)
+		getReg(i);
 }

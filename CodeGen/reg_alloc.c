@@ -3,7 +3,8 @@
 #include <string.h>
 #include <stdbool.h>
 #include "global.h"
-
+int nline,size;
+SymtabEntry *head,*tail;
 // upadate liveness and nextuse of variables for a basic block
 void update(int i, int j){
 	for (int k = j; k<=i ; k--){

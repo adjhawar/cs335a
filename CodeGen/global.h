@@ -1,10 +1,11 @@
+#include <stdbool.h>
 //global variables
 
 enum InstrType{ Assignment , Pointer , Indexed_Ass , ifgoto , Goto , ret , call , label , print , scan};
-enum TACkeywords{add , sub , mul , divi , mod , gt , lt , ge , le , ne , eq , assgn , AND , OR , NEG , RSH , LSH , ZRSH };
+enum TACkeywords{add , sub , mul , divi , mod , gt , lt , ge , le , ne , eq , assgn ,  and, or , neg , rsh , lsh , zrsh };
 
-int nline = 0;
-int size = 10;
+extern int nline;
+extern int size;
 
 // Data structure for address descriptor
 typedef struct Add_des{
@@ -24,7 +25,8 @@ typedef struct SymtabEntry{
 
 SymtabEntry* look_up(char *lex);
 
-SymtabEntry *head=NULL, *tail=NULL;
+extern SymtabEntry *head;
+extern SymtabEntry *tail;
 
 //Data structure to hold 3ac instruction
 typedef struct Instruction3AC{
@@ -50,3 +52,6 @@ SymtabEntry *reg_des[6] ; //array of pointers for register descriptor
 
 //To store IL code 
 Instruction3AC *ir ;
+
+void getReg(int i);
+int empty_reg(int i);
