@@ -8,8 +8,10 @@
 int nline, size;
 SymtabEntry *head,*tail;
 
-SymtabEntry* look_up(char *lex){
-	SymtabEntry *temp = head;
+
+
+/*SymtabE look_up(char *lex){
+	SymtabEntry temp = head;
 	if(strcmp(lex, "0")==0 || strcmp(lex, "0\n")==0 || atoi(lex)) 
 		return NULL;
 	while(temp!=NULL && strcmp(temp->lexeme,lex))
@@ -18,17 +20,17 @@ SymtabEntry* look_up(char *lex){
 	}
 	return temp;
 }
-
-SymtabEntry* Insert(char* lex)
+*/
+void Insert(SymtabEntry *temp, char* lex)
 {
-	SymtabEntry *tem = look_up(lex);
-	if(tem){
+	//SymtabEntry tem = look_up(lex);
+	/*if(tem){
 		printf("The token already exists in the Symbol table %s\n", tem->lexeme);
 		return tem;
 	}
 	else
-	{
-		SymtabEntry *temp = malloc(sizeof(SymtabEntry));
+	{*/
+		//SymtabEntry *temp = &a; //(SymtabEntry *) malloc(sizeof(SymtabEntry));
 		temp->liveness = false;
 		temp->nextuse = -1;
 		strcpy(temp->lexeme,lex);
@@ -46,8 +48,8 @@ SymtabEntry* Insert(char* lex)
 			tail->next = temp;
 			tail = temp;
 		}
-		return temp;
-	}
+		//return tem;
+	//}
 	
 }
 
@@ -60,7 +62,7 @@ int main(){
 	head=NULL;
 	tail=NULL;
 	FILE *fptr = fopen("IL_Program.csv","r");
-	ir = malloc(size * sizeof(Instruction3AC));
+	ir = (Instruction3AC *) malloc(size * sizeof(Instruction3AC));
 	if(fptr==NULL){
 		printf("Error in opening IL_Program.csv \n . Aborting....");
 		exit(0);
@@ -81,50 +83,51 @@ int main(){
 				strcpy(strs[i], token);
 				i++;
 			}
-			nline = atoi(strs[0]);
 			char *key = strs[1];
 			ir[nline].label=false;
 			if(strcmp(key,"=")==0){
 				ir[nline].typ = Assignment;
 				ir[nline].op = assgn;
-				ir[nline].out = Insert(strs[2]);
-				ir[nline].in1 = Insert(strs[3]);
+				Insert(&(ir[nline].out), strs[2]);
+				Insert(&(ir[nline].in1), strs[3]);
 			}
 			else if(strcmp(key,"+")==0){
 				ir[nline].typ = Assignment;
 				ir[nline].op = add;
-				ir[nline].out = Insert(strs[2]);
-				ir[nline].in1 = Insert(strs[3]);
-				ir[nline].in2 = Insert(strs[4]);
+				Insert(&(ir[nline].out), strs[2]);
+				Insert(&(ir[nline].in1), strs[3]);
+				Insert(&(ir[nline].in2), strs[4]);
+						//printf("%s\n", ir[0].out->lexeme);
+
 			}
 			else if(strcmp(key,"-")==0){
 				ir[nline].typ = Assignment;
 				ir[nline].op = sub;
-				ir[nline].out = Insert(strs[2]);
-				ir[nline].in1 = Insert(strs[3]);
-				ir[nline].in2 = Insert(strs[4]);
+				Insert(&(ir[nline].out), strs[2]);
+				Insert(&(ir[nline].in1), strs[3]);
+				Insert(&(ir[nline].in2), strs[4]);
 
 			}
 			else if(strcmp(key,"*")==0){
 				ir[nline].typ = Assignment;
 				ir[nline].op = mul;
-				ir[nline].out = Insert(strs[2]);
-				ir[nline].in1 = Insert(strs[3]);
-				ir[nline].in2 = Insert(strs[4]);
+				Insert(&(ir[nline].out), strs[2]);
+				Insert(&(ir[nline].in1), strs[3]);
+				Insert(&(ir[nline].in2), strs[4]);
 			}
 			else if(strcmp(key,"/")==0){
 				ir[nline].typ = Assignment;
 				ir[nline].op = divi;
-				ir[nline].out = Insert(strs[2]);
-				ir[nline].in1 = Insert(strs[3]);
-				ir[nline].in2 = Insert(strs[4]);
+				Insert(&(ir[nline].out), strs[2]);
+				Insert(&(ir[nline].in1), strs[3]);
+				Insert(&(ir[nline].in2), strs[4]);
 			}
 			else if(strcmp(key,"%")==0){
 				ir[nline].typ = Assignment;
 				ir[nline].op = mod;
-				ir[nline].out = Insert(strs[2]);
-				ir[nline].in1 = Insert(strs[3]);
-				ir[nline].in2 = Insert(strs[4]);
+				Insert(&(ir[nline].out), strs[2]);
+				Insert(&(ir[nline].in1), strs[3]);
+				Insert(&(ir[nline].in2), strs[4]);
 			}
 			else if(strcmp(key,"ifgoto")==0){	//relational operators
 				ir[nline].typ = ifgoto;
@@ -140,8 +143,8 @@ int main(){
 					ir[nline].op=lt;	
 				else if(!strcmp(strs[2],">"))
 					ir[nline].op=gt;
-				ir[nline].in1 = Insert(strs[3]);
-				ir[nline].in2 = Insert(strs[4]);
+				Insert(&(ir[nline].in1), strs[3]);
+				Insert(&(ir[nline].in2), strs[4]);
 				ir[nline].target = atoi(strs[5]);
 				ir[nline].label=true;
 			}
@@ -155,64 +158,68 @@ int main(){
 			}
 			else if(strcmp(key,"call")==0){
 				ir[nline].typ = call;
-				ir[nline].in1 = Insert(strs[2]);
+				Insert(&(ir[nline].in1), strs[2]);
 				ir[nline].label = true;
 			}
 			else if(strcmp(key,"label")==0){
 				ir[nline].typ = label;
-				ir[nline].in1 = Insert(strs[2]);
+				Insert(&(ir[nline].in1), strs[2]);
 			}
 			else if(strcmp(key,"print")==0){
 				ir[nline].typ = print;
-				ir[nline].in1 = Insert(strs[2]);
+				Insert(&(ir[nline].in1), strs[2]);
 			}
 			else if(strcmp(key,"scan")==0){
 				ir[nline].typ = scan;
-				ir[nline].in1 = Insert(strs[2]);
+				Insert(&(ir[nline].in1), strs[2]);
 			}
 			else if(strcmp(key,"&")==0){
 				ir[nline].typ = Assignment;
 				ir[nline].op = and;
-				ir[nline].out = Insert(strs[2]);
-				ir[nline].in1 = Insert(strs[3]);
-				ir[nline].in2 = Insert(strs[4]);
+				Insert(&(ir[nline].out), strs[2]);
+				Insert(&(ir[nline].in1), strs[3]);
+				Insert(&(ir[nline].in2), strs[4]);
 			}
 			else if(strcmp(key,"|")==0){
 				ir[nline].typ = Assignment;
 				ir[nline].op = or;
-				ir[nline].out = Insert(strs[2]);
-				ir[nline].in1 = Insert(strs[3]);
-				ir[nline].in2 = Insert(strs[4]);
+				Insert(&(ir[nline].out), strs[2]);
+				Insert(&(ir[nline].in1), strs[3]);
+				Insert(&(ir[nline].in2), strs[4]);
 			}
 			else if(strcmp(key,"~")==0){
 				ir[nline].typ = Assignment;
 				ir[nline].op = neg;
-				ir[nline].out = Insert(strs[2]);
-				ir[nline].in1 = Insert(strs[3]);
+				Insert(&(ir[nline].out), strs[2]);
+				Insert(&(ir[nline].in1), strs[3]);
 			}
 			else if(strcmp(key,">>")==0){
 				ir[nline].typ = Assignment;
 				ir[nline].op = rsh;
-				ir[nline].out = Insert(strs[2]);
-				ir[nline].in1 = Insert(strs[3]);
-				ir[nline].in2 = Insert(strs[4]);
+				Insert(&(ir[nline].out), strs[2]);
+				Insert(&(ir[nline].in1), strs[3]);
+				Insert(&(ir[nline].in2), strs[4]);
 			}
 			else if(strcmp(key,"<<")==0){
 				ir[nline].typ = Assignment;
 				ir[nline].op = lsh;
-				ir[nline].out = Insert(strs[2]);
-				ir[nline].in1 = Insert(strs[3]);
-				ir[nline].in2 = Insert(strs[4]);
+				Insert(&(ir[nline].out), strs[2]);
+				Insert(&(ir[nline].in1), strs[3]);
+				Insert(&(ir[nline].in2), strs[4]);
 			}
 			else if(strcmp(key,">>>")==0){
 				ir[nline].typ = Assignment;
 				ir[nline].op = zrsh;
-				ir[nline].out = Insert(strs[2]);
-				ir[nline].in1 = Insert(strs[3]);
-				ir[nline].in2 = Insert(strs[4]);
+				Insert(&(ir[nline].out), strs[2]);
+				Insert(&(ir[nline].in1), strs[3]);
+				Insert(&(ir[nline].in2), strs[4]);
 			}
+			nline = atoi(strs[0]);
+			
 		}
 	}
 	for(int i=0;i<nline;i++)
 		getReg(i);
+	free(ir);
+		
 }

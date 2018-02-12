@@ -1,4 +1,4 @@
-#include <stdio.h>
+/*#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
@@ -51,3 +51,4 @@ void reg_alloc(){
 		j++;
 	}
 }
+*/
