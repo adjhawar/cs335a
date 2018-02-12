@@ -42,6 +42,7 @@ typedef struct Instruction3AC{
 	int out_nextuse;
 	int target; // jump target
 	enum TACkeywords op;
+	bool label;
 } Instruction3AC;
 
 //Register descriptor

@@ -140,20 +140,13 @@ int main(){
 				else if(!strcmp(strs[2],">"))
 					ir[nline].op=gt;
 				ir[nline].out = Insert(strs[3]);
-
 				ir[nline].in1 = Insert(strs[4]);
 				ir[nline].in2 = Insert(strs[5]);
-			}
-			else if(strcmp(key,"ifgoto")==0){
-				ir[nline].typ = ifgoto;
-				ir[nline].op = add;
-				ir[nline].out = Insert(strs[2]);
-				ir[nline].in1 = Insert(strs[3]);
-				ir[nline].in2 = Insert(strs[4]);
 			}
 			else if(strcmp(key,"Goto")==0){
 				ir[nline].typ = Goto;
 				ir[nline].target = atoi(strs[2]);
+				ir[atoi(strs[2])].label=1;
 			}
 			else if(strcmp(key,"ret")==0){
 				ir[nline].typ = ret;
@@ -174,14 +167,14 @@ int main(){
 				ir[nline].typ = scan;
 				ir[nline].in1 = Insert(strs[2]);
 			}
-			else if(strcmp(key,"&&")==0){
+			else if(strcmp(key,"&")==0){
 				ir[nline].typ = Assignment;
 				ir[nline].op = AND;
 				ir[nline].out = Insert(strs[2]);
 				ir[nline].in1 = Insert(strs[3]);
 				ir[nline].in2 = Insert(strs[4]);
 			}
-			else if(strcmp(key,"||")==0){
+			else if(strcmp(key,"|")==0){
 				ir[nline].typ = Assignment;
 				ir[nline].op = OR;
 				ir[nline].out = Insert(strs[2]);
