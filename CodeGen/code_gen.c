@@ -199,6 +199,11 @@ void getReg(int i)
 	}
 	else if(ir[i].typ==ret)
 		printf("\t ret\n");
+        else if(ir[i].typ==print)
+        {
+	    printf("movq $str,%rdi\n movq %s,%rsi\n movq $0,%rax\n",ir[i].in1->lexeme);
+            printf("pushq %r10 \n pushq %r11 \n CALL printf \n popq %r11 \n popq %r10 \n");	 
+        }
 }
 
 int empty_reg(/*SymtabEntry* a,*/ int lineno)

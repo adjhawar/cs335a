@@ -222,12 +222,13 @@ int main(){
 	printf(".data\n");
 	while(temp!=NULL)
 	{
-		if(strcmp(temp->type,"const"))
+		if(strcmp(temp->type,"const") || )
 		{
 			printf(".%s:  quad  \n",temp->lexeme);
 		}
 		temp=temp->next;
 	}
+        printf("str:   .string \" %%d \\n \" \n");
 	reg_alloc();
 	printf(" .text\n .globl main \n main:\n");
 	for(int i=0;i<nline;i++)
