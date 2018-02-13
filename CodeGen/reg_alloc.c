@@ -60,9 +60,9 @@ void reg_alloc(){
 	}
 	for (int i = 0; i < nline; ++i)
 	{
-		printf("%d ", leaders[i]);
+		//printf("%d ", leaders[i]);
 	}
-	printf("\n");
+	//printf("\n");
 	int i = 0,j = 1;
 	while(i<nline){
 		while(j<nline && leaders != NULL && leaders[j]!=1){

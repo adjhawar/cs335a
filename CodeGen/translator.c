@@ -219,17 +219,17 @@ int main(){
 		}
 	}
 	SymtabEntry* temp=head;            // setting up data regions for global variables
-	printf("section .data\n");
+	printf(".data\n");
 	while(temp!=NULL)
 	{
 		if(strcmp(temp->type,"const"))
 		{
-			printf("%s  DD  ?\n",temp->lexeme);
+			printf(".%s:  quad  \n",temp->lexeme);
 		}
 		temp=temp->next;
 	}
 	reg_alloc();
-	printf("section .text\n");
+	printf(" .text\n .globl main \n main:\n");
 	for(int i=0;i<nline;i++)
 		getReg(i);
 	free(ir);
