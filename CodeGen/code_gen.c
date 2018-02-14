@@ -235,9 +235,7 @@ void getReg(int i)
 				else{
 					reg_des[3]=NULL;
 					printf("\t movq %%rdx,%s\n",registers[ir[i].out->add_des.reg_no]);}}
-	}}
-	else if(ir[i].typ==call)
-		printf("\t call %s\n",ir[i].in1->lexeme);
+	}
         else if(ir[i].op==assgn_call)
 		{
 		    printf("\t call %s\n",ir[i].in2->lexeme);
@@ -251,7 +249,9 @@ void getReg(int i)
  			printf("movq %s,%s\n",registers[0],registers[ir[i].out->add_des.reg_no]);
 		    }
 		        
-		}
+		}}
+	else if(ir[i].typ==call)
+		printf("\t call %s\n",ir[i].in1->lexeme);
 	else if(ir[i].typ==Goto)
 		printf("\t jmp L%d\n",ir[i].target);
 	else if(ir[i].typ==ifgoto){
