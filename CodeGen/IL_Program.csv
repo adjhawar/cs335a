@@ -1,7 +1,7 @@
-1, =, a, 400
-2, =,d,4
-3, /,b,a,4
+1, scan,a
+2, scan,b
+3, /,b,b,a
 4, print,b
-5, %,c,b,d
+5, %,c,a,b
 6, print,c
 7, ret
