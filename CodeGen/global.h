@@ -48,7 +48,7 @@ typedef struct Instruction3AC{
 //Register descriptor
 // eax = 0, ebx = 1, ecx = 2, edx = 3, esi = 4 , edi = 5
 
-SymtabEntry *reg_des[6] ; //array of pointers for register descriptor
+SymtabEntry *reg_des[16] ; //array of pointers for register descriptor
 
 //To store IL code 
 Instruction3AC *ir;
@@ -56,3 +56,4 @@ Instruction3AC *ir;
 void getReg(int i);
 int empty_reg(int i);
 void reg_alloc();
+void update(int i, int j);

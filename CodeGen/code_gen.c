@@ -232,8 +232,13 @@ int empty_reg(/*SymtabEntry* a,*/ int lineno)
         l = i;
       }
     }
+    if (reg_des[l] != NULL){
+    printf("movq %s %s\n",registers[l],reg_des[l]->lexeme);
+    reg_des[l]->add_des.reg_no =-1;
+    reg_des[l] = NULL;
+	}
     return l;
-  }
+}
 //}
 
 
