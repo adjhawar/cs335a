@@ -57,7 +57,7 @@ SymtabEntry* Insert(char* lex)
 
 int main(){
 	nline=0;
-	size=10;
+	size=20;
 	head=NULL;
 	tail=NULL;
 	FILE *fptr = fopen("IL_Program.csv","r");
@@ -269,7 +269,7 @@ int main(){
 			{
 				if (reg_des[j]!=NULL)
 				{
-					printf("\t movq %s %s\n",registers[j],reg_des[j]->lexeme);
+					printf("\t movq %s, %s\n",registers[j],reg_des[j]->lexeme);
     				reg_des[j]->add_des.reg_no =-1;
     				reg_des[j] = NULL;
 				}
