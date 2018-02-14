@@ -164,6 +164,20 @@ void getReg(int i)
 			printf("\t mov %s
 			else
 				//store edx in output}*/
+                if(ir[i].op==assgn_call)
+		{
+		    printf("\t call %s\n",ir[i].in2->lexeme);
+                    if(ir[i].out->add_des.reg_no==-1)
+                    {
+			printf("movq %s,%s\n",registers[0],ir[i].out->lexeme);
+			ir[i].out->add_des.reg_no = 0;
+                    }
+    		    else
+ 		    {
+ 			printf("movq %s,%s\n",registers[0],registers[ir[i].out->add_des.reg_no]);
+		    }
+		        
+		}
 	}
 	else if(ir[i].typ==call)
 		printf("\t call %s\n",ir[i].in1->lexeme);
@@ -197,8 +211,33 @@ void getReg(int i)
 		else if(ir[i].op==lt)
 			printf("\t jl L%d\n",ir[i].target);
 	}
-	else if(ir[i].typ==ret)
+	else if(ir[i].typ==ret){
 		printf("\t ret\n");
+		if(ir[i].in1!=NULL)
+                {
+		   if(reg_des[0]!=NULL)
+                     {
+                      printf("movq %s,%s\n",registers[0],reg_des[0]->lexeme);
+                      reg_des[0]->add_des.reg_no =-1;
+                      reg_des[0] = NULL;
+                      
+}
+if(strcmp(ir[i].in1->type,"const")!=0)
+{
+                if(ir[i].in1->add_des.reg_no==-1)
+{
+                printf("movq %s,%s\n",ir[i].in1->lexeme,registers[0]);
+ 		ir[i].in1->add_des.reg_no=0;
+}
+                else
+		printf("movq %s,%s\n",registers[ir[i].in1->add_des.reg_no],registers[0]);
+		}
+}
+else
+{
+printf("movq $%d,%s",atoi(ir[i].in1->lexeme),registers[0]);
+}
+        }
         else if(ir[i].typ==print)
         {
 	    printf("movq $str,%%rdi\n movq %s,%%rsi\n movq $0,%%rax\n",ir[i].in1->lexeme);

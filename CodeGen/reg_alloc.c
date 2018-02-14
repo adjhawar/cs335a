@@ -72,6 +72,7 @@ void reg_alloc(){
 		i = j;
 		j++;
 	}
+	update(4,4);
 	free(leaders);
 }
 

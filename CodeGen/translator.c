@@ -83,12 +83,17 @@ int main(){
 				i++;
 			}
 			char *key = strs[1];
-			ir[nline].label=false;
 			if(strcmp(key,"=")==0){
 				ir[nline].typ = Assignment;
 				ir[nline].op = assgn;
 				ir[nline].out = Insert(strs[2]);
 				ir[nline].in1 = Insert(strs[3]);
+                                if(strcmp(strs[3],"call")==0)
+				{
+				    ir[nline].in2 = Insert(strs[4]);
+				    strcpy(ir[nline].in2->type,"label");
+				    ir[nline].op = assgn_call;
+				}
 			}
 			else if(strcmp(key,"+")==0){
 				ir[nline].typ = Assignment;
@@ -154,6 +159,10 @@ int main(){
 			}
 			else if(strcmp(key,"ret")==0){
 				ir[nline].typ = ret;
+                                if(strs[2]!=NULL)
+                                {
+				   ir[nline].in1 = Insert(strs[2]);
+                                }
 			}
 			else if(strcmp(key,"call")==0){
 				ir[nline].typ = call;
@@ -216,7 +225,6 @@ int main(){
 				ir[nline].in2 = Insert(strs[4]);
 			}
 			nline = atoi(strs[0]);
-
 		}
 	}
 	SymtabEntry* temp=head;            // setting up data regions for global variables
