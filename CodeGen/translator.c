@@ -83,12 +83,17 @@ int main(){
 				i++;
 			}
 			char *key = strs[1];
-			ir[nline].label=false;
 			if(strcmp(key,"=")==0){
 				ir[nline].typ = Assignment;
 				ir[nline].op = assgn;
 				ir[nline].out = Insert(strs[2]);
 				ir[nline].in1 = Insert(strs[3]);
+                                if(strcmp(strs[3],"call")==0)
+				{
+				    ir[nline].in2 = Insert(strs[4]);
+				    strcpy(ir[nline].in2->type,"label");
+				    ir[nline].op = assgn_call;
+				}
 			}
 			else if(strcmp(key,"+")==0){
 				ir[nline].typ = Assignment;
@@ -154,6 +159,10 @@ int main(){
 			}
 			else if(strcmp(key,"ret")==0){
 				ir[nline].typ = ret;
+                                if(strs[2]!=NULL)
+                                {
+				   ir[nline].in1 = Insert(strs[2]);
+                                }
 			}
 			else if(strcmp(key,"call")==0){
 				ir[nline].typ = call;
@@ -216,10 +225,8 @@ int main(){
 				ir[nline].in2 = Insert(strs[4]);
 			}
 			nline = atoi(strs[0]);
-
 		}
 	}
-	//update(nline-1,0);
 	reg_alloc();
 	SymtabEntry* temp=head;            // setting up data regions for global variables
 	printf(".data\n");
@@ -227,21 +234,12 @@ int main(){
 	{
 		if(strcmp(temp->type,"const") && strcmp(temp->type, "label"))
 		{
-			printf("%s:  .quad  0\n",temp->lexeme/*, temp->liveness, temp->nextuse*/);
+			printf("%s:  .quad  0\n",temp->lexeme);
 		}
 		temp=temp->next;
 	}
         printf("str:   .string \"%%d \\n\"\n");   // for printf
         printf("str1:   .string \"%%d\"\n");      // for scanf  
-	
-	/*for (int i =0; i <nline; i++){
-		if(ir[i].typ==Assignment) printf("%s %d %d ",ir[i].out->lexeme, ir[i].out_liveness, ir[i].out_nextuse);
-		if(ir[i].typ != label && ir[i].typ != call && ir[i].typ != ret && strcmp(ir[i].in1->type,"const")) printf("%s %d %d ",ir[i].in1->lexeme, ir[i].in1_liveness, ir[i].in1_nextuse);
-		
-		if(ir[i].op != assgn && ir[i].typ != ret && ir[i].typ != call && ir[i].typ != label && ir[i].typ != print && ir[i].typ != scan && ir[i].op != neg && strcmp(ir[i].in2->type,"const"))
-			printf("%s %d %d ",ir[i].in2->lexeme, ir[i].in2_liveness, ir[i].in2_nextuse);
-		printf("\n");
-	}*/
 	printf(" .text\n .globl main \n main:\n");
 	for(int i=0;i<nline;i++)
 		getReg(i);
