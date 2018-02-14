@@ -42,7 +42,7 @@ void getReg(int i)
 		else if(ir[i].op==add)
 		{
 			if(ir[i].in1->add_des.reg_no==-1)
-			{        // add for constants  
+			{        //to do: add condition for constants  
 				r=empty_reg(i) ; //this function returns a empty registers
 				printf("\t movq %s,%s\n",ir[i].in1->lexeme,registers[r]);
 				ir[i].in1->add_des.reg_no=r;
@@ -201,8 +201,12 @@ void getReg(int i)
 		printf("\t ret\n");
         else if(ir[i].typ==print)
         {
-	    printf("movq $str,%rdi\n movq %s,%rsi\n movq $0,%rax\n",ir[i].in1->lexeme);
-            printf("pushq %r10 \n pushq %r11 \n CALL printf \n popq %r11 \n popq %r10 \n");	 
+	    printf("movq $str,%%rdi\n movq %s,%%rsi\n movq $0,%%rax\n",ir[i].in1->lexeme);
+            printf("pushq %%r10 \n pushq %%r11 \n CALL printf \n popq %%r11 \n popq %%r10 \n");	 
+        }
+        else if(ir[i].typ==scan)
+        {
+            printf("push %%rbp \n movq $0, %%rax  \n movq $str1, %%rdi  \n movq $%s, %%rsi  \n call scanf \n pop %%rbp\n",ir[i].in1->lexeme);
         }
 }
 

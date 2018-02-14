@@ -225,11 +225,12 @@ int main(){
 	{
 		if(strcmp(temp->type,"const") && strcmp(temp->type, "label"))
 		{
-			printf("%s:  quad  \n",temp->lexeme);
+			printf("%s:  .quad  0 \n",temp->lexeme);
 		}
 		temp=temp->next;
 	}
-        printf("str:   .string \" %%d \\n \" \n");
+        printf("str:   .string \"%%d \\n\"\n");   // for printf
+        printf("str1:   .string \"%%d\"\n");      // for scanf  
 	reg_alloc();
 	printf(" .text\n .globl main \n main:\n");
 	for(int i=0;i<nline;i++)
