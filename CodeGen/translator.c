@@ -7,7 +7,7 @@
 
 int nline, size;
 SymtabEntry *head,*tail;
-
+int *leaders;
 
 
 SymtabEntry* look_up(char *lex){
@@ -241,9 +241,23 @@ int main(){
         printf("str:   .string \"%%d \\n\"\n");   // for printf
         printf("str1:   .string \"%%d\"\n");      // for scanf  
 	printf(" .text\n .globl main \n main:\n");
-	for(int i=0;i<nline;i++)
+	int k =0;
+	for(int i=0;i<nline;i++){
+		if (leaders[i])
+		{
+			for (int j = 0; j < 14; j++)
+			{
+				if (reg_des[j]!=NULL)
+				{
+					printf("\t movq %s %s\n",registers[j],reg_des[j]->lexeme);
+    				reg_des[j]->add_des.reg_no =-1;
+    				reg_des[j] = NULL;
+				}
+			}
+		}
 		getReg(i);
+	}
 	free(ir);
 	free(head);
-
+	free(leaders);
 }

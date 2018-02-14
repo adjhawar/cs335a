@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include "global.h"
 int nline,size;
+int *leaders;
 SymtabEntry *head,*tail;
 
 // upadate liveness and nextuse of variables for a basic block
@@ -52,7 +53,7 @@ void update(int i, int j){
 }
 
 void reg_alloc(){
-	int *leaders = (int *) calloc(nline,sizeof(int));
+	leaders = (int *) calloc(nline,sizeof(int));
 	leaders[0] = 1;
 	for (int i=1; i<nline; i++){
 		if(ir[i].typ == label)
@@ -74,7 +75,6 @@ void reg_alloc(){
 		i = j-1;
 		j--;
 	}
-	update(4,4);
-	free(leaders);
+	//free(leaders);
 }
 
