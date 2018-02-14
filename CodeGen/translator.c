@@ -83,6 +83,26 @@ int main(){
 				i++;
 			}
 			char *key = strs[1];
+			if(strcmp(key,"=")==0 && strchr(strs[2],"[")){
+				char *temp;			
+				temp= strtok(strs[2], "[");
+				ir[nline].out = Insert(temp);
+				token = strtok(NULL, "[");
+				token = strtok(token,"]");
+				ir[nline].typ = Ind_Ass_1;
+				ir[nline].in2 = atoi(token);
+				ir[nline].in1 = Insert(strs[3]);
+			}
+			if(strcmp(key,"=")==0 && strchr(strs[3],"[")){
+				char *temp;			
+				temp= strtok(strs[3], "[");
+				ir[nline].in1 = Insert(temp);
+				token = strtok(NULL, "[");
+				token = strtok(token,"]");
+				ir[nline].typ = Ind_Ass_2;
+				ir[nline].in2 = atoi(token);
+				ir[nline].out = Insert(strs[2]);
+			}
 			if(strcmp(key,"=")==0){
 				ir[nline].typ = Assignment;
 				ir[nline].op = assgn;
