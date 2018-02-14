@@ -1,7 +1,14 @@
-1, =, a, 400
-2, =,d,4
-3, /,b,a,4
-4, print,b
-5, %,c,b,d
-6, print,c
-7, ret
+1, =, a, 14
+2, =, b, 8
+3, call, gcd
+4, print, b
+5, ret
+6, label, gcd
+7, %, r, a, b
+8, print,r
+9,ifgoto, eq, r, 0, 13
+10, =, a, b
+11, =, b, r
+12, call, gcd
+13, ret
+  
