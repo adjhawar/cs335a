@@ -27,6 +27,7 @@ typedef struct SymtabEntry{
 
 extern SymtabEntry *head;
 extern SymtabEntry *tail;
+extern int *leaders;
 
 //Data structure to hold 3ac instruction
 typedef struct Instruction3AC{
@@ -48,7 +49,9 @@ typedef struct Instruction3AC{
 //Register descriptor
 // eax = 0, ebx = 1, ecx = 2, edx = 3, esi = 4 , edi = 5
 
-SymtabEntry *reg_des[16] ; //array of pointers for register descriptor
+SymtabEntry *reg_des[14] ; //array of pointers for register descriptor
+
+char registers[14][5];
 
 //To store IL code 
 Instruction3AC *ir;
