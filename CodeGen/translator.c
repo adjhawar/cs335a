@@ -83,27 +83,29 @@ int main(){
 				i++;
 			}
 			char *key = strs[1];
-			if(strcmp(key,"=")==0 && strchr(strs[2],"[")){
+			if(strcmp(key,"=")==0 && strchr(strs[2],(int)'[')){
 				char *temp;			
 				temp= strtok(strs[2], "[");
 				ir[nline].out = Insert(temp);
-				token = strtok(NULL, "[");
-				token = strtok(token,"]");
+				temp = strtok(NULL, "[");
+				temp = strtok(temp,"]");
 				ir[nline].typ = Ind_Ass_1;
-				ir[nline].in2 = atoi(token);
+				ir[nline].in2 = Insert(temp);
 				ir[nline].in1 = Insert(strs[3]);
+				strcpy(ir[nline].out->type,"array");
 			}
-			if(strcmp(key,"=")==0 && strchr(strs[3],"[")){
-				char *temp;			
+			else if(strcmp(key,"=")==0 && strchr(strs[3],(int)'[')){
+				char *temp;
 				temp= strtok(strs[3], "[");
 				ir[nline].in1 = Insert(temp);
-				token = strtok(NULL, "[");
-				token = strtok(token,"]");
+				strcpy(ir[nline].in1->type,"array");
+				temp = strtok(NULL, "[");
+				temp = strtok(temp,"]");
 				ir[nline].typ = Ind_Ass_2;
-				ir[nline].in2 = atoi(token);
+				ir[nline].in2 = Insert(temp);
 				ir[nline].out = Insert(strs[2]);
 			}
-			if(strcmp(key,"=")==0){
+			else if(strcmp(key,"=")==0){
 				ir[nline].typ = Assignment;
 				ir[nline].op = assgn;
 				ir[nline].out = Insert(strs[2]);
@@ -179,10 +181,10 @@ int main(){
 			}
 			else if(strcmp(key,"ret")==0){
 				ir[nline].typ = ret;
-                                if(strs[2]!=NULL)
+                                if(i==3)
                                 {
 				   ir[nline].in1 = Insert(strs[2]);
-                                }
+				}
 			}
 			else if(strcmp(key,"call")==0){
 				ir[nline].typ = call;
@@ -237,13 +239,6 @@ int main(){
 				ir[nline].in1 = Insert(strs[3]);
 				ir[nline].in2 = Insert(strs[4]);
 			}
-			else if(strcmp(key,">>>")==0){
-				ir[nline].typ = Assignment;
-				ir[nline].op = zrsh;
-				ir[nline].out = Insert(strs[2]);
-				ir[nline].in1 = Insert(strs[3]);
-				ir[nline].in2 = Insert(strs[4]);
-			}
 			nline = atoi(strs[0]);
 		}
 	}
@@ -252,10 +247,10 @@ int main(){
 	printf(".data\n");
 	while(temp!=NULL)
 	{
-		if(strcmp(temp->type,"const") && strcmp(temp->type, "label"))
-		{
+		if(!strcmp(temp->type,"array"))
+			printf("%s:  .quad  0,0,0,0,0,0,0,0,0,0\n",temp->lexeme); 
+		else if(strcmp(temp->type,"const") && strcmp(temp->type, "label"))
 			printf("%s:  .quad  0\n",temp->lexeme);
-		}
 		temp=temp->next;
 	}
         printf("str:   .string \"%%d \\n\"\n");   // for printf

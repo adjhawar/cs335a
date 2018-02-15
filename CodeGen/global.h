@@ -2,7 +2,7 @@
 //global variables
 
 enum InstrType{ Assignment , Pointer , Ind_Ass_1 , Ind_Ass_2 , ifgoto , Goto , ret , call , label , print , scan};
-enum TACkeywords{add , sub , mul , divi , mod , gt , lt , ge , le , ne , eq , assgn ,  and, or , neg , rsh , lsh , zrsh ,assgn_call};
+enum TACkeywords{add , sub , mul , divi , mod , gt , lt , ge , le , ne , eq , assgn ,  and, or , neg , rsh , lsh ,assgn_call};
 
 extern int nline;
 extern int size;
@@ -44,6 +44,7 @@ typedef struct Instruction3AC{
 	int target; // jump target
 	enum TACkeywords op;
 	bool label;
+	int l;	//stores the index of the array
 } Instruction3AC;
 
 //Register descriptor
