@@ -282,7 +282,32 @@ void getReg(int i)
 				printf("movq %s,%s\n",registers[0],registers[ir[i].out->add_des.reg_no]);
 			}
 
-		}}
+		}
+		else if(ir[i].op==lsh){
+			r=empty_reg(i);
+			if(ir[i].in1->add_des.reg_no==-1)
+				printf("\t movq %s,%s\n",ir[i].in1->lexeme,registers[r]);
+			else
+				printf("\t movq %s,%s\n",registers[ir[i].in1->add_des.reg_no],registers[r]);
+			printf("\t shlq $%d,%s\n",atoi(ir[i].in2->lexeme),registers[r]);
+			if(ir[i].out->add_des.reg_no==-1)
+				printf("\t movq %s,%s\n",registers[r],ir[i].out->lexeme);
+			else
+				printf("\t movq %s,%s\n",registers[r],registers[ir[i].out->add_des.reg_no]);
+		}
+		else if(ir[i].op==rsh){
+			r=empty_reg(i);
+			if(ir[i].in1->add_des.reg_no==-1)
+				printf("\t movq %s,%s\n",ir[i].in1->lexeme,registers[r]);
+			else
+				printf("\t movq %s,%s\n",registers[ir[i].in1->add_des.reg_no],registers[r]);
+			printf("\t shrq $%d,%s\n",atoi(ir[i].in2->lexeme),registers[r]);
+			if(ir[i].out->add_des.reg_no==-1)
+				printf("\t movq %s,%s\n",registers[r],ir[i].out->lexeme);
+			else
+				printf("\t movq %s,%s\n",registers[r],registers[ir[i].out->add_des.reg_no]);
+		}
+	}
 	else if(ir[i].typ==call)
 		printf("\t call %s\n",ir[i].in1->lexeme);
 	else if(ir[i].typ==Goto)

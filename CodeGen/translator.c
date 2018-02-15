@@ -239,13 +239,6 @@ int main(){
 				ir[nline].in1 = Insert(strs[3]);
 				ir[nline].in2 = Insert(strs[4]);
 			}
-			else if(strcmp(key,">>>")==0){
-				ir[nline].typ = Assignment;
-				ir[nline].op = zrsh;
-				ir[nline].out = Insert(strs[2]);
-				ir[nline].in1 = Insert(strs[3]);
-				ir[nline].in2 = Insert(strs[4]);
-			}
 			nline = atoi(strs[0]);
 		}
 	}
