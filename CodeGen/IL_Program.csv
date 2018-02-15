@@ -1,10 +1,18 @@
-1, scan, a
-2, =, d, 1
-3, =, z, call,foo
-4,print,z
-5,ret
-6,label,foo
-7, * , d, d, a
-8, -, a, a, 1
-9, ifgoto, geq, a,2,7
-10,ret,d
+1, scan, n 
+2, =, b, 2
+3, =, a, 1
+4, call, prime
+5, print, n
+6, print, b
+7, print, a
+8, label, prime
+9, ifgoto, eq, b, n, 15
+10, %, a, n, b
+11, ifgoto, eq, a, 0, 15
+12, +, b, b, 1
+13, call, prime
+14, ret
+15, print, n
+16, print, b
+17, print, a
+18, ret
