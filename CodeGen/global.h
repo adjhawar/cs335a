@@ -44,6 +44,7 @@ typedef struct Instruction3AC{
 	int target; // jump target
 	enum TACkeywords op;
 	bool label;
+	int l;	//stores the index of the array
 } Instruction3AC;
 
 //Register descriptor
