@@ -205,14 +205,14 @@ int main(){
 				ir[nline].typ = scan;
 				ir[nline].in1 = Insert(strs[2]);
 			}
-			else if(strcmp(key,"&&")==0){
+			else if(strcmp(key,"&")==0){
 				ir[nline].typ = Assignment;
 				ir[nline].op = and;
 				ir[nline].out = Insert(strs[2]);
 				ir[nline].in1 = Insert(strs[3]);
 				ir[nline].in2 = Insert(strs[4]);
 			}
-			else if(strcmp(key,"||")==0){
+			else if(strcmp(key,"|")==0){
 				ir[nline].typ = Assignment;
 				ir[nline].op = or;
 				ir[nline].out = Insert(strs[2]);

@@ -19,31 +19,85 @@ void getReg(int i)
 			printf("\t movq $%s,%s\n",ir[i].out->lexeme,registers[r]);
 			reg_des[r]=ir[i].out;
 			ir[i].out->add_des.reg_no=r;}
-		if(strcmp(ir[i].in1->type,"const")==0)
-			printf("\tmovq $%d,%d(%s)\n",atoi(ir[i].in1->lexeme),atoi(ir[i].in2->lexeme)*8,registers[r]);
-		else if(ir[i].in1->add_des.reg_no!=-1)
-			printf("\tmovq %s,%d(%s)\n",registers[ir[i].in1->add_des.reg_no],atoi(ir[i].in2->lexeme)*8,registers[r]);
-		else{
-			int temp=empty_reg(i);
-			printf("\t movq %s,%s\n",ir[i].in1->lexeme,registers[temp]);
-			reg_des[temp]=ir[i].in1;
-			ir[i].in1->add_des.reg_no=temp;
-			printf("\t movq %s,%d(%s)\n",registers[temp],atoi(ir[i].in2->lexeme)*8,registers[r]);}
-	}
+		if(strcmp(ir[i].in2->type,"const")==0){
+			if(strcmp(ir[i].in1->type,"const")==0)
+				printf("\tmovq $%d,%d(%s)\n",atoi(ir[i].in1->lexeme),atoi(ir[i].in2->lexeme)*8,registers[r]);
+			else if(ir[i].in1->add_des.reg_no!=-1)
+				printf("\tmovq %s,%d(%s)\n",registers[ir[i].in1->add_des.reg_no],atoi(ir[i].in2->lexeme)*8,registers[r]);
+			else{
+				int temp=empty_reg(i);
+				printf("\t movq %s,%s\n",ir[i].in1->lexeme,registers[temp]);
+				reg_des[temp]=ir[i].in1;
+				ir[i].in1->add_des.reg_no=temp;
+				printf("\t movq %s,%d(%s)\n",registers[temp],atoi(ir[i].in2->lexeme)*8,registers[r]);}
+		}
+		else if(ir[i].in2->add_des.reg_no!=-1){
+			if(strcmp(ir[i].in1->type,"const")==0)
+				printf("\t movq $%d,(%s,%s,8)\n",atoi(ir[i].in1->lexeme),registers[r],registers[ir[i].in2->add_des.reg_no]);
+			else if(ir[i].in1->add_des.reg_no!=-1)
+				printf("\t movq %s,(%s,%s,8)\n",registers[ir[i].in1->add_des.reg_no],registers[r],registers[ir[i].in2->add_des.reg_no]);
+			else{
+				int temp=empty_reg(i);
+				printf("\t movq %s,%s\n",ir[i].in1->lexeme,registers[temp]);
+				reg_des[temp]=ir[i].in1;
+				ir[i].in1->add_des.reg_no=temp;
+				printf("\t movq $%s,(%s,%s,8)\n",registers[temp],registers[r],registers[ir[i].in2->add_des.reg_no]);
+			}}
+		else {
+			int temp1=empty_reg(i);
+			printf("\t movq %s,%s\n",ir[i].in2->lexeme,registers[temp1]);
+			reg_des[temp1]=ir[i].in2;
+			ir[i].in2->add_des.reg_no=temp1;
+			if(strcmp(ir[i].in1->type,"const")==0)
+				printf("\t movq $%d,(%s,%s,8)\n",atoi(ir[i].in1->lexeme),registers[r],registers[temp1]);
+			else if(ir[i].in1->add_des.reg_no!=-1)
+				printf("\t movq %s,(%s,%s,8)\n",registers[ir[i].in1->add_des.reg_no],registers[r],registers[temp1]);
+			else{
+				int temp=empty_reg(i);
+				printf("\t movq %s,%s\n",ir[i].in1->lexeme,registers[temp]);
+				reg_des[temp]=ir[i].in1;
+				ir[i].in1->add_des.reg_no=temp;
+				printf("\t movq $%s,(%s,%s,8)\n",registers[temp],registers[r],registers[temp1]);}
+		}}
 	else if(ir[i].typ==Ind_Ass_2){
 		if(ir[i].in1->add_des.reg_no==-1){
 			r=empty_reg(i);
 			printf("\t movq $%s,%s\n",ir[i].in1->lexeme,registers[r]);
 			reg_des[r]=ir[i].in1;
 			ir[i].out->add_des.reg_no=r;}
-		if(ir[i].out->add_des.reg_no!=-1)
-			printf("\tmovq %d(%s),%s\n",atoi(ir[i].in2->lexeme)*8,registers[r],registers[ir[i].out->add_des.reg_no]);
+		if(strcmp(ir[i].in2->type,"const")==0){
+			if(ir[i].out->add_des.reg_no!=-1)
+				printf("\tmovq %d(%s),%s\n",atoi(ir[i].in2->lexeme)*8,registers[r],registers[ir[i].out->add_des.reg_no]);
+			else{
+				int temp=empty_reg(i);
+				printf("\t movq %s,%s\n",ir[i].out->lexeme,registers[temp]);
+				reg_des[temp]=ir[i].out;
+				ir[i].out->add_des.reg_no=temp;
+				printf("\t movq %d(%s),%s\n",atoi(ir[i].in2->lexeme)*8,registers[r],registers[temp]);}
+		}
+		else if(ir[i].in2->add_des.reg_no!=-1){
+			if(ir[i].out->add_des.reg_no!=-1)
+				printf("\tmovq (%s,%s,8),%s\n",registers[r],registers[ir[i].in2->add_des.reg_no],registers[ir[i].out->add_des.reg_no]);
+			else{
+				int temp=empty_reg(i);
+				printf("\t movq %s,%s\n",ir[i].out->lexeme,registers[temp]);
+				reg_des[temp]=ir[i].out;
+				ir[i].out->add_des.reg_no=temp;
+				printf("\tmovq (%s,%s,8),%s\n",registers[r],registers[ir[i].in2->add_des.reg_no],registers[ir[i].out->add_des.reg_no]);
+			}}
 		else{
-			int temp=empty_reg(i);
-			printf("\t movq %s,%s\n",ir[i].out->lexeme,registers[temp]);
-			reg_des[temp]=ir[i].out;
-			ir[i].out->add_des.reg_no=temp;
-			printf("\t movq %d(%s),%s\n",atoi(ir[i].in2->lexeme)*8,registers[r],registers[temp]);}
+			int temp1=empty_reg(i);
+			printf("\t movq %s,%s\n",ir[i].in2->lexeme,registers[temp1]);
+			reg_des[temp1]=ir[i].in2;
+			ir[i].in2->add_des.reg_no=temp1;
+			if(ir[i].out->add_des.reg_no!=-1)
+				printf("\tmovq (%s,%s,8),%s\n",registers[r],registers[temp1],registers[ir[i].out->add_des.reg_no]);
+			else{
+				int temp=empty_reg(i);
+				printf("\t movq %s,%s\n",ir[i].out->lexeme,registers[temp]);
+				reg_des[temp]=ir[i].out;
+				ir[i].out->add_des.reg_no=temp;
+				printf("\tmovq (%s,%s,8),%s\n",registers[r],registers[temp1],registers[ir[i].out->add_des.reg_no]);}}
 		printf("\t movq %s,%s\n",registers[ir[i].out->add_des.reg_no],ir[i].out->lexeme);
 	}
 	else if(ir[i].typ==Assignment)
@@ -364,7 +418,7 @@ void getReg(int i)
 			else
 				printf("movq $%d,%s",atoi(ir[i].in1->lexeme),registers[0]);
 		}}
-        else if(ir[i].typ==print)
+	else if(ir[i].typ==print)
 	{
 		if(reg_des[5]){
 			printf("movq %%rdi,%s\n",reg_des[5]->lexeme);
@@ -384,7 +438,7 @@ void getReg(int i)
 		printf("movq $str,%%rdi\n movq %s,%%rsi\n movq $0,%%rax\n",ir[i].in1->lexeme);
 		printf("pushq %%r10 \n pushq %%r11 \n call printf \n popq %%r11 \n popq %%r10 \n");	 
 	}
-        else if(ir[i].typ==scan)
+	else if(ir[i].typ==scan)
 	{
 		if(reg_des[0]){
 			printf("movq %%rax,%s\n",reg_des[0]->lexeme);
