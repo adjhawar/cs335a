@@ -1,8 +1,10 @@
 %{
 void yyerror (char *s);
+extern int yylex();
+extern int yyparse();
+extern FILE *yyin;
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 %}
 
 %union{
@@ -482,3 +484,21 @@ array_access	: expr_name ARRAY_S expr ARRAY_E
 		;
 
 %%
+
+int main(int argc, char** argv){
+	FILE *fptr = fopen(argv[1], 'r');
+	if(argc==2 && fptr!=NULL){
+		yyin = fptr;
+	}
+	else{
+		printf("Error in opening file \n . Aborting....");
+		exit(0);
+	}
+	while(!feof(yyin)){
+		yyparse();
+	}
+}
+
+void yyerror(char *s) {
+	fprintf (stderr, "%s\n", s);
+} 
