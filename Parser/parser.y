@@ -28,6 +28,7 @@ void yyerror (char *s);
 %token INT_LIT_D INT_LIT_O INT_LIT_H FLOAT_LIT CHAR_LIT STR_LIT
 %token ERROR IGN
 %token PRINT SCAN OP_NEG STRING
+%token EXTENDS
 
 /*%type*/
 
@@ -55,7 +56,7 @@ super_e			: supers
 			| /* empty */
 			;
 
-supers			: extends class_type
+supers			: EXTENDS class_tye
 			;
 
 class_body		: class_body_decl_e
@@ -381,7 +382,7 @@ rel_expr	: shift_expr
 		| rel_expr OP_GRE shift_expr
 		| rel_expr OP_LEQ shift_expr
 		| rel_expr OP_GEQ shift_expr
-		| rel_expr instanceof reference_type
+		| rel_expr INSTANCEOF reference_type
 		;
 
 shift_expr	: add_expr
