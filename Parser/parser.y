@@ -469,8 +469,8 @@ argument_list	: expr
 		| argument_list SEP expr
 		;
 
-array_creat_expr	: new primitive_type dim_expr
-			| new class_type dim_expr
+array_creat_expr	: NEW primitive_type dim_expr
+			| NEW class_type dim_expr
 			;
 
 dim_expr	: ARRAY_S expr ARRAY_E
