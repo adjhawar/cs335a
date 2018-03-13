@@ -1,27 +1,14 @@
 %{
+void yyerror (char *s);
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
-
-void yyerror (char *s){
-	fprintf(stderr,"Error: %s\n",s);
-	}
-
-int yywrap(){
-	return 1;
-	}
-
-void main(){
-	yyparse();
-}
-
 %}
 
 %union{
 	int ival;
-	char ch;
+	char *sval;
 	float fval;
-	bool bval;	
 }
 
 %start compilation_unit
@@ -34,16 +21,15 @@ void main(){
 %token CONST
 %token ID SEP TRM COLON
 %token ARRAY_S ARRAY_E BLOCK_S BLOCK_E PAREN_S PAREN_E
-%token OP_ASS OP_ADD_ASS OP_SUB_ASS OP_DIV_ASS OP_MUL_ASS OP_MOD_ASS OP_LSH_ASS OP_RSH_ASS OP_AND_ASS OP_XOR_ASS OP_ZRSH_ASS
+%token OP_ASS OP_ADD_ASS OP_SUB_ASS OP_DIV_ASS OP_MUL_ASS OP_MOD_ASS OP_LSH_ASS OP_RSH_ASS OP_AND_ASS OP_OR_ASS OP_XOR_ASS OP_ZRSH_ASS
 %token OP_CON_Q OP_CON_AND OP_CON_OR
 %token OP_OR OP_XOR OP_AND OP_EQ OP_NEQ OP_GRE OP_LES OP_GEQ OP_LEQ
 %token OP_RSH OP_LSH OP_ADD OP_SUB OP_MUL OP_DIV OP_MOD OP_INC OP_DEC OP_DOT OP_ZRSH
 %token INT_LIT_D INT_LIT_O INT_LIT_H FLOAT_LIT CHAR_LIT STR_LIT
 %token ERROR IGN
 %token PRINT SCAN OP_NEG STRING
-%token EXTENDS
 
-%type
+/*%type*/
 
 %%
 
@@ -59,17 +45,17 @@ type_declarations	: type_declaration
 			;
 
 type_declaration	: class_declaration
-			| TRM
+			|  TRM
 			;
 
-class_declaration	: class identifier super_e class_body
+class_declaration	: CLASS identifier super_e class_body
 			;
 
 super_e			: supers
 			| /* empty */
 			;
 
-supers			: EXTENDS class_type
+supers			: extends class_type
 			;
 
 class_body		: class_body_decl_e
@@ -119,7 +105,7 @@ explicit_const_invo	: THIS PAREN_S arg_list_e PAREN_E
 			| SUPER PAREN_S arg_list_e PAREN_E
 			;
 
-field_decl		: type var_declarators TRM
+field_decl		: type var_declarators  TRM
 			;
 
 var_declarators		: var_declarator
@@ -130,7 +116,7 @@ var_declarator		: var_decl_id
 			| var_decl_id OP_ASS var_init
 			;
 
-var_decl_id		: idenitifier
+var_decl_id		: ID
 			| var_decl_id ARRAY_S ARRAY_E
 			;
 
@@ -152,10 +138,10 @@ method_declarator	: ID PAREN_S formal_para_list_e PAREN_E
 			;
 
 method_body		: block
-			| TRM
+			|  TRM
 			;
 
-constant_decl		: final type var_declarator
+constant_decl		: CONST type var_declarator
 			;
 
 var_init_e		: var_inits
@@ -167,14 +153,13 @@ var_inits		: var_init
 			;
 
 var_init		: expr
-			;
 
 type		: primitive_type
 		| reference_type
 		;
 
 primitive_type  : numeric_type
-		| BOOL
+		| boolean
 		;
 
 numeric_type	: integer_type
@@ -211,7 +196,7 @@ block_statement	: loc_var_dec_st
 		| statement
 		;
 
-loc_var_dec_st	: loc_var_dec TRM
+loc_var_dec_st	: loc_var_dec  TRM
 		;
 
 loc_var_dec	: type var_declarators
@@ -240,10 +225,10 @@ st_wo_tsub	: block
 		| return_st
 		;
 
-empty_st	: TRM
+empty_st	:  TRM
 		;
 
-expr_st		: st_expr TRM
+expr_st		: st_expr  TRM
 		;
 
 st_expr		: assignment
@@ -293,16 +278,16 @@ switch_label	: CASE const_expr COLON
 while_st	: WHILE PAREN_S expr PAREN_E statement
 		;
 
-while_st_no_short_if	: WHILE PAREN_S expr PAREN_S st_no_short_if
+while_st_no_short_if	: WHILE PAREN_S expr PAREN_E st_no_short_if
 			;
 
-do_st		: DO statement WHILE PAREN_S expr PAREN_E TRM
+do_st		: DO statement WHILE PAREN_S expr PAREN_E  TRM
 		;
 
-for_st		: FOR PAREN_S for_init_e TRM expr_e TRM for_update_e TRM PAREN_E statement
+for_st		: FOR PAREN_S for_init_e  TRM expr_e  TRM for_update_e  TRM PAREN_E statement
 		;
 
-for_st_no_short_if	: FOR PAREN_S for_init_e TRM expr_e TRM for_update_e TRM PAREN_E st_no_short_if
+for_st_no_short_if	: FOR PAREN_S for_init_e  TRM expr_e  TRM for_update_e  TRM PAREN_E st_no_short_if
 		;
 
 for_init_e	: for_init
@@ -328,13 +313,13 @@ st_expr_list	: st_expr
 		| st_expr_list SEP st_expr
 		;
 
-break_st	: BREAK TRM
+break_st	: BREAK  TRM
 		;
 
-continue_st	: CONT TRM
+continue_st	: CONT  TRM
 		;
 
-return_st	: RETURN expr_e TRM
+return_st	: RETURN expr_e  TRM
 		;
 
 expr		: cond_expr
@@ -368,7 +353,7 @@ cond_expr	: cond_or_expr
 		;
 
 cond_or_expr	: cond_and_expr
-		| cond_or_expr OP_CON_OR  cond_and_expr
+		| cond_or_expr OP_CON_OR cond_and_expr
 		;
 
 cond_and_expr	: incl_or_expr
@@ -396,7 +381,7 @@ rel_expr	: shift_expr
 		| rel_expr OP_GRE shift_expr
 		| rel_expr OP_LEQ shift_expr
 		| rel_expr OP_GEQ shift_expr
-		| rel_expr INSTANCEOF reference_type
+		| rel_expr instanceof reference_type
 		;
 
 shift_expr	: add_expr
@@ -427,10 +412,10 @@ unary_expr	: preinc_expr
 		| unary_expr_not_plus_minus
 		;
 
-preinc_expr	: OP_ADD OP_ADD unary_expr
+preinc_expr	: OP_INC unary_expr
 		;
 
-predec_expr	: OP_SUB OP_SUB unary_expr
+predec_expr	: OP_DEC unary_expr
 		;
 
 unary_expr_not_plus_minus	: postfix_expr
@@ -439,10 +424,10 @@ unary_expr_not_plus_minus	: postfix_expr
 				| cast_expr
 				;
 
-postdec_expr	: postfix_expr OP_SUB OP_SUB
+postdec_expr	: postfix_expr OP_DEC
 		;
 
-postinc_expr	: postinc_expr OP_ADD OP_ADD
+postinc_expr	: postinc_expr OP_INC
 		;
 
 postfix_expr	: primary
@@ -452,12 +437,12 @@ postfix_expr	: primary
 		;
 
 method_invo	: method_name PAREN_S arg_list_e PAREN_E 
-		| primary OP_DOT identifier PAREN_S arg_list_e PAREN_E
-		| super OP_DOT identifier PAREN_S arg_list_e PAREN_E
+		| primary OP_DOT ID PAREN_S arg_list_e PAREN_E
+		| SUPER OP_DOT ID PAREN_S arg_list_e PAREN_E
 		;
 
 field_access	: primary OP_DOT ID
-		| super OP_DOT ID
+		| SUPER OP_DOT ID
 		;
 
 primary		: primary_no_new_array
@@ -493,7 +478,8 @@ dim_expr	: ARRAY_S expr ARRAY_E
 		;
 
 array_access	: expr_name ARRAY_S expr ARRAY_E
-		| primary_no_new_array ARRAY_E expr ARRAY_S
+		| primary_no_new_array ARRAY_S expr ARRAY_E
 		;
 
 %%
+
