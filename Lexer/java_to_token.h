@@ -110,3 +110,4 @@
 #define SCAN		81
 #define OP_NEG		82
 #define STRING		83
+#define COMMENT		84
