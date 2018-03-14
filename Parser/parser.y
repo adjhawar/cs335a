@@ -5,6 +5,7 @@ extern int yyparse();
 extern FILE *yyin;
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 int maxsize = 10;
 
@@ -13,7 +14,8 @@ struct Stack{
     int* array;
 };
 
-struct Stack* createStack(){
+struct 
+struct Stack* createIntStack(){
     struct Stack* stack = (struct Stack*) malloc(sizeof(struct Stack));
     stack->maxsize = maxsize;
     stack->size = -1;
@@ -41,6 +43,25 @@ int pop(struct Stack* stack){
     if (isEmpty(stack))
         return INT_MIN;
     return stack->array[stack->size--];
+}
+ 
+struct Stack *s1 = createIntStack();
+struct Stack *s2 = createIntStack();
+
+char *find1(int k){
+	char *str;
+	switch(k){
+	case 1: strcpy(str, "compilation_unit");
+
+	}
+}
+
+char *find2(int k){
+	char *str;
+	switch(k){
+	case 1: strcpy(str, "type_declarations_e");
+	
+	}
 }
 %}
 
@@ -73,7 +94,7 @@ int pop(struct Stack* stack){
 
 %%
 
-compilation_unit	: type_declarations_e
+compilation_unit	: type_declarations_e {push(s1,1);push(s2,1);}
 			;
 
 type_declarations_e	: type_declarations
