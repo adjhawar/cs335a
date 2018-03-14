@@ -493,6 +493,8 @@ literal			: int_literal
 			| FLOAT_LIT
 			| CHAR_LIT
 			| STR_LIT
+			| T
+			| F
 			| N
 			;
 
