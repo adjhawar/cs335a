@@ -9,6 +9,7 @@ int yylineno;
 "new"			return NEW;
 "super"			return SUPER;
 "this"			return THIS;
+"extends"		return EXTENDS;
 
 "boolean"		return BOOL;
 "byte"			return BYTE;
@@ -39,8 +40,9 @@ int yylineno;
 
 "print"			return PRINT;
 "scan"			return SCAN;
-[\/][\/].*			return COMMENT;
+[\/][\/].*		return COMMENT;
 
+(([a-zA-Z$][a-zA-Z0-9_]*)|(_[a-zA-Z0-9_]+))/([\s]*[{])	return CID;
 ([a-zA-Z$][a-zA-Z0-9_]*)|(_[a-zA-Z0-9_]+)	return ID;
 ;			return TRM;
 ,			return SEP;
