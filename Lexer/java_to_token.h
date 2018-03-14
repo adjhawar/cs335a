@@ -111,3 +111,6 @@
 #define OP_NEG		82
 #define STRING		83
 #define COMMENT		84
+
+#define EXTENDS		85
+#define CID		86
