@@ -21,7 +21,7 @@ extern FILE *yyin;
 %token CONT DO FOR WHILE
 %token RETURN
 %token CONST
-%token ID SEP TRM COLON
+%token CID ID SEP TRM COLON
 %token ARRAY_S ARRAY_E BLOCK_S BLOCK_E PAREN_S PAREN_E
 %token OP_ASS OP_ADD_ASS OP_SUB_ASS OP_DIV_ASS OP_MUL_ASS OP_MOD_ASS OP_LSH_ASS OP_RSH_ASS OP_AND_ASS OP_OR_ASS OP_XOR_ASS OP_ZRSH_ASS
 %token OP_CON_Q OP_CON_AND OP_CON_OR
@@ -48,10 +48,10 @@ type_declarations	: type_declaration
 			;
 
 type_declaration	: class_declaration
-			|  TRM
+			| TRM
 			;
 
-class_declaration	: CLASS ID super_e class_body
+class_declaration	: CLASS CID super_e class_body
 			;
 
 super_e			: supers
@@ -323,7 +323,7 @@ expr		: cond_expr
 assgn		: lhs assgn_op expr
 		;
 
-lhs		: expr_name
+lhs		: name
 		| field_access
 		| array_access
 		;
@@ -424,12 +424,12 @@ postinc_expr	: postfix_expr OP_INC
 		;
 
 postfix_expr	: primary
-		| expr_name
+		| name
 		| postinc_expr
 		| postdec_expr
 		;
 
-method_invo	: method_name PAREN_S arg_list_e PAREN_E 
+method_invo	: name PAREN_S arg_list_e PAREN_E 
 		| primary OP_DOT ID PAREN_S arg_list_e PAREN_E
 		| SUPER OP_DOT ID PAREN_S arg_list_e PAREN_E
 		;
@@ -470,23 +470,15 @@ dim_expr	: ARRAY_S expr ARRAY_E
 		| ARRAY_S ARRAY_E
 		;
 
-array_access	: expr_name ARRAY_S expr ARRAY_E
+array_access	: name ARRAY_S expr ARRAY_E
 		| primary_no_new_array ARRAY_S expr ARRAY_E
 		;
 
-type_name		: ID
+type_name		: CID
 			;
 
-expr_name		: ID
-			| ambiguous_name OP_DOT ID
-			;
-
-method_name		: ID
-			| ambiguous_name OP_DOT ID
-			;
-
-ambiguous_name		: ID
-			| ambiguous_name OP_DOT ID
+name			: ID
+			| name OP_DOT ID
 			;
 
 literal			: int_literal
