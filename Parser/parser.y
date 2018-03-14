@@ -5,6 +5,43 @@ extern int yyparse();
 extern FILE *yyin;
 #include <stdio.h>
 #include <stdlib.h>
+
+int maxsize = 10;
+
+struct Stack{
+    int size;
+    int* array;
+};
+
+struct Stack* createStack(){
+    struct Stack* stack = (struct Stack*) malloc(sizeof(struct Stack));
+    stack->maxsize = maxsize;
+    stack->size = -1;
+    stack->array = (int*) malloc(stack->maxsize * sizeof(int));
+    return stack;
+}
+
+int isFull(struct Stack* stack){
+   return stack->size == stack->maxsize - 1; 
+}
+ 
+int isEmpty(struct Stack* stack){
+   return stack->size == -1;
+}
+
+void push(struct Stack* stack, int item){
+    if (isFull(stack)){
+    	maxsize = 2 * maxsize;
+        array = realloc(array, maxsize * sizeof(int));
+    }
+    stack->array[++stack->size] = item;
+}
+
+int pop(struct Stack* stack){
+    if (isEmpty(stack))
+        return INT_MIN;
+    return stack->array[stack->size--];
+}
 %}
 
 %union{
