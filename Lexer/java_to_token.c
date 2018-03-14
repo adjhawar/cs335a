@@ -6,6 +6,7 @@
 extern int yylex();
 extern int yylineno;
 extern char* yytext;
+extern FILE* yyin;
 
 struct category {
 		char* lexeme ;
@@ -48,15 +49,19 @@ void Print_lex(struct category *head)
 
 }
 
-int main(void){
+int main(int argc, char* argv[]){
+	FILE *fh;
 
-	int ntoken,vtoken, occur[83]={0};
+    	if (argc == 2 && (fh = fopen(argv[1], "r")))
+        		yyin = fh;
+        		
+	int ntoken,vtoken, occur[87]={0};
 
-	struct category *Id=NULL, *Lit_d=NULL,*Lit_o=NULL,*Lit_h=NULL,*Flo=NULL,*Cha=NULL,*Str=NULL,*Err=NULL;
-	char tokens[84][15] = {"null", "CLASS" , "INSTANCEOF" , "NEW", "SUPER", "THIS", "BOOL", "BYTE" ,"CHAR", "TRUE" , "FLOAT", "INT", "FALSE", "NULL", "VOID", "BREAK", "CASE", "DEFAULT", "ELSE", "IF", "SWITCH", "CONT", "DO", "FOR", "WHILE", "RETURN", "CONST", "ID", "SEP", "TRM", "COLON", "ARRAY_S", "ARRAY_E", "BLOCK_S", "BLOCK_E", "PAREN_S", "PAREN_E", "OPP_ASS", "OPP_ADD_ASS", "OP_SUB_ASS", "OP_DIV_ASS", "OP_MUL_ASS", "OP_MOD_ASS", "OP_LSH_ASS", "OP_RSH_ASS", "OP_AND_ASS", "OP_OR_ASS", "OP_XOR_ASS", "OP_ZRSH_ASS", "OP_CON_Q", "OP_CON_AND", "OP_CON_OR", "OP_OR", "OP_XOR", "OP_AND", "OP_EQ", "OP_NEQ", "OP_GRE", "OP_LES", "OP_GEQ", "OP_LEQ", "OP_RSH", "OP_LSH", "OP_ADD", "OP_SUB", "OP_MUL","OP_DIV","OP_MOD","OP_INC","OP_DEC","OP_DOT","OP_ZRSH","INT_LIT_D","INT_LIT_O","INT_LIT_H","FLOAT_LIT","CHAR_LIT","STR_LIT","ERROR","IGN","PRINT","SCAN","OP_NEG","STRING"} ;
+	struct category *Id=NULL, *Lit_d=NULL,*Lit_o=NULL,*Lit_h=NULL,*Flo=NULL,*Cha=NULL,*Str=NULL, *comm = NULL, *cid=NULL;
+	char tokens[87][15] = {"null", "CLASS" , "INSTANCEOF" , "NEW", "SUPER", "THIS", "BOOL", "BYTE" ,"CHAR", "TRUE" , "FLOAT", "INT", "FALSE", "NULL", "VOID", "BREAK", "CASE", "DEFAULT", "ELSE", "IF", "SWITCH", "CONT", "DO", "FOR", "WHILE", "RETURN", "CONST", "ID", "SEP", "TRM", "COLON", "ARRAY_S", "ARRAY_E", "BLOCK_S", "BLOCK_E", "PAREN_S", "PAREN_E", "OPP_ASS", "OPP_ADD_ASS", "OP_SUB_ASS", "OP_DIV_ASS", "OP_MUL_ASS", "OP_MOD_ASS", "OP_LSH_ASS", "OP_RSH_ASS", "OP_AND_ASS", "OP_OR_ASS", "OP_XOR_ASS", "OP_ZRSH_ASS", "OP_CON_Q", "OP_CON_AND", "OP_CON_OR", "OP_OR", "OP_XOR", "OP_AND", "OP_EQ", "OP_NEQ", "OP_GRE", "OP_LES", "OP_GEQ", "OP_LEQ", "OP_RSH", "OP_LSH", "OP_ADD", "OP_SUB", "OP_MUL","OP_DIV","OP_MOD","OP_INC","OP_DEC","OP_DOT","OP_ZRSH","INT_LIT_D","INT_LIT_O","INT_LIT_H","FLOAT_LIT","CHAR_LIT","STR_LIT","ERROR","IGN","PRINT","SCAN","OP_NEG","STRING","COMMENT","EXTENDS","CID"} ;
 
 
-	char lexeme[84][15] = {"","class", "instanceof", "new" , "super" , "this", "boolean", "byte", "char", "true","float","int","false","null","void","break","case","default","else","if","switch","continue","do","for","while","return","final","",",",";",":","[","]","{","}","(",")","=","+=","-=","/=","*=","%=","<<=",">>=","&=","=","^=",">>>=","?","&&","||","|","^","&","==","=",">","<",">=","<=",">>","<<","+","-","*","/","%","++","--",".",">>>","","","","","","","","","print","scan","!","string"};
+	char lexeme[87][15] = {"","class", "instanceof", "new" , "super" , "this", "boolean", "byte", "char", "true","float","int","false","null","void","break","case","default","else","if","switch","continue","do","for","while","return","final","",",",";",":","[","]","{","}","(",")","=","+=","-=","/=","*=","%=","<<=",">>=","&=","=","^=",">>>=","?","&&","||","|","^","&","==","=",">","<",">=","<=",">>","<<","+","-","*","/","%","++","--",".",">>>","","","","","","","","","print","scan","!","String","","extends",""};
 	ntoken=yylex();
 	while(ntoken){
 		if(lexeme[ntoken][0]=='\0') {
@@ -69,7 +74,9 @@ int main(void){
 				case 75 : Flo=add(Flo,&occur[ntoken]);break;
 				case 76 : Cha=add(Cha,&occur[ntoken]);break;
 				case 77 : Str=add(Str,&occur[ntoken]);break;
-				case 78 : Err=add(Err,&occur[ntoken]);break;
+				case 78 : printf("Error on line %d : %s\n",yylineno,yytext);break;
+				case 84 : comm = add(comm,&occur[ntoken]); break;
+				case 86	: cid=add(cid,&occur[ntoken]); break;
 				default : ;
 			}
 			//printf("%s hello\n",yytext);
@@ -79,7 +86,7 @@ int main(void){
 		ntoken=yylex();
 	}
         printf("Tokens \t    Occurrances       Lexemes \n"); 
-	for(int i=1;i<84 ; i++)
+	for(int i=1;i<87 ; i++)
 	{
 		if(occur[i]>0)
 		{
@@ -96,8 +103,8 @@ int main(void){
 					case 75 : Print_lex(Flo);break;
 					case 76 : Print_lex(Cha);break;
 					case 77 : Print_lex(Str);break;
-					case 78	: Print_lex(Err);break;
-					case 79 :	
+					case 84 : Print_lex(comm); break;	
+					case 86	: Print_lex(cid); break;
 					default : ;
 				}
 			}
@@ -109,6 +116,7 @@ int main(void){
 
 		}
 	}     
+	    fclose(yyin);
 	return 0;
 }
 

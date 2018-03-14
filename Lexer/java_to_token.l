@@ -1,5 +1,6 @@
 %{
 #include "java_to_token.h"
+int yylineno;
 %}
 
 %%
@@ -8,6 +9,7 @@
 "new"			return NEW;
 "super"			return SUPER;
 "this"			return THIS;
+"extends"		return EXTENDS;
 
 "boolean"		return BOOL;
 "byte"			return BYTE;
@@ -17,7 +19,7 @@
 "int"			return INT;
 "false"			return F;
 "null"			return N;
-"string"		return STRING;
+"String"		return STRING;
 "void"			return VOID;
 
 "break"			return BREAK;
@@ -38,8 +40,10 @@
 
 "print"			return PRINT;
 "scan"			return SCAN;
+[\/][\/].*		return COMMENT;
 
-[a-zA-Z_$][a-zA-Z0-9_]*	return ID;
+(([a-zA-Z$][a-zA-Z0-9_]*)|(_[a-zA-Z0-9_]+))/([\s]*[{])	return CID;
+([a-zA-Z$][a-zA-Z0-9_]*)|(_[a-zA-Z0-9_]+)	return ID;
 ;			return TRM;
 ,			return SEP;
 :			return COLON;
@@ -79,7 +83,6 @@
 [<]			return OP_LES;
 !			return OP_NEG;
 
-
 ">>"			return OP_RSH;
 "<<"			return OP_LSH;
 [+]			return OP_ADD;
@@ -92,15 +95,16 @@
 \.			return OP_DOT;
 ">>>"			return OP_ZRSH;
 
-\"([\\][\"]|[^"])*\"    return STR_LIT;
+\"([\\][\"]|[^\"\n])*\"    return STR_LIT;
 \'[\\]?.[\']		return CHAR_LIT;
-\'.|\"[^"]*		return ERROR;
+\'.|\"[^\"\n]*		return ERROR;
 [0-9]*[.][0-9]+([eE][+-]?[0-9]+)?		return FLOAT_LIT;
 [0][xX][0-9a-fA-F]+	return INT_LIT_H;
 [0][0-7]+		return INT_LIT_O;
 [0-9]+			return INT_LIT_D;
 
-[\n\t\r\f]|" "		return IGN;
+\n			{yylineno++;return IGN;}
+[\t\r\f]|" "		return IGN;
 .			return ERROR;
 
 
