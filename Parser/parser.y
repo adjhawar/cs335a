@@ -51,17 +51,17 @@ type_declaration	: class_declaration
 			|  TRM
 			;
 
-class_declaration	: CLASS identifier super_e class_body
+class_declaration	: CLASS ID super_e class_body
 			;
 
 super_e			: supers
 			| /* empty */
 			;
 
-supers			: EXTENDS class_tye
+supers			: EXTENDS class_type
 			;
 
-class_body		: class_body_decl_e
+class_body		: BLOCK_S class_body_decl_e BLOCK_E
 			;
 
 class_body_decl_e	: class_body_decls
@@ -83,7 +83,7 @@ class_mem_decl		: field_decl
 const_decl		: const_declarator const_body
 			;
 
-const_declarator	: simple_type_name PAREN_S formal_para_list_e PAREN_E
+const_declarator	: type_name PAREN_S formal_para_list_e PAREN_E
 			;
 
 formal_para_list_e	: formal_para_list
@@ -94,10 +94,10 @@ formal_para_list	: formal_para
 			| formal_para_list SEP formal_para
 			;
 
-formal_para		: type var_dec_id
+formal_para		: type var_decl_id
 			;
 
-const_body		: explicit_const_invo_e	bl_statements_e
+const_body		: BLOCK_S explicit_const_invo_e	bl_statements_e BLOCK_E
 			;
 
 explicit_const_invo_e	: explicit_const_invo
@@ -141,10 +141,14 @@ method_declarator	: ID PAREN_S formal_para_list_e PAREN_E
 			;
 
 method_body		: block
-			|  TRM
+			| TRM
 			;
 
-constant_decl		: CONST type var_declarator
+array_init		: BLOCK_S var_init_e sep_e BLOCK_E
+			;
+
+sep_e			: SEP
+			| /* empty */
 			;
 
 var_init_e		: var_inits
@@ -156,13 +160,15 @@ var_inits		: var_init
 			;
 
 var_init		: expr
+			| array_init
+			;
 
 type		: primitive_type
 		| reference_type
 		;
 
 primitive_type  : numeric_type
-		| boolean
+		| BOOL
 		;
 
 numeric_type	: integer_type
@@ -184,10 +190,10 @@ class_type	: type_name
 array_type	: type ARRAY_S ARRAY_E
 		;
 
-block		: bl_statements_e
+block		: BLOCK_S bl_statements_e BLOCK_E
 		;
 
-bl_statements_e	: block_statements
+bl_statements_e	: bl_statements
 		| /* empty */
 		;
 
@@ -234,7 +240,7 @@ empty_st	:  TRM
 expr_st		: st_expr  TRM
 		;
 
-st_expr		: assignment
+st_expr		: assgn
 		| preinc_expr
 		| postinc_expr
 		| predec_expr
@@ -255,8 +261,7 @@ if_then_else_no_short_if_st	: IF PAREN_S expr PAREN_E st_no_short_if ELSE st_no_
 switch_st	: SWITCH PAREN_S expr PAREN_E switch_block
 		;
 
-switch_block	: switch_block_st_gr_e
-		| labels_e
+switch_block	: BLOCK_S switch_block_st_gr_e switch_labels_e BLOCK_E
 		;
 
 switch_block_st_gr_e	: switch_block_st_grps
@@ -270,11 +275,15 @@ switch_block_st_grps	: switch_block_st_grp
 switch_block_st_grp	: switch_labels bl_statements
 			;
 
+switch_labels_e	: switch_labels
+		| /* empty */
+		;
+
 switch_labels	: switch_label
 		| switch_labels switch_label
 		;
 
-switch_label	: CASE const_expr COLON
+switch_label	: CASE expr COLON
 		| DEFAULT COLON
 		;
 
@@ -430,7 +439,7 @@ unary_expr_not_plus_minus	: postfix_expr
 postdec_expr	: postfix_expr OP_DEC
 		;
 
-postinc_expr	: postinc_expr OP_INC
+postinc_expr	: postfix_expr OP_INC
 		;
 
 postfix_expr	: primary
@@ -484,6 +493,33 @@ array_access	: expr_name ARRAY_S expr ARRAY_E
 		| primary_no_new_array ARRAY_S expr ARRAY_E
 		;
 
+type_name		: ID
+			;
+
+expr_name		: ID
+			| ambiguous_name OP_DOT ID
+			;
+
+method_name		: ID
+			| ambiguous_name OP_DOT ID
+			;
+
+ambiguous_name		: ID
+			| ambiguous_name OP_DOT ID
+			;
+
+literal			: int_literal
+			| FLOAT_LIT
+			| CHAR_LIT
+			| STR_LIT
+			| N
+			;
+
+int_literal		: INT_LIT_H
+			| INT_LIT_O
+			| INT_LIT_D
+			;
+
 %%
 
 int main(int argc, char** argv){
@@ -498,6 +534,7 @@ int main(int argc, char** argv){
 	while(!feof(yyin)){
 		yyparse();
 	}
+	return 0;
 }
 
 void yyerror(char *s) {
