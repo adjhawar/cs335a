@@ -32,21 +32,6 @@ extern FILE *yyin;
 %token PRINT SCAN OP_NEG STRING
 %token EXTENDS
 
-%left ARRAY_S ARRAY_E OP_DOT PAREN_S PAREN_E
-%right OP_NEG
-%right NEW
-%left OP_MUL OP_DIV OP_MOD
-%left OP_ADD OP_SUB
-%left OP_LSH OP_RSH OP_ZRSH
-%nonassoc OP_LEQ OP_GEQ OP_LES OP_GRE INSTANCEOF
-%left OP_EQ OP_NEQ
-%left OP_AND
-%left OP_XOR
-%left OP_OR
-%left OP_CON_AND
-%left OP_CON_OR
-%right OP_CON_Q
-%right OP_ASS OP_ADD_ASS OP_SUB_ASS OP_DIV_ASS OP_MUL_ASS OP_MOD_ASS OP_LSH_ASS OP_RSH_ASS OP_AND_ASS OP_OR_ASS OP_XOR_ASS OP_ZRSH_ASS
 /*%type*/
 
 %%
@@ -138,15 +123,10 @@ var_decl_id		: ID
 			| var_decl_id ARRAY_S ARRAY_E
 			;
 
-
 method_decl		: method_header method_body
 			;
 
-method_header		: result_type method_declarator
-			;
-
-result_type		: VOID
-			| type
+method_header		: type method_declarator
 			;
 
 method_declarator	: ID PAREN_S formal_para_list_e PAREN_E
@@ -173,6 +153,7 @@ var_init		: expr
 
 type		: primitive_type
 		| reference_type
+		| VOID
 		;
 
 primitive_type  : numeric_type
