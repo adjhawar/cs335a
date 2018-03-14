@@ -138,9 +138,6 @@ var_decl_id		: ID
 			| var_decl_id ARRAY_S ARRAY_E
 			;
 
-var_init		: expr
-			| array_init
-			;
 
 method_decl		: method_header method_body
 			;
