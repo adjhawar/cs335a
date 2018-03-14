@@ -97,11 +97,8 @@ formal_para_list	: formal_para
 formal_para		: type var_decl_id
 			;
 
-const_body		: BLOCK_S explicit_const_invo_e	bl_statements_e BLOCK_E
-			;
-
-explicit_const_invo_e	: explicit_const_invo
-			| /* empty */
+const_body		: BLOCK_S explicit_const_invo bl_statements_e BLOCK_E
+			| BLOCK_S bl_statements_e BLOCK_E
 			;
 
 explicit_const_invo	: THIS PAREN_S arg_list_e PAREN_E
