@@ -63,103 +63,105 @@ char *find1(int k){
 	case 10: strcpy(str, "class_body_decls"); break;
 	case 11: strcpy(str, "class_body_decl"); break;
 	case 12: strcpy(str, "class_mem_decl"); break;
-	case 13: strcpy(str, "const_declarator"); break;
-	case 14: strcpy(str, "formal_para_list_e"); break;
-	case 15: strcpy(str, "formal_para_list"); break;
-	case 16: strcpy(str, "formal_para"); break;
-	case 17: strcpy(str, "explicit_const_invo"); break;
-	case 18: strcpy(str, "field_decl"); break;
-	case 19: strcpy(str, "var_declarators"); break;
-	case 20: strcpy(str, "var_declarator"); break;
-	case 21: strcpy(str, "var_decl_id"); break;
-	case 22: strcpy(str, "method_decl"); break;
-	case 23: strcpy(str, "method_header"); break;
-	case 24: strcpy(str, "method_declarator"); break;
-	case 25: strcpy(str, "method_body"); break;
-	case 26: strcpy(str, "array_init"); break;
-	case 27: strcpy(str, "var_init_e"); break;
-	case 28: strcpy(str, "var_inits"); break;
-	case 29: strcpy(str, "var_init"); break;
-	case 30: strcpy(str, "type"); break;
-	case 31: strcpy(str, "primitive_type"); break;
-	case 32: strcpy(str, "numeric_type"); break;
-	case 33: strcpy(str, "integer_type"); break;
-	case 34: strcpy(str, "reference_type"); break;
-	case 35: strcpy(str, "class_type"); break;
-	case 36: strcpy(str, "array_type"); break;
-	case 37: strcpy(str, "block"); break;
-	case 38: strcpy(str, "bl_statements_e"); break;
-	case 39: strcpy(str, "bl_statements"); break;
-	case 40: strcpy(str, "block_statement"); break;
-	case 41: strcpy(str, "loc_var_dec_st"); break;
-	case 42: strcpy(str, "loc_var_dec"); break;
-	case 43: strcpy(str, "statement"); break;
-	case 44: strcpy(str, "st_no_short_if"); break;
-        case 45: strcpy(str, "st_wo_tsub"); break;
-	case 46: strcpy(str, "empty_st"); break;
-	case 47: strcpy(str, "expr_st"); break;
-	case 48: strcpy(str, "st_expr"); break;
-	case 49: strcpy(str, "if_then_st"); break;
-	case 50: strcpy(str, "if_then_else_st"); break;
-	case 51: strcpy(str, "if_then_else_no_short_if_st"); break;
-	case 52: strcpy(str, "switch_st"); break;
-	case 53: strcpy(str, "switch_block"); break;
-	case 54: strcpy(str, "switch_block_st_gr_e"); break;
-	case 55: strcpy(str, "switch_block_st_grps"); break;
-	case 56: strcpy(str, "switch_block_st_grp"); break;
-	case 57: strcpy(str, "switch_labels"); break;
-	case 58: strcpy(str, "switch_label"); break;
-	case 59: strcpy(str, "while_st"); break;
-	case 60: strcpy(str, "while_st_no_short_if"); break;
-	case 61: strcpy(str, "do_st"); break;
-	case 62: strcpy(str, "for_st"); break;
-	case 63: strcpy(str, "for_st_no_short_if"); break;
-	case 64: strcpy(str, "for_init_e"); break;
-	case 65: strcpy(str, "for_init"); break;
-	case 66: strcpy(str, "expr_e"); break;
-	case 67: strcpy(str, "for_update_e"); break;
-	case 68: strcpy(str, "for_update"); break;
-	case 69: strcpy(str, "st_expr_list"); break;
-	case 70: strcpy(str, "break_st"); break;
-	case 71: strcpy(str, "continue_st"); break;
-	case 72: strcpy(str, "return_st"); break;
-	case 73: strcpy(str, "expr"); break;
-	case 74: strcpy(str, "assgn"); break;
-	case 75: strcpy(str, "lhs"); break;
-	case 76: strcpy(str, "assgn_op"); break;
-	case 77: strcpy(str, "cond_expr"); break;
-	case 78: strcpy(str, "cond_or_expr"); break;
-	case 79: strcpy(str, "cond__and_expr"); break;
-	case 80: strcpy(str, "incl_or_expr"); break;
-	case 81: strcpy(str, "excl_or_expr"); break;
-	case 82: strcpy(str, "and_expr"); break;
-	case 83: strcpy(str, "equality_expr"); break;
-	case 84: strcpy(str, "rel_expr"); break;
-	case 85: strcpy(str, "shift_expr"); break;
-	case 86: strcpy(str, "add_expr"); break;
-	case 87: strcpy(str, "mul_expr"); break;
-	case 88: strcpy(str, "cast_expr"); break;
-	case 89: strcpy(str, "unary_expr"); break;
-	case 90: strcpy(str, "preinc_expr"); break;
-	case 91: strcpy(str, "predec_expr"); break;
-	case 92: strcpy(str, "unary_expr_not_plus_minus"); break;
-	case 93: strcpy(str, "postdec_expr"); break;
-	case 94: strcpy(str, "postinc_expr"); break;
-	case 95: strcpy(str, "postfix_expr"); break;
-	case 96: strcpy(str, "method_invo"); break;
-	case 97: strcpy(str, "field_access"); break;
-	case 98: strcpy(str, "primary"); break;
-	case 99: strcpy(str, "primary_no_new_array"); break;
-	case 100: strcpy(str, "object_expr"); break;
-	case 101: strcpy(str, "arg_list_e"); break;
-	case 102: strcpy(str, "argument_list"); break;
-	case 103: strcpy(str, "array_creat_expr"); break;
-	case 104: strcpy(str, "dim_expr"); break;
-	case 105: strcpy(str, "array_access"); break;
-	case 106: strcpy(str, "type_name"); break;
-	case 107: strcpy(str, "name"); break;
-	case 108: strcpy(str, "literal"); break;
-	case 109: strcpy(str, "int_literal");	 break;
+	case 13: strcpy(str, "const_decl"); break;
+	case 14: strcpy(str, "const_declarator"); break;
+	case 15: strcpy(str, "formal_para_list_e"); break;
+	case 16: strcpy(str, "formal_para_list"); break;
+	case 17: strcpy(str, "formal_para"); break;
+	case 18: strcpy(str, "const_body"); break;
+	case 19: strcpy(str, "explicit_const_invo"); break;
+	case 20: strcpy(str, "field_decl"); break;
+	case 21: strcpy(str, "var_declarators"); break;
+	case 22: strcpy(str, "var_declarator"); break;
+	case 23: strcpy(str, "var_decl_id"); break;
+	case 24: strcpy(str, "method_decl"); break;
+	case 25: strcpy(str, "method_header"); break;
+	case 26: strcpy(str, "method_declarator"); break;
+	case 27: strcpy(str, "method_body"); break;
+	case 28: strcpy(str, "array_init"); break;
+	case 29: strcpy(str, "var_init_e"); break;
+	case 30: strcpy(str, "var_inits"); break;
+	case 31: strcpy(str, "var_init"); break;
+	case 32: strcpy(str, "type"); break;
+	case 33: strcpy(str, "primitive_type"); break;
+	case 34: strcpy(str, "numeric_type"); break;
+	case 35: strcpy(str, "integer_type"); break;
+	case 36: strcpy(str, "reference_type"); break;
+	case 37: strcpy(str, "class_type"); break;
+	case 38: strcpy(str, "array_type"); break;
+	case 39: strcpy(str, "block"); break;
+	case 40: strcpy(str, "bl_statements_e"); break;
+	case 41: strcpy(str, "bl_statements"); break;
+	case 42: strcpy(str, "block_statement"); break;
+	case 43: strcpy(str, "loc_var_dec_st"); break;
+	case 44: strcpy(str, "loc_var_dec"); break;
+	case 45: strcpy(str, "statement"); break;
+	case 46: strcpy(str, "st_no_short_if"); break;
+        case 47: strcpy(str, "st_wo_tsub"); break;
+	case 48: strcpy(str, "empty_st"); break;
+	case 49: strcpy(str, "expr_st"); break;
+	case 50: strcpy(str, "st_expr"); break;
+	case 51: strcpy(str, "if_then_st"); break;
+	case 52: strcpy(str, "if_then_else_st"); break;
+	case 53: strcpy(str, "if_then_else_no_short_if_st"); break;
+	case 54: strcpy(str, "switch_st"); break;
+	case 55: strcpy(str, "switch_block"); break;
+	case 56: strcpy(str, "switch_block_st_gr_e"); break;
+	case 57: strcpy(str, "switch_block_st_grps"); break;
+	case 58: strcpy(str, "switch_block_st_grp"); break;
+	case 59: strcpy(str, "switch_labels"); break;
+	case 60: strcpy(str, "switch_label"); break;
+	case 61: strcpy(str, "while_st"); break;
+	case 62: strcpy(str, "while_st_no_short_if"); break;
+	case 63: strcpy(str, "do_st"); break;
+	case 64: strcpy(str, "for_st"); break;
+	case 65: strcpy(str, "for_st_no_short_if"); break;
+	case 66: strcpy(str, "for_init_e"); break;
+	case 67: strcpy(str, "for_init"); break;
+	case 68: strcpy(str, "expr_e"); break;
+	case 69: strcpy(str, "for_update_e"); break;
+	case 70: strcpy(str, "for_update"); break;
+	case 71: strcpy(str, "st_expr_list"); break;
+	case 72: strcpy(str, "break_st"); break;
+	case 73: strcpy(str, "continue_st"); break;
+	case 74: strcpy(str, "return_st"); break;
+	case 75: strcpy(str, "expr"); break;
+	case 76: strcpy(str, "assgn"); break;
+	case 77: strcpy(str, "lhs"); break;
+	case 78: strcpy(str, "assgn_op"); break;
+	case 79: strcpy(str, "cond_expr"); break;
+	case 80: strcpy(str, "cond_or_expr"); break;
+	case 81: strcpy(str, "cond__and_expr"); break;
+	case 82: strcpy(str, "incl_or_expr"); break;
+	case 83: strcpy(str, "excl_or_expr"); break;
+	case 84: strcpy(str, "and_expr"); break;
+	case 85: strcpy(str, "equality_expr"); break;
+	case 86: strcpy(str, "rel_expr"); break;
+	case 87: strcpy(str, "shift_expr"); break;
+	case 88: strcpy(str, "add_expr"); break;
+	case 89: strcpy(str, "mul_expr"); break;
+	case 90: strcpy(str, "cast_expr"); break;
+	case 91: strcpy(str, "unary_expr"); break;
+	case 92: strcpy(str, "preinc_expr"); break;
+	case 93: strcpy(str, "predec_expr"); break;
+	case 94: strcpy(str, "unary_expr_not_plus_minus"); break;
+	case 95: strcpy(str, "postdec_expr"); break;
+	case 96: strcpy(str, "postinc_expr"); break;
+	case 97: strcpy(str, "postfix_expr"); break;
+	case 98: strcpy(str, "method_invo"); break;
+	case 99: strcpy(str, "field_access"); break;
+	case 100: strcpy(str, "primary"); break;
+	case 101: strcpy(str, "primary_no_new_array"); break;
+	case 102: strcpy(str, "object_expr"); break;
+	case 103: strcpy(str, "arg_list_e"); break;
+	case 104: strcpy(str, "argument_list"); break;
+	case 105: strcpy(str, "array_creat_expr"); break;
+	case 106: strcpy(str, "dim_expr"); break;
+	case 107: strcpy(str, "array_access"); break;
+	case 108: strcpy(str, "type_name"); break;
+	case 109: strcpy(str, "name"); break;
+	case 110: strcpy(str, "literal"); break;
+	case 111: strcpy(str, "int_literal");	 break;
 	}
 }
 
@@ -426,240 +428,240 @@ char *find2(int k){
 
 %%
 
-compilation_unit	: type_declarations_e 				{push(s1,1);push(s2,1);}
+compilation_unit	: type_declarations_e {push(s1,1);push(s2,1);}
 			;
 
-type_declarations_e	: type_declarations 				{push(s1,2);push(s2,2);}
-			| /* empty */								{push(s1,2);push(s2,0);}
+type_declarations_e	: type_declarations
+			| /* empty */
 			;
 
-type_declarations	: type_declaration 					{push(s1,3);push(s2,3);}
-			| type_declarations type_declaration 		{push(s1,3);push(s2,4);}
+type_declarations	: type_declaration
+			| type_declarations type_declaration
 			;
 
-type_declaration	: class_declaration 				{push(s1,4);push(s2,5);}
-			| TRM 										{push(s1,4);push(s2,6);}
+type_declaration	: class_declaration
+			| TRM
 			;
 
-class_declaration	: CLASS CID super_e class_body 		{push(s1,5);push(s2,7);}
+class_declaration	: CLASS CID super_e class_body
 			;
 
-super_e			: supers 								{push(s1,6);push(s2,8);}
-			| /* empty */								{push(s1,6);push(s2,0);}
+super_e			: supers
+			| /* empty */
 			;
 
-supers			: EXTENDS class_type 					{push(s1,7);push(s2,9);}
+supers			: EXTENDS class_type
 			;
 
-class_body		: BLOCK_S class_body_decl_e BLOCK_E 	{push(s1,8);push(s2,10);}
+class_body		: BLOCK_S class_body_decl_e BLOCK_E
 			;
 
-class_body_decl_e	: class_body_decls 					{push(s1,9);push(s2,11);}
-			| /* empty */ 								{push(s1,9);push(s2,0);}
+class_body_decl_e	: class_body_decls
+			| /* empty */
 			;
 
-class_body_decls	: class_body_decl 					{push(s1,10);push(s2,12);}
-			| class_body_decls class_body_decl 			{push(s1,10);push(s2,13);}
+class_body_decls	: class_body_decl
+			| class_body_decls class_body_decl
 			;
 
-class_body_decl		: class_mem_decl 					{push(s1,11);push(s2,14);}
-			| const_decl 								{push(s1,11);push(s2,15);}
+class_body_decl		: class_mem_decl
+			| const_decl
 			;
 
-class_mem_decl		: field_decl 						{push(s1,12);push(s2,16);}
-			| method_decl 								{push(s1,12);push(s2,17);}
+class_mem_decl		: field_decl
+			| method_decl
 			;
 
-const_decl		: const_declarator const_body			{push(s1,13);push(s2,18);}
+const_decl		: const_declarator const_body
 			;
 
-const_declarator	: type_name PAREN_S formal_para_list_e PAREN_E 	{push(s1,14);push(s2,19);}
+const_declarator	: type_name PAREN_S formal_para_list_e PAREN_E
 			;
 
-formal_para_list_e	: formal_para_list 					{push(s1,15);push(s2,20);}
-			| /* empty */								{push(s1,15);push(s2,0);}
+formal_para_list_e	: formal_para_list
+			| /* empty */
 			;
 
-formal_para_list	: formal_para 						{push(s1,16);push(s2,21);}
-			| formal_para_list SEP formal_para 			{push(s1,16);push(s2,22);}
+formal_para_list	: formal_para
+			| formal_para_list SEP formal_para
 			;
 
-formal_para		: type var_decl_id						{push(s1,17);push(s2,23);}
+formal_para		: type var_decl_id
 			;
 
-const_body		: BLOCK_S explicit_const_invo bl_statements_e BLOCK_E 	{push(s1,18);push(s2,24);}
-			| BLOCK_S bl_statements_e BLOCK_E 			{push(s1,18);push(s2,25);}
+const_body		: BLOCK_S explicit_const_invo bl_statements_e BLOCK_E
+			| BLOCK_S bl_statements_e BLOCK_E
 			;
 
-explicit_const_invo	: THIS PAREN_S arg_list_e PAREN_E	{push(s1,19);push(s2,26);}
-			| SUPER PAREN_S arg_list_e PAREN_E			{push(s1,19);push(s2,27);}
+explicit_const_invo	: THIS PAREN_S arg_list_e PAREN_E
+			| SUPER PAREN_S arg_list_e PAREN_E
 			;
 
-field_decl		: type var_declarators  TRM 			{push(s1,20);push(s2,28);}
+field_decl		: type var_declarators  TRM
 			;
 
-var_declarators		: var_declarator 					{push(s1,21);push(s2,29);}
-			| var_declarators SEP var_declarator 		{push(s1,21);push(s2,30);}
+var_declarators		: var_declarator
+			| var_declarators SEP var_declarator
 			;
 
-var_declarator		: var_decl_id 						{push(s1,22);push(s2,31);}
-			| var_decl_id OP_ASS var_init 				{push(s1,22);push(s2,32);}
+var_declarator		: var_decl_id
+			| var_decl_id OP_ASS var_init
 			;
 
-var_decl_id		: ID 									{push(s1,23);push(s2,33);}
-			| var_decl_id ARRAY_S ARRAY_E 				{push(s1,23);push(s2,34);}
+var_decl_id		: ID
+			| var_decl_id ARRAY_S ARRAY_E
 			;
 
-method_decl		: method_header method_body 			{push(s1,24);push(s2,35);}
+method_decl		: method_header method_body
 			;
 
-method_header		: type method_declarator 			{push(s1,25);push(s2,36);}
+method_header		: type method_declarator
 			;
 
-method_declarator	: ID PAREN_S formal_para_list_e PAREN_E 	{push(s1,26);push(s2,37);}
+method_declarator	: ID PAREN_S formal_para_list_e PAREN_E
 			;
 
-method_body		: block 								{push(s1,27);push(s2,38);}
-			| TRM 										{push(s1,27);push(s2,39);}
+method_body		: block
+			| TRM
 			;
 
-array_init		: BLOCK_S var_init_e BLOCK_E 			{push(s1,28);push(s2,40);}
+array_init		: BLOCK_S var_init_e BLOCK_E
 			;
 
-var_init_e		: var_inits 							{push(s1,29);push(s2,41);}
-			| /* empty */								{push(s1,29);push(s2,0);}
+var_init_e		: var_inits
+			| /* empty */
 			;
 
-var_inits		: var_init 								{push(s1,30);push(s2,42);}
-			| var_inits SEP var_init 					{push(s1,30);push(s2,43);}
+var_inits		: var_init
+			| var_inits SEP var_init
 			;
 
-var_init		: expr 									{push(s1,31);push(s2,44);}
-			| array_init 								{push(s1,31);push(s2,45);}
+var_init		: expr
+			| array_init
 			;
 
-type		: primitive_type 							{push(s1,32);push(s2,46);}
-		| reference_type 								{push(s1,32);push(s2,47);}
-		| VOID 											{push(s1,32);push(s2,48);}
+type		: primitive_type
+		| reference_type
+		| VOID
 		;
 
-primitive_type  : numeric_type 							{push(s1,33);push(s2,49);}
-		| BOOL 											{push(s1,33);push(s2,50);}
+primitive_type  : numeric_type
+		| BOOL
 		;
 
-numeric_type	: integer_type 							{push(s1,34);push(s2,51);}
-		| FLOAT 										{push(s1,34);push(s2,52);}
+numeric_type	: integer_type
+		| FLOAT
 		;
 
-integer_type	: BYTE 									{push(s1,35);push(s2,53);}
-		| CHAR 											{push(s1,35);push(s2,54);}
-		| INT 											{push(s1,35);push(s2,55);}
+integer_type	: BYTE
+		| CHAR
+		| INT
 		;
 
-reference_type	: class_type 							{push(s1,36);push(s2,56);}
-		| array_type 									{push(s1,36);push(s2,57);}
+reference_type	: class_type
+		| array_type
 		;
 
-class_type	: type_name									{push(s1,37);push(s2,58);}
+class_type	: type_name
 		;
 
-array_type	: type ARRAY_S ARRAY_E 						{push(s1,38);push(s2,59);}
+array_type	: type ARRAY_S ARRAY_E
 		;
 
-block		: BLOCK_S bl_statements_e BLOCK_E 			{push(s1,39);push(s2,60);}
+block		: BLOCK_S bl_statements_e BLOCK_E
 		;
 
-bl_statements_e	: bl_statements 						{push(s1,40);push(s2,61);}
-		| /* empty */ 									{push(s1,40);push(s2,0);}
+bl_statements_e	: bl_statements
+		| /* empty */
 		;
 
-bl_statements	: block_statement						{push(s1,41);push(s2,62);}
-		| bl_statements block_statement 				{push(s1,41);push(s2,63);}
+bl_statements	: block_statement
+		| bl_statements block_statement
 		;
 
-block_statement	: loc_var_dec_st 						{push(s1,42);push(s2,64);}
-		| statement 									{push(s1,42);push(s2,65);}
+block_statement	: loc_var_dec_st
+		| statement
 		;
 
-loc_var_dec_st	: loc_var_dec TRM 						{push(s1,43);push(s2,66);}
+loc_var_dec_st	: loc_var_dec TRM
 		;
 
-loc_var_dec	: type var_declarators 						{push(s1,44);push(s2,67);}
+loc_var_dec	: type var_declarators
 		;
 
-statement	: st_wo_tsub 								{push(s1,45);push(s2,68);}
-		| if_then_st 									{push(s1,45);push(s2,69);}
-		| if_then_else_st 								{push(s1,45);push(s2,70);}
-		| while_st 										{push(s1,45);push(s2,71);}
-		| for_st 										{push(s1,45);push(s2,72);}
+statement	: st_wo_tsub
+		| if_then_st
+		| if_then_else_st
+		| while_st
+		| for_st
 		;
 
-st_no_short_if	: st_wo_tsub 							{push(s1,46);push(s2,73);}
-		| if_then_else_no_short_if_st 					{push(s1,46);push(s2,74);}
-		| while_st_no_short_if 							{push(s1,46);push(s2,75);}
-		| for_st_no_short_if 							{push(s1,46);push(s2,76);}
+st_no_short_if	: st_wo_tsub
+		| if_then_else_no_short_if_st
+		| while_st_no_short_if
+		| for_st_no_short_if
 		;
 
-st_wo_tsub	: block 									{push(s1,47);push(s2,77);}
-		| empty_st 										{push(s1,47);push(s2,78);}
-		| expr_st 										{push(s1,47);push(s2,79);}
-		| switch_st 									{push(s1,47);push(s2,80);}
-		| do_st 										{push(s1,47);push(s2,81);}
-		| break_st 										{push(s1,47);push(s2,82);}
-		| continue_st 									{push(s1,47);push(s2,83);}
-		| return_st 									{push(s1,47);push(s2,84);}
+st_wo_tsub	: block
+		| empty_st
+		| expr_st
+		| switch_st
+		| do_st
+		| break_st
+		| continue_st
+		| return_st
 		;
 
-empty_st	:  TRM 										{push(s1,48);push(s2,85);}
+empty_st	:  TRM
 		;
 
-expr_st		: st_expr  TRM 								{push(s1,49);push(s2,86);}
+expr_st		: st_expr  TRM
 		;
 
-st_expr		: assgn 									{push(s1,50);push(s2,87);}
-		| preinc_expr 									{push(s1,50);push(s2,88);}
-		| postinc_expr 									{push(s1,50);push(s2,89);}
-		| predec_expr 									{push(s1,50);push(s2,90);}
-		| postdec_expr 									{push(s1,50);push(s2,91);}
-		| method_invo 									{push(s1,50);push(s2,92);}
-		| object_expr 									{push(s1,50);push(s2,93);}
+st_expr		: assgn
+		| preinc_expr
+		| postinc_expr
+		| predec_expr
+		| postdec_expr
+		| method_invo
+		| object_expr
 		;
 
-if_then_st	: IF PAREN_S expr PAREN_E statement 		{push(s1,51);push(s2,94);}
+if_then_st	: IF PAREN_S expr PAREN_E statement
 		;
 
-if_then_else_st	: IF PAREN_S expr PAREN_E st_no_short_if ELSE statement 	{push(s1,52);push(s2,95);}
+if_then_else_st	: IF PAREN_S expr PAREN_E st_no_short_if ELSE statement
 		;
 
-if_then_else_no_short_if_st	: IF PAREN_S expr PAREN_E st_no_short_if ELSE st_no_short_if  	{push(s1,53);push(s2,96);}
+if_then_else_no_short_if_st	: IF PAREN_S expr PAREN_E st_no_short_if ELSE st_no_short_if
 		;
 
-switch_st	: SWITCH PAREN_S expr PAREN_E switch_block 	{push(s1,54);push(s2,97);}
+switch_st	: SWITCH PAREN_S expr PAREN_E switch_block
 		;
 
-switch_block	: BLOCK_S switch_block_st_gr_e BLOCK_E 	{push(s1,55);push(s2,98);}
+switch_block	: BLOCK_S switch_block_st_gr_e BLOCK_E
 		;
 
-switch_block_st_gr_e	: switch_block_st_grps 			{push(s1,56);push(s2,99);}
-			| /* empty */ 								{push(s1,56);push(s2,0);}
+switch_block_st_gr_e	: switch_block_st_grps
+			| /* empty */
 			;
 
-switch_block_st_grps	: switch_block_st_grp 			{push(s1,57);push(s2,100);}
-			| switch_block_st_grps switch_block_st_grp 	{push(s1,57);push(s2,101);}
+switch_block_st_grps	: switch_block_st_grp
+			| switch_block_st_grps switch_block_st_grp
 			;
 
-switch_block_st_grp	: switch_labels bl_statements 		{push(s1,58);push(s2,102);}
+switch_block_st_grp	: switch_labels bl_statements
 			;
 
-switch_labels	: switch_label 							{push(s1,59);push(s2,103);}
-		| switch_labels switch_label 					{push(s1,59);push(s2,104);}
+switch_labels	: switch_label
+		| switch_labels switch_label
 		;
 
-switch_label	: CASE expr COLON 						{push(s1,60);push(s2,105);}
-		| DEFAULT COLON 								{push(s1,60);push(s2,106);}
+switch_label	: CASE expr COLON
+		| DEFAULT COLON
 		;
 
-while_st	: WHILE PAREN_S expr PAREN_E statement 		{push(s1,61);push(s2,107);}
+while_st	: WHILE PAREN_S expr PAREN_E statement
 		;
 
 while_st_no_short_if	: WHILE PAREN_S expr PAREN_E st_no_short_if
