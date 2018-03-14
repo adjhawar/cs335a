@@ -148,8 +148,8 @@ method_decl		: method_header method_body
 method_header		: result_type method_declarator
 			;
 
-result_type		: type
-			| VOID
+result_type		: VOID
+			| type
 			;
 
 method_declarator	: ID PAREN_S formal_para_list_e PAREN_E
@@ -167,7 +167,7 @@ var_init_e		: var_inits
 			;
 
 var_inits		: var_init
-			| var_init SEP var_inits
+			| var_inits SEP var_init
 			;
 
 var_init		: expr
@@ -216,7 +216,7 @@ block_statement	: loc_var_dec_st
 		| statement
 		;
 
-loc_var_dec_st	: loc_var_dec  TRM
+loc_var_dec_st	: loc_var_dec TRM
 		;
 
 loc_var_dec	: type var_declarators
@@ -272,7 +272,7 @@ if_then_else_no_short_if_st	: IF PAREN_S expr PAREN_E st_no_short_if ELSE st_no_
 switch_st	: SWITCH PAREN_S expr PAREN_E switch_block
 		;
 
-switch_block	: BLOCK_S switch_block_st_gr_e switch_labels_e BLOCK_E
+switch_block	: BLOCK_S switch_block_st_gr_e BLOCK_E
 		;
 
 switch_block_st_gr_e	: switch_block_st_grps
@@ -285,10 +285,6 @@ switch_block_st_grps	: switch_block_st_grp
 
 switch_block_st_grp	: switch_labels bl_statements
 			;
-
-switch_labels_e	: switch_labels
-		| /* empty */
-		;
 
 switch_labels	: switch_label
 		| switch_labels switch_label
