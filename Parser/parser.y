@@ -32,6 +32,21 @@ extern FILE *yyin;
 %token PRINT SCAN OP_NEG STRING
 %token EXTENDS
 
+%left ARRAY_S ARRAY_E OP_DOT PAREN_S PAREN_E
+%right OP_NEG
+%right NEW
+%left OP_MUL OP_DIV OP_MOD
+%left OP_ADD OP_SUB
+%left OP_LSH OP_RSH OP_ZRSH
+%nonassoc OP_LEQ OP_GEQ OP_LES OP_GRE INSTANCEOF
+%left OP_EQ OP_NEQ
+%left OP_AND
+%left OP_XOR
+%left OP_OR
+%left OP_CON_AND
+%left OP_CON_OR
+%right OP_CON_Q
+%right OP_ASS OP_ADD_ASS OP_SUB_ASS OP_DIV_ASS OP_MUL_ASS OP_MOD_ASS OP_LSH_ASS OP_RSH_ASS OP_AND_ASS OP_OR_ASS OP_XOR_ASS OP_ZRSH_ASS
 /*%type*/
 
 %%
@@ -144,11 +159,7 @@ method_body		: block
 			| TRM
 			;
 
-array_init		: BLOCK_S var_init_e sep_e BLOCK_E
-			;
-
-sep_e			: SEP
-			| /* empty */
+array_init		: BLOCK_S var_init_e BLOCK_E
 			;
 
 var_init_e		: var_inits
@@ -156,7 +167,7 @@ var_init_e		: var_inits
 			;
 
 var_inits		: var_init
-			| var_inits SEP var_init
+			| var_init SEP var_inits
 			;
 
 var_init		: expr
@@ -431,7 +442,6 @@ predec_expr	: OP_DEC unary_expr
 		;
 
 unary_expr_not_plus_minus	: postfix_expr
-				| unary_expr
 				| OP_NEG unary_expr
 				| cast_expr
 				;
