@@ -6,8 +6,8 @@
 extern int yylex();
 extern int yyparse();
 extern FILE *yyin;
-
-int maxsize = 10;
+void yyerror(char *s);
+int maxsize = 1000;
 
 struct Stack{
     int size;
@@ -907,3 +907,6 @@ int main(int argc, char** argv){
 	return 0;
 }
 
+void yyerror(char *s){
+	fprintf(stderr,"%s\n",s);
+}
