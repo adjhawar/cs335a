@@ -906,12 +906,14 @@ int main(int argc, char** argv){
 		yyparse();
 	}
 	//printf("$$$$%d$$$$\n",s1->size);
-	while(!isEmpty(s1)){
-		printf("%s: %s\n", find1(pop(s1)), find2(pop(s2)));
-	}
 	return 0;
 }
 
 void yyerror(char *s){
 	fprintf(stderr,"%s\n",s);
+}
+void printStack()
+{
+   struct StackStr* s1;
+
 }
