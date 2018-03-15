@@ -14,11 +14,16 @@ struct Stack{
     int* array;
 };
 
+struct StackStr{
+	int size;
+	char **array;
+};
+
 struct Stack* createIntStack(){
-    struct Stack* stack = (struct Stack*) malloc(sizeof(struct Stack));
-    stack->size = -1;
-    stack->array = (int*) malloc(maxsize * sizeof(int));
-    return stack;
+	struct Stack* stack = (struct Stack*) malloc(sizeof(struct Stack));
+	stack->size = -1;
+	stack->array = (int*) malloc(maxsize * sizeof(int));
+	return stack;
 }
 
 int isFull(struct Stack* stack){
@@ -40,12 +45,38 @@ int pop(struct Stack* stack){
     return stack->array[stack->size--];
 }
  
+struct StackStr* createCharStack(){
+	struct StackStr* stack= (struct StackStr*)malloc(sizeof(struct StackStr));
+	stack->size = -1;
+	stack->array = (char**) malloc(maxsize * sizeof(char *));
+	return stack;
+}
+
+int isFullStr(struct StackStr* stack){
+   return stack->size == maxsize - 1; 
+}
+ 
+int isEmptyStr(struct StackStr* stack){
+   return stack->size == -1;
+}
+
+void pushStr(struct StackStr* stack, char* item){
+    stack->array[++stack->size] = item;
+}
+
+char* popStr(struct StackStr* stack){
+    if (isEmptyStr(stack))
+        return NULL;
+    return stack->array[stack->size--];
+}
+
 struct Stack* s1;
 struct Stack* s2;
+struct StackStr* lexeme;
 
 char *find1(int k){
 	char *str;
-	str=(char *)malloc(1000*sizeof(char));
+	str=(char *)malloc(30*sizeof(char));
 	switch(k){
 	case 1: strcpy(str, "compilation_unit"); break;   
 	case 2: strcpy(str, "type_declarations_e"); break;
