@@ -3,12 +3,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h>
+#include <ctype.h>
 extern int yylex();
 extern int yyparse();
 extern FILE *yyin;
 void yyerror(char *s);
 int maxsize = 1000;
-
 struct Stack{
     int size;
     int* array;
@@ -18,7 +18,8 @@ struct StackStr{
 	int size;
 	char **array;
 };
-
+void printStack(struct StackStr* str3);
+void printCode();
 struct Stack* createIntStack(){
 	struct Stack* stack = (struct Stack*) malloc(sizeof(struct Stack));
 	stack->size = -1;
@@ -49,6 +50,10 @@ struct StackStr* createCharStack(){
 	struct StackStr* stack= (struct StackStr*)malloc(sizeof(struct StackStr));
 	stack->size = -1;
 	stack->array = (char**) malloc(maxsize * sizeof(char *));
+        for(int i=0;i< maxsize; i++)
+        {
+            stack->array[i]=(char*)malloc(50 * sizeof(char ));
+	}
 	return stack;
 }
 
@@ -61,7 +66,7 @@ int isEmptyStr(struct StackStr* stack){
 }
 
 void pushStr(struct StackStr* stack, char* item){
-    stack->array[++stack->size] = item;
+    strcpy(stack->array[++stack->size],item);
 }
 
 char* popStr(struct StackStr* stack){
@@ -73,6 +78,8 @@ char* popStr(struct StackStr* stack){
 struct Stack* s1;
 struct Stack* s2;
 struct StackStr* lexeme;
+struct StackStr* str1 ;
+struct StackStr* str2;
 
 char *find1(int k){
 	char *str;
@@ -918,10 +925,13 @@ int_literal		: INT_LIT_H		{push(s1,111);push(s2,224);}
 			;
 
 %%
-
+struct StackStr* str4;
 int main(int argc, char** argv){
 	s1 = createIntStack();
 	s2 = createIntStack();
+         str1 = createCharStack();
+         str2= createCharStack();
+         str4= createCharStack();
 	FILE *fptr = fopen(argv[1], "r");
 	FILE *out = fopen("out.html", "a");
 
@@ -936,6 +946,7 @@ int main(int argc, char** argv){
 	while(!feof(yyin)){
 		yyparse();
 	}
+        printCode();
 	//printf("$$$$%d$$$$\n",s1->size);
 	return 0;
 }
@@ -943,8 +954,59 @@ int main(int argc, char** argv){
 void yyerror(char *s){
 	fprintf(stderr,"%s\n",s);
 }
-void printStack()
+void printCode()
 {
-   struct StackStr* s1;
-
+	char c[50],b[100],a[50];
+	char final[10][100];
+	int i=0; 
+	//	struct StackStr* str1 = createCharStack();
+	//	struct StackStr* str2= createCharStack();
+	pushStr(str1,find1(pop(s1)));
+	while(!isEmptyStr(str1))
+	{
+		while(!isEmptyStr(str1))
+		{
+		//	final[i]=popStr(str1);
+                        strcpy(final[i],popStr(str1)); 
+			i++;
+		}
+		while(i>0)
+		{
+			printf("%s ",final[--i]);
+			pushStr(str1,final[i]);
+		}
+		printf("\n");
+		char * aw=popStr(str1);
+		while(isupper(c[0]) && (!isEmptyStr(str1)))
+		{
+			pushStr(str2,c);          
+			strcpy(c,popStr(str1));
+		}
+		strcpy(b,find2(pop(s2)));
+		char *token = (char*)malloc(50*sizeof(char));
+		char* rest=b;
+		while ((token = strtok_r(rest," ",&rest)))
+		{
+			pushStr(str1,token);
+                      //  printf(" token = %s ",token); 
+		}
+		free(token); 
+	} 
+}
+void printStack(struct StackStr* str3)
+{
+	char c1[100];
+	struct StackStr* str4 = createCharStack();
+	while(!isEmptyStr(str3))
+	{
+		pushStr(str4,popStr(str3));
+             
+	}
+	while(!isEmptyStr(str4))
+	{
+		strcpy(c1,popStr(str4));
+		printf("%s ",c1);
+		pushStr(str3,c1);
+	}
+	printf("\n");
 }
