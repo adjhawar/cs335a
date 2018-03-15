@@ -428,107 +428,107 @@ char *find2(int k){
 
 %%
 
-compilation_unit	: type_declarations_e 				{push(s1,1);push(s2,1);}
+compilation_unit	: type_declarations_e 							{push(s1,1);push(s2,1);}
 			;
 
-type_declarations_e	: type_declarations 				{push(s1,2);push(s2,2);}
+type_declarations_e	: type_declarations 							{push(s1,2);push(s2,2);}	
 			| /* empty */								{push(s1,2);push(s2,0);}
 			;
 
-type_declarations	: type_declaration 					{push(s1,3);push(s2,3);}
-			| type_declarations type_declaration 		{push(s1,3);push(s2,4);}
+type_declarations	: type_declaration 							{push(s1,3);push(s2,3);}
+			| type_declarations type_declaration 					{push(s1,3);push(s2,4);}
 			;
 
-type_declaration	: class_declaration 				{push(s1,4);push(s2,5);}
-			| TRM 										{push(s1,4);push(s2,6);}
+type_declaration	: class_declaration 							{push(s1,4);push(s2,5);}
+			| TRM 									{push(s1,4);push(s2,6);}
 			;
 
-class_declaration	: CLASS CID super_e class_body 		{push(s1,5);push(s2,7);}
+class_declaration	: CLASS CID super_e class_body 						{push(s1,5);push(s2,7);}
 			;
 
 super_e			: supers 								{push(s1,6);push(s2,8);}
 			| /* empty */								{push(s1,6);push(s2,0);}
 			;
 
-supers			: EXTENDS class_type 					{push(s1,7);push(s2,9);}
+supers			: EXTENDS class_type 							{push(s1,7);push(s2,9);}
 			;
 
-class_body		: BLOCK_S class_body_decl_e BLOCK_E 	{push(s1,8);push(s2,10);}
+class_body		: BLOCK_S class_body_decl_e BLOCK_E 					{push(s1,8);push(s2,10);}
 			;
 
-class_body_decl_e	: class_body_decls 					{push(s1,9);push(s2,11);}
+class_body_decl_e	: class_body_decls 							{push(s1,9);push(s2,11);}
 			| /* empty */ 								{push(s1,9);push(s2,0);}
 			;
 
-class_body_decls	: class_body_decl 					{push(s1,10);push(s2,12);}
-			| class_body_decls class_body_decl 			{push(s1,10);push(s2,13);}
+class_body_decls	: class_body_decl 							{push(s1,10);push(s2,12);}
+			| class_body_decls class_body_decl 					{push(s1,10);push(s2,13);}
 			;
 
-class_body_decl		: class_mem_decl 					{push(s1,11);push(s2,14);}
+class_body_decl		: class_mem_decl 							{push(s1,11);push(s2,14);}
 			| const_decl 								{push(s1,11);push(s2,15);}
 			;
 
-class_mem_decl		: field_decl 						{push(s1,12);push(s2,16);}
+class_mem_decl		: field_decl 								{push(s1,12);push(s2,16);}
 			| method_decl 								{push(s1,12);push(s2,17);}
 			;
 
-const_decl		: const_declarator const_body			{push(s1,13);push(s2,18);}
+const_decl		: const_declarator const_body						{push(s1,13);push(s2,18);}
 			;
 
-const_declarator	: type_name PAREN_S formal_para_list_e PAREN_E 	{push(s1,14);push(s2,19);}
+const_declarator	: type_name PAREN_S formal_para_list_e PAREN_E 				{push(s1,14);push(s2,19);}
 			;
 
-formal_para_list_e	: formal_para_list 					{push(s1,15);push(s2,20);}
+formal_para_list_e	: formal_para_list 							{push(s1,15);push(s2,20);}
 			| /* empty */								{push(s1,15);push(s2,0);}
 			;
 
-formal_para_list	: formal_para 						{push(s1,16);push(s2,21);}
-			| formal_para_list SEP formal_para 			{push(s1,16);push(s2,22);}
+formal_para_list	: formal_para 								{push(s1,16);push(s2,21);}
+			| formal_para_list SEP formal_para 					{push(s1,16);push(s2,22);}
 			;
 
-formal_para		: type var_decl_id						{push(s1,17);push(s2,23);}
+formal_para		: type var_decl_id							{push(s1,17);push(s2,23);}
 			;
 
-const_body		: BLOCK_S explicit_const_invo bl_statements_e BLOCK_E 	{push(s1,18);push(s2,24);}
-			| BLOCK_S bl_statements_e BLOCK_E 			{push(s1,18);push(s2,25);}
+const_body		: BLOCK_S explicit_const_invo bl_statements_e BLOCK_E 			{push(s1,18);push(s2,24);}
+			| BLOCK_S bl_statements_e BLOCK_E 					{push(s1,18);push(s2,25);}
 			;
 
-explicit_const_invo	: THIS PAREN_S arg_list_e PAREN_E	{push(s1,19);push(s2,26);}
-			| SUPER PAREN_S arg_list_e PAREN_E			{push(s1,19);push(s2,27);}
+explicit_const_invo	: THIS PAREN_S arg_list_e PAREN_E					{push(s1,19);push(s2,26);}
+			| SUPER PAREN_S arg_list_e PAREN_E					{push(s1,19);push(s2,27);}
 			;
 
-field_decl		: type var_declarators  TRM 			{push(s1,20);push(s2,28);}
+field_decl		: type var_declarators  TRM 						{push(s1,20);push(s2,28);}
 			;
 
-var_declarators		: var_declarator 					{push(s1,21);push(s2,29);}
-			| var_declarators SEP var_declarator 		{push(s1,21);push(s2,30);}
+var_declarators		: var_declarator 							{push(s1,21);push(s2,29);}
+			| var_declarators SEP var_declarator 					{push(s1,21);push(s2,30);}
 			;
 
-var_declarator		: var_decl_id 						{push(s1,22);push(s2,31);}
-			| var_decl_id OP_ASS var_init 				{push(s1,22);push(s2,32);}
+var_declarator		: var_decl_id 								{push(s1,22);push(s2,31);}
+			| var_decl_id OP_ASS var_init 						{push(s1,22);push(s2,32);}
 			;
 
 var_decl_id		: ID 									{push(s1,23);push(s2,33);}
-			| var_decl_id ARRAY_S ARRAY_E 				{push(s1,23);push(s2,34);}
+			| var_decl_id ARRAY_S ARRAY_E 						{push(s1,23);push(s2,34);}
 			;
 
-method_decl		: method_header method_body 			{push(s1,24);push(s2,35);}
+method_decl		: method_header method_body 						{push(s1,24);push(s2,35);}
+			;	
+
+method_header		: type method_declarator 						{push(s1,25);push(s2,36);}
 			;
 
-method_header		: type method_declarator 			{push(s1,25);push(s2,36);}
-			;
-
-method_declarator	: ID PAREN_S formal_para_list_e PAREN_E 	{push(s1,26);push(s2,37);}
+method_declarator	: ID PAREN_S formal_para_list_e PAREN_E 				{push(s1,26);push(s2,37);}
 			;
 
 method_body		: block 								{push(s1,27);push(s2,38);}
-			| TRM 										{push(s1,27);push(s2,39);}
+			| TRM 									{push(s1,27);push(s2,39);}
 			;
 
-array_init		: BLOCK_S var_init_e BLOCK_E 			{push(s1,28);push(s2,40);}
+array_init		: BLOCK_S var_init_e BLOCK_E 						{push(s1,28);push(s2,40);}
 			;
 
-var_init_e		: var_inits 							{push(s1,29);push(s2,41);}
+var_init_e		: var_inits 								{push(s1,29);push(s2,41);}
 			| /* empty */								{push(s1,29);push(s2,0);}
 			;
 
