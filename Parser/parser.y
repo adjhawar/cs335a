@@ -781,110 +781,110 @@ add_expr	: mul_expr					{push(s1,88);push(s2,165);}
 		| add_expr OP_SUB mul_expr			{push(s1,88);push(s2,167);}
 		;
 
-mul_expr	: unary_expr
-		| mul_expr OP_MUL unary_expr
-		| mul_expr OP_DIV unary_expr
-		| mul_expr OP_MOD unary_expr
+mul_expr	: unary_expr			{push(s1,89);push(s2,168);}
+		| mul_expr OP_MUL unary_expr		{push(s1,89);push(s2,169);}
+*		| mul_expr OP_DIV unary_expr		{push(s1,89);push(s2,170);}
+		| mul_expr OP_MOD unary_expr		{push(s1,89);push(s2,171);}
 		;
 
-cast_expr	: PAREN_S primitive_type PAREN_E unary_expr
-		| PAREN_S reference_type PAREN_E unary_expr_not_plus_minus
+cast_expr	: PAREN_S primitive_type PAREN_E unary_expr		{push(s1,90);push(s2,172);}
+		| PAREN_S reference_type PAREN_E unary_expr_not_plus_minus		{push(s1,90);push(s2,173);}
 		;
 
-unary_expr	: preinc_expr
-		| predec_expr
-		| OP_ADD unary_expr
-		| OP_SUB unary_expr
-		| unary_expr_not_plus_minus
+unary_expr	: preinc_expr		{push(s1,91);push(s2,174);}
+		| predec_expr		{push(s1,91);push(s2,175);}
+		| OP_ADD unary_expr		{push(s1,91);push(s2,176);}
+		| OP_SUB unary_expr		{push(s1,91);push(s2,177);}
+		| unary_expr_not_plus_minus		{push(s1,91);push(s2,178);}
 		;
 
-preinc_expr	: OP_INC unary_expr
+preinc_expr	: OP_INC unary_expr		{push(s1,92);push(s2,179);}
 		;
 
-predec_expr	: OP_DEC unary_expr
+predec_expr	: OP_DEC unary_expr		{push(s1,93);push(s2,180);}
 		;
 
-unary_expr_not_plus_minus	: postfix_expr
-				| OP_NEG unary_expr
-				| cast_expr
+unary_expr_not_plus_minus	: postfix_expr		{push(s1,94);push(s2,181);}
+				| OP_NEG unary_expr		{push(s1,94);push(s2,182);}
+				| cast_expr		{push(s1,94);push(s2,183);}
 				;
 
-postdec_expr	: postfix_expr OP_DEC
+postdec_expr	: postfix_expr OP_DEC		{push(s1,95);push(s2,184);}
 		;
 
-postinc_expr	: postfix_expr OP_INC
+postinc_expr	: postfix_expr OP_INC		{push(s1,96);push(s2,185);}
 		;
 
-postfix_expr	: primary
-		| name
-		| postinc_expr
-		| postdec_expr
+postfix_expr	: primary		{push(s1,97);push(s2,186);}
+		| name		{push(s1,97);push(s2,187);}
+		| postinc_expr		{push(s1,97);push(s2,188);}
+		| postdec_expr		{push(s1,97);push(s2,189);}
 		;
 
-method_invo	: name PAREN_S arg_list_e PAREN_E 
-		| primary OP_DOT ID PAREN_S arg_list_e PAREN_E
-		| SUPER OP_DOT ID PAREN_S arg_list_e PAREN_E
+method_invo	: name PAREN_S arg_list_e PAREN_E 		{push(s1,98);push(s2,190);}
+		| primary OP_DOT ID PAREN_S arg_list_e PAREN_E		{push(s1,98);push(s2,191);}
+		| SUPER OP_DOT ID PAREN_S arg_list_e PAREN_E		{push(s1,98);push(s2,192);}
 		;
 
-field_access	: primary OP_DOT ID
-		| SUPER OP_DOT ID
+field_access	: primary OP_DOT ID		{push(s1,99);push(s2,193);}
+		| SUPER OP_DOT ID		{push(s1,99);push(s2,194);}
 		;
 
-primary		: primary_no_new_array
-		| array_creat_expr
+primary		: primary_no_new_array		{push(s1,100);push(s2,195);}
+		| array_creat_expr		{push(s1,100);push(s2,196);}
 		;
 
-primary_no_new_array	: literal
-			| THIS
-			| PAREN_S expr PAREN_E
-			| object_expr
-			| field_access
-			| method_invo
-			| array_access
+primary_no_new_array	: literal		{push(s1,101);push(s2,197);}
+			| THIS			{push(s1,101);push(s2,198);}
+			| PAREN_S expr PAREN_E	{push(s1,101);push(s2,199);}
+			| object_expr		{push(s1,101);push(s2,200);}
+			| field_access		{push(s1,101);push(s2,201);}
+			| method_invo		{push(s1,101);push(s2,202);}
+			| array_access		{push(s1,101);push(s2,203);}
 			;
 
-object_expr	: NEW class_type PAREN_S arg_list_e PAREN_E
+object_expr	: NEW class_type PAREN_S arg_list_e PAREN_E		{push(s1,102);push(s2,204);}
 		;
 
-arg_list_e	: argument_list
-		| /* empty */
+arg_list_e	: argument_list		{push(s1,103);push(s2,205);}
+		| /* empty */		{push(s1,103);push(s2,0);}
 		;
 
-argument_list	: expr
-		| argument_list SEP expr
+argument_list	: expr				{push(s1,104);push(s2,206);}
+		| argument_list SEP expr	{push(s1,104);push(s2,207);}
 		;
 
-array_creat_expr	: NEW primitive_type dim_expr
-			| NEW class_type dim_expr
+array_creat_expr	: NEW primitive_type dim_expr		{push(s1,105);push(s2,208);}
+			| NEW class_type dim_expr		{push(s1,105);push(s2,209);}
 			;
 
-dim_expr	: ARRAY_S expr ARRAY_E
-		| ARRAY_S ARRAY_E
+dim_expr	: ARRAY_S expr ARRAY_E		{push(s1,106);push(s2,210);}
+		| ARRAY_S ARRAY_E		{push(s1,106);push(s2,211);}
 		;
 
-array_access	: name ARRAY_S expr ARRAY_E
-		| primary_no_new_array ARRAY_S expr ARRAY_E
+array_access	: name ARRAY_S expr ARRAY_E				{push(s1,107);push(s2,212);}
+		| primary_no_new_array ARRAY_S expr ARRAY_E		{push(s1,107);push(s2,213);}
 		;
 
-type_name		: CID
+type_name		: CID		{push(s1,108);push(s2,214);}
 			;
 
-name			: ID
-			| name OP_DOT ID
+name			: ID			{push(s1,109);push(s2,215);}
+			| name OP_DOT ID	{push(s1,109);push(s2,216);}
 			;
 
-literal			: int_literal
-			| FLOAT_LIT
-			| CHAR_LIT
-			| STR_LIT
-			| T
-			| F
-			| N
+literal			: int_literal		{push(s1,110);push(s2,217);}
+			| FLOAT_LIT		{push(s1,110);push(s2,218);}
+			| CHAR_LIT		{push(s1,110);push(s2,219);}
+			| STR_LIT		{push(s1,110);push(s2,220);}
+			| T			{push(s1,110);push(s2,221);}
+			| F			{push(s1,110);push(s2,222);}
+			| N			{push(s1,110);push(s2,223);}
 			;
 
-int_literal		: INT_LIT_H
-			| INT_LIT_O
-			| INT_LIT_D
+int_literal		: INT_LIT_H		{push(s1,111);push(s2,224);}
+			| INT_LIT_O		{push(s1,111);push(s2,225);}
+			| INT_LIT_D		{push(s1,111);push(s2,226);}
 			;
 
 %%
