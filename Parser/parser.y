@@ -1,30 +1,28 @@
 %{
-void yyerror (char *s);
-extern int yylex();
-extern int yyparse();
-extern FILE *yyin;
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-int maxsize = 10;
+#include <limits.h>
+extern int yylex();
+extern int yyparse();
+extern FILE *yyin;
+void yyerror(char *s);
+int maxsize = 1000;
 
 struct Stack{
     int size;
     int* array;
 };
 
-struct 
 struct Stack* createIntStack(){
     struct Stack* stack = (struct Stack*) malloc(sizeof(struct Stack));
-    stack->maxsize = maxsize;
     stack->size = -1;
-    stack->array = (int*) malloc(stack->maxsize * sizeof(int));
+    stack->array = (int*) malloc(maxsize * sizeof(int));
     return stack;
 }
 
 int isFull(struct Stack* stack){
-   return stack->size == stack->maxsize - 1; 
+   return stack->size == maxsize - 1; 
 }
  
 int isEmpty(struct Stack* stack){
@@ -34,7 +32,7 @@ int isEmpty(struct Stack* stack){
 void push(struct Stack* stack, int item){
     if (isFull(stack)){
     	maxsize = 2 * maxsize;
-        array = realloc(array, maxsize * sizeof(int));
+        stack->array = realloc(stack->array, maxsize * sizeof(int));
     }
     stack->array[++stack->size] = item;
 }
@@ -45,8 +43,8 @@ int pop(struct Stack* stack){
     return stack->array[stack->size--];
 }
  
-struct Stack *s1 = createIntStack();
-struct Stack *s2 = createIntStack();
+struct Stack* s1;
+struct Stack* s2;
 
 char *find1(int k){
 	char *str;
@@ -407,7 +405,7 @@ char *find2(int k){
 
 %start compilation_unit
 
-%token CLASS INSTANCEOF NEW SUPER THIS
+%token CLASS INSTANCEOF NEW SUPER THIS COMMENT
 %token BOOL BYTE CHAR T FLOAT INT F N VOID
 %token BREAK CASE DEFAULT ELSE IF SWITCH
 %token CONT DO FOR WHILE
@@ -783,7 +781,7 @@ add_expr	: mul_expr					{push(s1,88);push(s2,165);}
 
 mul_expr	: unary_expr			{push(s1,89);push(s2,168);}
 		| mul_expr OP_MUL unary_expr		{push(s1,89);push(s2,169);}
-*		| mul_expr OP_DIV unary_expr		{push(s1,89);push(s2,170);}
+		| mul_expr OP_DIV unary_expr		{push(s1,89);push(s2,170);}
 		| mul_expr OP_MOD unary_expr		{push(s1,89);push(s2,171);}
 		;
 
@@ -890,7 +888,11 @@ int_literal		: INT_LIT_H		{push(s1,111);push(s2,224);}
 %%
 
 int main(int argc, char** argv){
-	FILE *fptr = fopen(argv[1], 'r');
+	s1 = createIntStack();
+	s2 = createIntStack();
+	FILE *fptr = fopen(argv[1], "r");
+	FILE *out = fopen("out.html", "a");
+
 	if(argc==2 && fptr!=NULL){
 		yyin = fptr;
 	}
@@ -901,9 +903,10 @@ int main(int argc, char** argv){
 	while(!feof(yyin)){
 		yyparse();
 	}
+
 	return 0;
 }
 
-void yyerror(char *s) {
-	fprintf (stderr, "%s\n", s);
-} 
+void yyerror(char *s){
+	fprintf(stderr,"%s\n",s);
+}
