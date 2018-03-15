@@ -7,6 +7,7 @@
 extern int yylex();
 extern int yyparse();
 extern FILE *yyin;
+FILE *out;
 void yyerror(char *s);
 int maxsize = 1000;
 struct Stack{
@@ -932,8 +933,9 @@ int main(int argc, char** argv){
          str1 = createCharStack();
          str2= createCharStack();
          str4= createCharStack();
+         push(s1,0);
 	FILE *fptr = fopen(argv[1], "r");
-	FILE *out = fopen("out.html", "a");
+	out = fopen("out.html", "a");
 	if(argc==2 && fptr!=NULL){
 		yyin = fptr;
 	}
@@ -946,7 +948,6 @@ int main(int argc, char** argv){
 		yyparse();
 	}
         printCode();
-	//printf("$$$$%d$$$$\n",s1->size);
 	return 0;
 }
 
@@ -958,26 +959,29 @@ void printCode()
 	char c[50],b[100],a[50];
 	char final[200][100];
 	char trav[200][100];
-	int i=0,j=0; 
-	//	struct StackStr* str1 = createCharStack();
-	//	struct StackStr* str2= createCharStack();
+	int i=0,j=0;
 	sprintf(a,"%s","compilation_unit");  
 	pushStr(str1,a); 
+	fprintf(out,"<html> <head> <title> Rightmost derivation </title> </head> <body bgcolor='#E6E6FA'> \n");
+	fprintf(out,"<h2> Rightmost Derivation of the code</h2>\n");
 	do
 	{	
 	strcpy(a,find1(pop(s1)));
 		while(!isEmptyStr(str1))
 		{
-			//	final[i]=popStr(str1);
 			strcpy(final[i],popStr(str1)); 
 			i++;
 		}
 		while(i>0)
-		{
-			printf("%s ",final[--i]);
+		{	i--;
+			if(!strcmp(final[i],a)){
+				fprintf(out, "<b style = color:red> %s </b>", final[i]);
+			}
+			else
+				fprintf(out,"%s ",final[i]);
 			pushStr(str1,final[i]);
 		}
-		printf("\n");
+		fprintf(out,"</br>\n");
 		while(!isEmptyStr(str1))
 		{
 			strcpy(trav[j],popStr(str1));
@@ -993,46 +997,10 @@ void printCode()
 				free(token);
 				break;
 			} 
-                   // printf("no rule matched\n"); 
 		}
 		j--;
 		while(j>0)
 			pushStr(str1,final[--j]);
-        //        strcpy(a,find1(pop(s1)));
-	/*	char * aw=popStr(str1);
-=======
-		strcpy(c,popStr(str1));
->>>>>>> caf1fb8b1445a38c1e9fbc6e9f36bdebc1c3d11d
-		while(isupper(c[0]) && (!isEmptyStr(str1)))
-		{
-			pushStr(str2,c);          
-			strcpy(c,popStr(str1));
-		}
-		strcpy(b,find2(pop(s2)));
-		char *token = (char*)malloc(50*sizeof(char));
-		char* rest=b;
-		while ((token = strtok_r(rest," ",&rest)))
-		{
-			pushStr(str1,token);
-			//  printf(" token = %s ",token); 
-		}
-		free(token); */
 	}while(!isEmpty(s1)); 
-}
-void printStack(struct StackStr* str3)
-{
-	char c1[100];
-	struct StackStr* str4 = createCharStack();
-	while(!isEmptyStr(str3))
-	{
-		pushStr(str4,popStr(str3));
-             
-	}
-	while(!isEmptyStr(str4))
-	{
-		strcpy(c1,popStr(str4));
-		printf("%s ",c1);
-		pushStr(str3,c1);
-	}
-	printf("\n");
+	fprintf(out,"</body></html>");
 }
