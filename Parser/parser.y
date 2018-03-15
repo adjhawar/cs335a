@@ -165,7 +165,7 @@ char *find1(int k){
 	case 78: strcpy(str, "assgn_op"); break;
 	case 79: strcpy(str, "cond_expr"); break;
 	case 80: strcpy(str, "cond_or_expr"); break;
-	case 81: strcpy(str, "cond__and_expr"); break;
+	case 81: strcpy(str, "cond_and_expr"); break;
 	case 82: strcpy(str, "incl_or_expr"); break;
 	case 83: strcpy(str, "excl_or_expr"); break;
 	case 84: strcpy(str, "and_expr"); break;
@@ -957,17 +957,20 @@ void yyerror(char *s){
 void printCode()
 {
 	char c[50],b[100],a[50];
-	char final[10][100];
-	int i=0; 
+	char final[200][100];
+	char trav[200][100];
+	int i=0,j=0; 
 	//	struct StackStr* str1 = createCharStack();
 	//	struct StackStr* str2= createCharStack();
-	pushStr(str1,find1(pop(s1)));
-	while(!isEmptyStr(str1))
-	{
+	sprintf(a,"%s","compilation_unit");  
+	pushStr(str1,a); 
+	do
+	{	
+	strcpy(a,find1(pop(s1)));
 		while(!isEmptyStr(str1))
 		{
-		//	final[i]=popStr(str1);
-                        strcpy(final[i],popStr(str1)); 
+			//	final[i]=popStr(str1);
+			strcpy(final[i],popStr(str1)); 
 			i++;
 		}
 		while(i>0)
@@ -976,7 +979,28 @@ void printCode()
 			pushStr(str1,final[i]);
 		}
 		printf("\n");
-		char * aw=popStr(str1);
+		while(!isEmptyStr(str1))
+		{
+			strcpy(trav[j],popStr(str1));
+			if(strcmp(trav[j++],a)==0)
+			{
+				strcpy(b,find2(pop(s2)));
+				char *token = (char*)malloc(50*sizeof(char));
+				char* rest=b;
+				while ((token = strtok_r(rest," ",&rest)))
+				{
+					pushStr(str1,token); 
+				}
+				free(token);
+				break;
+			} 
+                   // printf("no rule matched\n"); 
+		}
+		j--;
+		while(j>0)
+			pushStr(str1,final[--j]);
+        //        strcpy(a,find1(pop(s1)));
+	/*	char * aw=popStr(str1);
 		while(isupper(c[0]) && (!isEmptyStr(str1)))
 		{
 			pushStr(str2,c);          
@@ -988,10 +1012,10 @@ void printCode()
 		while ((token = strtok_r(rest," ",&rest)))
 		{
 			pushStr(str1,token);
-                      //  printf(" token = %s ",token); 
+			//  printf(" token = %s ",token); 
 		}
-		free(token); 
-	} 
+		free(token); */
+	}while(!isEmpty(s1)); 
 }
 void printStack(struct StackStr* str3)
 {
