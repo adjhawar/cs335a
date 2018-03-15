@@ -657,128 +657,128 @@ switch_labels	: switch_label 							{push(s1,59);push(s2,103);}
 		| switch_labels switch_label 					{push(s1,59);push(s2,104);}
 		;
 
-switch_label	: CASE expr COLON 						{push(s1,60);push(s2,105);}
-		| DEFAULT COLON 								{push(s1,60);push(s2,106);}
+switch_label	: CASE expr COLON 					{push(s1,60);push(s2,105);}
+		| DEFAULT COLON 					{push(s1,60);push(s2,106);}
 		;
 
-while_st	: WHILE PAREN_S expr PAREN_E statement 		{push(s1,61);push(s2,107);}
+while_st	: WHILE PAREN_S expr PAREN_E statement 			{push(s1,61);push(s2,107);}
 		;
 
-while_st_no_short_if	: WHILE PAREN_S expr PAREN_E st_no_short_if
+while_st_no_short_if	: WHILE PAREN_S expr PAREN_E st_no_short_if	{push(s1,62);push(s2,108);}
 			;
 
-do_st		: DO statement WHILE PAREN_S expr PAREN_E  TRM
+do_st		: DO statement WHILE PAREN_S expr PAREN_E  TRM		{push(s1,63);push(s2,109);}
 		;
 
-for_st		: FOR PAREN_S for_init_e  TRM expr_e  TRM for_update_e  TRM PAREN_E statement
+for_st		: FOR PAREN_S for_init_e TRM expr_e TRM for_update_e TRM PAREN_E statement	{push(s1,64);push(s2,110);}
 		;
 
-for_st_no_short_if	: FOR PAREN_S for_init_e  TRM expr_e  TRM for_update_e  TRM PAREN_E st_no_short_if
+for_st_no_short_if	: FOR PAREN_S for_init_e TRM expr_e TRM for_update_e TRM PAREN_E st_no_short_if	{push(s1,65);push(s2,111);}
 		;
 
-for_init_e	: for_init
-		| /* empty */
+for_init_e	: for_init	{push(s1,66);push(s2,112);}
+		| /* empty */	{push(s1,66);push(s2,0);}
 		;
 
-for_init	: st_expr_list
-		| loc_var_dec
+for_init	: st_expr_list	{push(s1,67);push(s2,113);}
+		| loc_var_dec	{push(s1,67);push(s2,114);}
 		;
 
-expr_e		: expr
-		| /* empty */
+expr_e		: expr		{push(s1,68);push(s2,115);}
+		| /* empty */	{push(s1,68);push(s2,0);}
 		;
 
-for_update_e	: for_update
-		| /* empty */
+for_update_e	: for_update	{push(s1,69);push(s2,116);}
+		| /* empty */	{push(s1,69);push(s2,0);}
 		;
 
-for_update	: st_expr_list
+for_update	: st_expr_list	{push(s1,70);push(s2,117);}
 		;
 
-st_expr_list	: st_expr
-		| st_expr_list SEP st_expr
+st_expr_list	: st_expr			{push(s1,71);push(s2,118);}
+		| st_expr_list SEP st_expr	{push(s1,71);push(s2,119);}
 		;
 
-break_st	: BREAK  TRM
+break_st	: BREAK TRM	{push(s1,72);push(s2,120);}
 		;
 
-continue_st	: CONT  TRM
+continue_st	: CONT TRM	{push(s1,73);push(s2,121);}
 		;
 
-return_st	: RETURN expr_e  TRM
+return_st	: RETURN expr_e TRM	{push(s1,74);push(s2,122);}
 		;
 
-expr		: cond_expr
-		| assgn
+expr		: cond_expr	{push(s1,75);push(s2,123);}
+		| assgn		{push(s1,75);push(s2,124);}
 		;
 
-assgn		: lhs assgn_op expr
+assgn		: lhs assgn_op expr	{push(s1,76);push(s2,125);}
 		;
 
-lhs		: name
-		| field_access
-		| array_access
+lhs		: name		{push(s1,77);push(s2,126);}
+		| field_access	{push(s1,77);push(s2,127);}
+		| array_access	{push(s1,77);push(s2,128);}
 		;
 
-assgn_op	: OP_ASS
-		| OP_MUL_ASS
-		| OP_DIV_ASS
-		| OP_MOD_ASS
-		| OP_ADD_ASS
-		| OP_SUB_ASS
-		| OP_LSH_ASS
-		| OP_RSH_ASS
-		| OP_ZRSH_ASS
-		| OP_AND_ASS
-		| OP_XOR_ASS
-		| OP_OR_ASS
+assgn_op	: OP_ASS	{push(s1,78);push(s2,129);}
+		| OP_MUL_ASS	{push(s1,78);push(s2,130);}
+		| OP_DIV_ASS	{push(s1,78);push(s2,131);}
+		| OP_MOD_ASS	{push(s1,78);push(s2,132);}
+		| OP_ADD_ASS	{push(s1,78);push(s2,133);}
+		| OP_SUB_ASS	{push(s1,78);push(s2,134);}
+		| OP_LSH_ASS	{push(s1,78);push(s2,135);}
+		| OP_RSH_ASS	{push(s1,78);push(s2,136);}
+		| OP_ZRSH_ASS	{push(s1,78);push(s2,137);}
+		| OP_AND_ASS	{push(s1,78);push(s2,138);}
+		| OP_XOR_ASS	{push(s1,78);push(s2,139);}
+		| OP_OR_ASS	{push(s1,78);push(s2,140);}
 		;
 
-cond_expr	: cond_or_expr
-		| cond_or_expr OP_CON_Q expr COLON cond_expr
+cond_expr	: cond_or_expr					{push(s1,79);push(s2,141);}
+		| cond_or_expr OP_CON_Q expr COLON cond_expr	{push(s1,79);push(s2,142);}
 		;
 
-cond_or_expr	: cond_and_expr
-		| cond_or_expr OP_CON_OR cond_and_expr
+cond_or_expr	: cond_and_expr					{push(s1,80);push(s2,143);}
+		| cond_or_expr OP_CON_OR cond_and_expr		{push(s1,80);push(s2,144);}
 		;
 
-cond_and_expr	: incl_or_expr
-		| cond_and_expr OP_CON_AND incl_or_expr
+cond_and_expr	: incl_or_expr					{push(s1,81);push(s2,145);}
+		| cond_and_expr OP_CON_AND incl_or_expr		{push(s1,81);push(s2,146);}
 		;
 
-incl_or_expr	: excl_or_expr
+incl_or_expr	: excl_or_expr					{push(s1,82);push(s2,147);}
 		;
 
-excl_or_expr	: and_expr
-		| excl_or_expr OP_XOR and_expr
+excl_or_expr	: and_expr					{push(s1,83);push(s2,148);}
+		| excl_or_expr OP_XOR and_expr			{push(s1,83);push(s2,149);}
 		;
 
-and_expr 	: equality_expr
-		| and_expr OP_AND equality_expr
+and_expr 	: equality_expr					{push(s1,84);push(s2,150);}
+		| and_expr OP_AND equality_expr			{push(s1,84);push(s2,151);}
 		;
 
-equality_expr	: rel_expr
-		| equality_expr OP_EQ rel_expr
-		| equality_expr OP_NEQ rel_expr
+equality_expr	: rel_expr					{push(s1,85);push(s2,152);}
+		| equality_expr OP_EQ rel_expr			{push(s1,85);push(s2,153);}
+		| equality_expr OP_NEQ rel_expr			{push(s1,85);push(s2,154);}
 		;
 
-rel_expr	: shift_expr
-		| rel_expr OP_LES shift_expr
-		| rel_expr OP_GRE shift_expr
-		| rel_expr OP_LEQ shift_expr
-		| rel_expr OP_GEQ shift_expr
-		| rel_expr INSTANCEOF reference_type
+rel_expr	: shift_expr					{push(s1,86);push(s2,155);}
+		| rel_expr OP_LES shift_expr			{push(s1,86);push(s2,156);}
+		| rel_expr OP_GRE shift_expr			{push(s1,86);push(s2,157);}
+		| rel_expr OP_LEQ shift_expr			{push(s1,86);push(s2,158);}
+		| rel_expr OP_GEQ shift_expr			{push(s1,86);push(s2,159);}
+		| rel_expr INSTANCEOF reference_type		{push(s1,86);push(s2,160);}
 		;
 
-shift_expr	: add_expr
-		| shift_expr OP_LSH add_expr
-		| shift_expr OP_RSH add_expr
-		| shift_expr OP_ZRSH add_expr
+shift_expr	: add_expr					{push(s1,87);push(s2,161);}
+		| shift_expr OP_LSH add_expr			{push(s1,87);push(s2,162);}
+		| shift_expr OP_RSH add_expr			{push(s1,87);push(s2,163);}
+		| shift_expr OP_ZRSH add_expr			{push(s1,87);push(s2,164);}
 		;
 
-add_expr	: mul_expr
-		| add_expr OP_ADD mul_expr
-		| add_expr OP_SUB mul_expr
+add_expr	: mul_expr					{push(s1,88);push(s2,165);}
+		| add_expr OP_ADD mul_expr			{push(s1,88);push(s2,166);}
+		| add_expr OP_SUB mul_expr			{push(s1,88);push(s2,167);}
 		;
 
 mul_expr	: unary_expr
