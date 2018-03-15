@@ -30,10 +30,7 @@ int isEmpty(struct Stack* stack){
 }
 
 void push(struct Stack* stack, int item){
-    if (isFull(stack)){
-    	maxsize = 2 * maxsize;
-        stack->array = realloc(stack->array, maxsize * sizeof(int));
-    }
+	//printf("%d\n",stack->size);
     stack->array[++stack->size] = item;
 }
 
@@ -48,6 +45,7 @@ struct Stack* s2;
 
 char *find1(int k){
 	char *str;
+	str=(char *)malloc(1000*sizeof(char));
 	switch(k){
 	case 1: strcpy(str, "compilation_unit"); break;   
 	case 2: strcpy(str, "type_declarations_e"); break;
@@ -161,10 +159,12 @@ char *find1(int k){
 	case 110: strcpy(str, "literal"); break;
 	case 111: strcpy(str, "int_literal");	 break;
 	}
+	return str;
 }
 
 char *find2(int k){
 	char *str;
+	str=(char *)malloc(100*sizeof(char));
 	switch(k){
 	case 0 : strcpy(str, ""); break;
 	case 1 : strcpy(str, "type_declarations_e"); break;
@@ -394,6 +394,7 @@ char *find2(int k){
 	case 225 : strcpy(str, "INT_LIT_O"); break;
 	case 226 : strcpy(str, "INT_LIT_D"); break;
 	}
+	return str;
 }
 %}
 
@@ -900,10 +901,14 @@ int main(int argc, char** argv){
 		printf("Error in opening file \n . Aborting....");
 		exit(0);
 	}
+
 	while(!feof(yyin)){
 		yyparse();
 	}
-
+	//printf("$$$$%d$$$$\n",s1->size);
+	while(!isEmpty(s1)){
+		printf("%s: %s\n", find1(pop(s1)), find2(pop(s2)));
+	}
 	return 0;
 }
 
