@@ -420,20 +420,20 @@ char *find2(int k){
 	case 211 : strcpy(str, "[ ]"); break;
 	case 212 : strcpy(str, "name [ expr ]"); break;
 	case 213 : strcpy(str, "primary_no_new_array [ expr ]"); break;
-	case 214 : strcpy(str, "CID"); break;
+	case 214 : strcpy(str, popStr(lexeme)); break;
 	case 215 : strcpy(str, "identifier"); break;
 	case 216 : strcpy(str, "name . identifier"); break;
 	case 217 : strcpy(str, "int_literal"); break;
-	case 218 : strcpy(str, "FLOAT_LIT"); break;
-	case 219 : strcpy(str, "CHAR_LIT"); break;
-	case 220 : strcpy(str, "STR_LIT"); break;
+	case 218 : strcpy(str, popStr(lexeme)); break;
+	case 219 : strcpy(str, popStr(lexeme)); break;
+	case 220 : strcpy(str, popStr(lexeme)); break;
 	case 221 : strcpy(str, "true"); break;
 	case 222 : strcpy(str, "false"); break;
 	case 223 : strcpy(str, "null"); break;
-	case 224 : strcpy(str, "INT_LIT_H"); break;
-	case 225 : strcpy(str, "INT_LIT_O"); break;
-	case 226 : strcpy(str, "INT_LIT_D"); break;
-	case 227 : strcpy(str, "ID"); break;
+	case 224 : strcpy(str, popStr(lexeme)); break;
+	case 225 : strcpy(str, popStr(lexeme)); break;
+	case 226 : strcpy(str, popStr(lexeme)); break;
+	case 227 : strcpy(str, popStr(lexeme)); break;
 	}
 	return str;
 }
@@ -909,7 +909,7 @@ array_access	: name ARRAY_S expr ARRAY_E				{push(s1,107);push(s2,212);}
 		| primary_no_new_array ARRAY_S expr ARRAY_E		{push(s1,107);push(s2,213);}
 		;
 
-type_name		: CID			{push(s1,108);push(s2,214);}
+type_name		: CID			{push(s1,108);push(s2,214);pushStr(lexeme,$1);}
 			;
 
 name			: identifier			{push(s1,109);push(s2,215);}
@@ -917,26 +917,27 @@ name			: identifier			{push(s1,109);push(s2,215);}
 			;
 
 literal			: int_literal		{push(s1,110);push(s2,217);}
-			| FLOAT_LIT		{push(s1,110);push(s2,218);}
-			| CHAR_LIT		{push(s1,110);push(s2,219);}
-			| STR_LIT		{push(s1,110);push(s2,220);}
+			| FLOAT_LIT		{push(s1,110);push(s2,218);char ch[20];sprintf(ch,"%f",$1);pushStr(lexeme,ch);}
+			| CHAR_LIT		{push(s1,110);push(s2,219);pushStr(lexeme,$1);}
+			| STR_LIT		{push(s1,110);push(s2,220);pushStr(lexeme,$1);}
 			| T			{push(s1,110);push(s2,221);}
 			| F			{push(s1,110);push(s2,222);}
 			| N			{push(s1,110);push(s2,223);}
 			;
 
-int_literal		: INT_LIT_H		{push(s1,111);push(s2,224);}
-			| INT_LIT_O		{push(s1,111);push(s2,225);}
-			| INT_LIT_D		{push(s1,111);push(s2,226);}
+int_literal		: INT_LIT_H		{push(s1,111);push(s2,224);char ch[20];sprintf(ch,"%d",$1);pushStr(lexeme,ch);}
+			| INT_LIT_O		{push(s1,111);push(s2,225);char ch[20];sprintf(ch,"%d",$1);pushStr(lexeme,ch);}
+			| INT_LIT_D		{push(s1,111);push(s2,226);char ch[20];sprintf(ch,"%d",$1);pushStr(lexeme,ch);}
 			;
 
-identifier		: ID			{push(s1,112);push(s2,227);}
+identifier		: ID			{push(s1,112);push(s2,227);pushStr(lexeme,$1);}
 			;
 %%
 struct StackStr* str4;
 int main(int argc, char** argv){
 	s1 = createIntStack();
 	s2 = createIntStack();
+	lexeme = createCharStack();
          str1 = createCharStack();
          str2= createCharStack();
          str4= createCharStack();
