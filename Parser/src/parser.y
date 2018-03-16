@@ -434,6 +434,8 @@ char *find2(int k){
 	case 225 : strcpy(str, popStr(lexeme)); break;
 	case 226 : strcpy(str, popStr(lexeme)); break;
 	case 227 : strcpy(str, popStr(lexeme)); break;
+	case 228 : strcpy(str, "scan ( identifier )"); break;
+	case 229 : strcpy(str, "print ( var_inits )"); break;
 	}
 	return str;
 }
@@ -447,7 +449,7 @@ char *find2(int k){
 
 %start compilation_unit
 
-%token CLASS INSTANCEOF NEW SUPER THIS COMMENT
+%token CLASS INSTANCEOF NEW SUPER THIS
 %token BOOL BYTE CHAR T FLOAT INT F N VOID
 %token BREAK CASE DEFAULT ELSE IF SWITCH
 %token CONT DO FOR WHILE
@@ -463,7 +465,7 @@ char *find2(int k){
 %token <ival>INT_LIT_D INT_LIT_O INT_LIT_H
 %token <fval>FLOAT_LIT
 %token <sval>CHAR_LIT STR_LIT
-%token ERROR IGN
+%token ERROR
 %token PRINT SCAN OP_NEG STRING
 %token EXTENDS
 
@@ -653,6 +655,8 @@ st_wo_tsub	: block 									{push(s1,47);push(s2,77);}
 		| break_st 										{push(s1,47);push(s2,82);}
 		| continue_st 									{push(s1,47);push(s2,83);}
 		| return_st 									{push(s1,47);push(s2,84);}
+		| SCAN PAREN_S identifier PAREN_E						{push(s1,47);push(s2,228);}
+		| PRINT PAREN_S var_inits PAREN_E							{push(s1,47);push(s2,229);}
 		;
 
 empty_st	:  TRM 										{push(s1,48);push(s2,85);}
