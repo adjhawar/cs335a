@@ -197,6 +197,7 @@ char *find1(int k){
 	case 109: strcpy(str, "name"); break;
 	case 110: strcpy(str, "literal"); break;
 	case 111: strcpy(str, "int_literal");	 break;
+	case 112: strcpy(str, "identifier");	break;
 	}
 	return str;
 }
@@ -212,7 +213,7 @@ char *find2(int k){
 	case 4 : strcpy(str, "type_declarations type_declaration"); break;
 	case 5 : strcpy(str, "class_declaration"); break;
 	case 6 : strcpy(str, ";"); break;
-	case 7 : strcpy(str, "class CID super_e class_body"); break;
+	case 7 : strcpy(str, "class type_name super_e class_body"); break;
 	case 8 : strcpy(str, "supers"); break;
 	case 9 : strcpy(str, "extends class_type"); break;
 	case 10 : strcpy(str, "{ class_body_decl_e }"); break;
@@ -238,11 +239,11 @@ char *find2(int k){
 	case 30 : strcpy(str, "var_declarators , var_declarator"); break;
 	case 31 : strcpy(str, "var_decl_id"); break;
 	case 32 : strcpy(str, "var_decl_id = var_init"); break;
-	case 33 : strcpy(str, "ID"); break;
+	case 33 : strcpy(str, "identifier"); break;
 	case 34 : strcpy(str, "var_decl_id [ ]"); break;
 	case 35 : strcpy(str, "method_header method_body"); break;
 	case 36 : strcpy(str, "type method_declarator"); break;
-	case 37 : strcpy(str, "ID ( formal_para_list_e )"); break;
+	case 37 : strcpy(str, "identifier ( formal_para_list_e )"); break;
 	case 38 : strcpy(str, "block"); break;
 	case 39 : strcpy(str, ";"); break;
 	case 40 : strcpy(str, "{ var_init_e }"); break;
@@ -396,10 +397,10 @@ char *find2(int k){
 	case 188 : strcpy(str, "postinc_expr"); break;
 	case 189 : strcpy(str, "postdec_expr"); break;
 	case 190 : strcpy(str, "name ( arg_list_e ) "); break;
-	case 191 : strcpy(str, "primary . ID ( arg_list_e )"); break;
-	case 192 : strcpy(str, "super . ID ( arg_list_e )"); break;
-	case 193 : strcpy(str, "primary . ID"); break;
-	case 194 : strcpy(str, "super . ID"); break;
+	case 191 : strcpy(str, "primary . identifier ( arg_list_e )"); break;
+	case 192 : strcpy(str, "super . identifier ( arg_list_e )"); break;
+	case 193 : strcpy(str, "primary . identifier"); break;
+	case 194 : strcpy(str, "super . identifier"); break;
 	case 195 : strcpy(str, "primary_no_new_array"); break;
 	case 196 : strcpy(str, "array_creat_expr"); break;
 	case 197 : strcpy(str, "literal"); break;
@@ -420,8 +421,8 @@ char *find2(int k){
 	case 212 : strcpy(str, "name [ expr ]"); break;
 	case 213 : strcpy(str, "primary_no_new_array [ expr ]"); break;
 	case 214 : strcpy(str, "CID"); break;
-	case 215 : strcpy(str, "ID"); break;
-	case 216 : strcpy(str, "name . ID"); break;
+	case 215 : strcpy(str, "identifier"); break;
+	case 216 : strcpy(str, "name . identifier"); break;
 	case 217 : strcpy(str, "int_literal"); break;
 	case 218 : strcpy(str, "FLOAT_LIT"); break;
 	case 219 : strcpy(str, "CHAR_LIT"); break;
@@ -432,6 +433,7 @@ char *find2(int k){
 	case 224 : strcpy(str, "INT_LIT_H"); break;
 	case 225 : strcpy(str, "INT_LIT_O"); break;
 	case 226 : strcpy(str, "INT_LIT_D"); break;
+	case 227 : strcpy(str, "ID"); break;
 	}
 	return str;
 }
@@ -451,13 +453,16 @@ char *find2(int k){
 %token CONT DO FOR WHILE
 %token RETURN
 %token CONST
-%token CID ID SEP TRM COLON
+%token <sval>CID ID
+%token SEP TRM COLON
 %token ARRAY_S ARRAY_E BLOCK_S BLOCK_E PAREN_S PAREN_E
 %token OP_ASS OP_ADD_ASS OP_SUB_ASS OP_DIV_ASS OP_MUL_ASS OP_MOD_ASS OP_LSH_ASS OP_RSH_ASS OP_AND_ASS OP_OR_ASS OP_XOR_ASS OP_ZRSH_ASS
 %token OP_CON_Q OP_CON_AND OP_CON_OR
 %token OP_OR OP_XOR OP_AND OP_EQ OP_NEQ OP_GRE OP_LES OP_GEQ OP_LEQ
 %token OP_RSH OP_LSH OP_ADD OP_SUB OP_MUL OP_DIV OP_MOD OP_INC OP_DEC OP_DOT OP_ZRSH
-%token INT_LIT_D INT_LIT_O INT_LIT_H FLOAT_LIT CHAR_LIT STR_LIT
+%token <ival>INT_LIT_D INT_LIT_O INT_LIT_H
+%token <fval>FLOAT_LIT
+%token <sval>CHAR_LIT STR_LIT
 %token ERROR IGN
 %token PRINT SCAN OP_NEG STRING
 %token EXTENDS
@@ -481,7 +486,7 @@ type_declaration	: class_declaration 							{push(s1,4);push(s2,5);}
 			| TRM 									{push(s1,4);push(s2,6);}
 			;
 
-class_declaration	: CLASS CID super_e class_body 						{push(s1,5);push(s2,7);}
+class_declaration	: CLASS type_name super_e class_body 						{push(s1,5);push(s2,7);}
 			;
 
 super_e			: supers 								{push(s1,6);push(s2,8);}
@@ -546,7 +551,7 @@ var_declarator		: var_decl_id 								{push(s1,22);push(s2,31);}
 			| var_decl_id OP_ASS var_init 						{push(s1,22);push(s2,32);}
 			;
 
-var_decl_id		: ID 									{push(s1,23);push(s2,33);}
+var_decl_id		: identifier 									{push(s1,23);push(s2,33);}
 			| var_decl_id ARRAY_S ARRAY_E 						{push(s1,23);push(s2,34);}
 			;
 
@@ -556,7 +561,7 @@ method_decl		: method_header method_body 						{push(s1,24);push(s2,35);}
 method_header		: type method_declarator 						{push(s1,25);push(s2,36);}
 			;
 
-method_declarator	: ID PAREN_S formal_para_list_e PAREN_E 				{push(s1,26);push(s2,37);}
+method_declarator	: identifier PAREN_S formal_para_list_e PAREN_E 				{push(s1,26);push(s2,37);}
 			;
 
 method_body		: block 								{push(s1,27);push(s2,38);}
@@ -860,12 +865,12 @@ postfix_expr	: primary		{push(s1,97);push(s2,186);}
 		;
 
 method_invo	: name PAREN_S arg_list_e PAREN_E 		{push(s1,98);push(s2,190);}
-		| primary OP_DOT ID PAREN_S arg_list_e PAREN_E		{push(s1,98);push(s2,191);}
-		| SUPER OP_DOT ID PAREN_S arg_list_e PAREN_E		{push(s1,98);push(s2,192);}
+		| primary OP_DOT identifier PAREN_S arg_list_e PAREN_E		{push(s1,98);push(s2,191);}
+		| SUPER OP_DOT identifier PAREN_S arg_list_e PAREN_E		{push(s1,98);push(s2,192);}
 		;
 
-field_access	: primary OP_DOT ID		{push(s1,99);push(s2,193);}
-		| SUPER OP_DOT ID		{push(s1,99);push(s2,194);}
+field_access	: primary OP_DOT identifier		{push(s1,99);push(s2,193);}
+		| SUPER OP_DOT identifier		{push(s1,99);push(s2,194);}
 		;
 
 primary		: primary_no_new_array		{push(s1,100);push(s2,195);}
@@ -904,11 +909,11 @@ array_access	: name ARRAY_S expr ARRAY_E				{push(s1,107);push(s2,212);}
 		| primary_no_new_array ARRAY_S expr ARRAY_E		{push(s1,107);push(s2,213);}
 		;
 
-type_name		: CID		{push(s1,108);push(s2,214);}
+type_name		: CID			{push(s1,108);push(s2,214);}
 			;
 
-name			: ID			{push(s1,109);push(s2,215);}
-			| name OP_DOT ID	{push(s1,109);push(s2,216);}
+name			: identifier			{push(s1,109);push(s2,215);}
+			| name OP_DOT identifier	{push(s1,109);push(s2,216);}
 			;
 
 literal			: int_literal		{push(s1,110);push(s2,217);}
@@ -925,6 +930,8 @@ int_literal		: INT_LIT_H		{push(s1,111);push(s2,224);}
 			| INT_LIT_D		{push(s1,111);push(s2,226);}
 			;
 
+identifier		: ID			{push(s1,112);push(s2,227);}
+			;
 %%
 struct StackStr* str4;
 int main(int argc, char** argv){

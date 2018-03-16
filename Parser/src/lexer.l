@@ -1,5 +1,6 @@
 %{
 #include "y.tab.h"
+#include <string.h>
 int yylineno;
 %}
 
@@ -42,8 +43,8 @@ int yylineno;
 "scan"			return SCAN;
 [\/][\/].*		;
 
-(([a-zA-Z$][a-zA-Z0-9_]*)|(_[a-zA-Z0-9_]+))/([\s]*[{])	return CID;
-([a-zA-Z$][a-zA-Z0-9_]*)|(_[a-zA-Z0-9_]+)	return ID;
+[$](([a-zA-Z$][a-zA-Z0-9_]*)|(_[a-zA-Z0-9_]+))	{yylval.sval=strdup(yytext);return CID;}
+([a-zA-Z$][a-zA-Z0-9_]*)|(_[a-zA-Z0-9_]+)	{yylval.sval=strdup(yytext);return ID;}
 ;			return TRM;
 ,			return SEP;
 :			return COLON;
@@ -95,13 +96,13 @@ int yylineno;
 \.			return OP_DOT;
 ">>>"			return OP_ZRSH;
 
-\"([\\][\"]|[^\"\n])*\"    return STR_LIT;
-\'[\\]?.[\']		return CHAR_LIT;
+\"([\\][\"]|[^\"\n])*\" 	{yylval.sval=strdup(yytext);return STR_LIT;}
+\'[\\]?.[\']			{yylval.sval=strdup(yytext);return CHAR_LIT;}
 \'.|\"[^\"\n]*		return ERROR;
-[0-9]*[.][0-9]+([eE][+-]?[0-9]+)?		return FLOAT_LIT;
-[0][xX][0-9a-fA-F]+	return INT_LIT_H;
-[0][0-7]+		return INT_LIT_O;
-[0-9]+			return INT_LIT_D;
+[0-9]*[.][0-9]+([eE][+-]?[0-9]+)?		{yylval.fval=atof(yytext);return FLOAT_LIT;}
+[0][xX][0-9a-fA-F]+				{yylval.ival=atoi(yytext);return INT_LIT_H;}
+[0][0-7]+					{yylval.ival=atoi(yytext);return INT_LIT_O;}
+[0-9]+						{yylval.ival=atoi(yytext);return INT_LIT_D;}
 
 \n			{yylineno++;}
 [\t\r\f]|" "		;
