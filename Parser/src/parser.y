@@ -947,7 +947,13 @@ int main(int argc, char** argv){
          str4= createCharStack();
          push(s1,0);
 	FILE *fptr = fopen(argv[1], "r");
-	out = fopen("out.html", "a");
+	char ext[6];
+	strcpy(ext, ".html");
+	char *temp;
+	char *outputfile = strtok(argv[1], ".");
+	temp = strtok_r(outputfile, "/", &outputfile);
+	strcat(outputfile,ext);
+	out = fopen(outputfile, "w");
 	if(argc==2 && fptr!=NULL){
 		yyin = fptr;
 	}
