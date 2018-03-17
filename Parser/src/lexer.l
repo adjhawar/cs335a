@@ -2,6 +2,7 @@
 #include "y.tab.h"
 #include <string.h>
 int yylineno;
+int yynerrs;
 %}
 
 %%
@@ -113,4 +114,8 @@ int yylineno;
 
 int yywrap(void){
 	return 1;
+}
+
+void yyerror(const char *s){
+	fprintf(stderr,"Error in Line: %d %s\n",yylineno,s);
 }

@@ -1,13 +1,10 @@
-/*
-to check if program does not take String as a keyword 
-*/
-class StringExample
+class $StringExample
 {	
-	public static void main(String[] args)
+	void main()
 	{	
-		String s1 = "Compiler Design;
-		int x = 307;					// checking for the literals
-		String s2 = s1 + " " + x;
+		//String s1 = "Compiler Design";
+		 x = 307					// checking for the literals
+		//String s2 = s1 + " " + x;
 		String s3 = s2.substring(10,17);
 		String s4 = "is fun";
 		String s5 = s2 + s4;
@@ -22,7 +19,7 @@ class StringExample
 
 		x = 3;
 		int y = 5;
-		String s6 = x + y + "total";
+		//String s6 = x + y + "total";
 		String s7 = "total " + x + y;
 		String s8 = " " + x + y + "total";
 		System.out.println("s6: " + s6);

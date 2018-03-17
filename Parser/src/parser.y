@@ -8,8 +8,8 @@ extern int yylex();
 extern int yyparse();
 extern FILE *yyin;
 FILE *out;
-void yyerror(char *s);
-int maxsize = 1000;
+void yyerror(const char *s);
+int maxsize = 10000;
 struct Stack{
     int size;
     int* array;
@@ -37,7 +37,6 @@ int isEmpty(struct Stack* stack){
 }
 
 void push(struct Stack* stack, int item){
-	//printf("%d\n",stack->size);
     stack->array[++stack->size] = item;
 }
 
@@ -441,12 +440,14 @@ char *find2(int k){
 }
 %}
 
+%locations
+
 %union{
 	int ival;
 	char *sval;
 	float fval;
 }
-
+ %error-verbose
 %start compilation_unit
 
 %token CLASS INSTANCEOF NEW SUPER THIS
@@ -482,6 +483,7 @@ type_declarations_e	: type_declarations 							{push(s1,2);push(s2,2);}
 
 type_declarations	: type_declaration 							{push(s1,3);push(s2,3);}
 			| type_declarations type_declaration 					{push(s1,3);push(s2,4);}
+			| error VOID
 			;
 
 type_declaration	: class_declaration 							{push(s1,4);push(s2,5);}
@@ -638,7 +640,9 @@ statement	: st_wo_tsub 								{push(s1,45);push(s2,68);}
 		| if_then_st 									{push(s1,45);push(s2,69);}
 		| if_then_else_st 								{push(s1,45);push(s2,70);}
 		| while_st 										{push(s1,45);push(s2,71);}
-		| for_st 										{push(s1,45);push(s2,72);}
+		| for_st 										{push(s1,45);push(s2,72);}									
+		| error TRM										{yyerrok;}
+		| error BLOCK_E 								{yyerrok;}
 		;
 
 st_no_short_if	: st_wo_tsub 							{push(s1,46);push(s2,73);}
@@ -717,10 +721,10 @@ while_st_no_short_if	: WHILE PAREN_S expr PAREN_E st_no_short_if	{push(s1,62);pu
 do_st		: DO statement WHILE PAREN_S expr PAREN_E  TRM		{push(s1,63);push(s2,109);}
 		;
 
-for_st		: FOR PAREN_S for_init_e TRM expr_e TRM for_update_e TRM PAREN_E statement	{push(s1,64);push(s2,110);}
+for_st		: FOR PAREN_S for_init_e TRM expr_e TRM for_update_e  PAREN_E statement	{push(s1,64);push(s2,110);}
 		;
 
-for_st_no_short_if	: FOR PAREN_S for_init_e TRM expr_e TRM for_update_e TRM PAREN_E st_no_short_if	{push(s1,65);push(s2,111);}
+for_st_no_short_if	: FOR PAREN_S for_init_e TRM expr_e TRM for_update_e  PAREN_E st_no_short_if	{push(s1,65);push(s2,111);}
 		;
 
 for_init_e	: for_init	{push(s1,66);push(s2,112);}
@@ -914,6 +918,7 @@ array_access	: name ARRAY_S expr ARRAY_E				{push(s1,107);push(s2,212);}
 		;
 
 type_name		: CID			{push(s1,108);push(s2,214);pushStr(lexeme,$1);}
+				| error ID
 			;
 
 name			: identifier			{push(s1,109);push(s2,215);}
@@ -969,9 +974,6 @@ int main(int argc, char** argv){
 	return 0;
 }
 
-void yyerror(char *s){
-	fprintf(stderr,"%s\n",s);
-}
 void printCode()
 {
 	char c[50],b[100],a[50];

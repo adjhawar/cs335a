@@ -8,10 +8,12 @@ class TowerHanoi
 	        return;
 	    }
 	    tower(n-1, fr, ar, tr);
+	    else
 	    print("Move disk" + n + "from rod" + fr +" to rod " + tr);
 	    tower(n-1, ar, tr, fr);
+	    b
 	}
-	void main(String[] args)
+	void main()
 	{
 		int number_of_disks = 4;
 		tower(number_of_disks, 'A' , 'C' , 'B');

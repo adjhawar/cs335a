@@ -1,0 +1,101 @@
+<html> <head> <title> Rightmost derivation </title> </head> <body bgcolor='#E6E6FA'> 
+<h2> Rightmost Derivation of the code</h2>
+<b style = color:red> compilation_unit </b></br>
+<b style = color:red> type_declarations_e </b></br>
+<b style = color:red> type_declarations </b></br>
+<b style = color:red> type_declaration </b></br>
+<b style = color:red> class_declaration </b></br>
+class type_name super_e <b style = color:red> class_body </b></br>
+class type_name super_e { <b style = color:red> class_body_decl_e </b>} </br>
+class type_name super_e { <b style = color:red> class_body_decls </b>} </br>
+class type_name super_e { class_body_decls <b style = color:red> class_body_decl </b>} </br>
+class type_name super_e { class_body_decls <b style = color:red> class_mem_decl </b>} </br>
+class type_name super_e { class_body_decls <b style = color:red> method_decl </b>} </br>
+class type_name super_e { class_body_decls method_header <b style = color:red> method_body </b>} </br>
+class type_name super_e { class_body_decls method_header <b style = color:red> block </b>} </br>
+class type_name super_e { class_body_decls method_header { <b style = color:red> bl_statements_e </b>} } </br>
+class type_name super_e { class_body_decls method_header { <b style = color:red> bl_statements </b>} } </br>
+class type_name super_e { class_body_decls method_header { bl_statements <b style = color:red> block_statement </b>} } </br>
+class type_name super_e { class_body_decls method_header { bl_statements <b style = color:red> statement </b>} } </br>
+class type_name super_e { class_body_decls method_header { bl_statements <b style = color:red> st_wo_tsub </b>} } </br>
+class type_name super_e { class_body_decls method_header { bl_statements <b style = color:red> return_st </b>} } </br>
+class type_name super_e { class_body_decls method_header { bl_statements return <b style = color:red> expr_e </b>; } } </br>
+class type_name super_e { class_body_decls method_header { bl_statements return <b style = color:red> expr </b>; } } </br>
+class type_name super_e { class_body_decls method_header { bl_statements return <b style = color:red> cond_expr </b>; } } </br>
+class type_name super_e { class_body_decls method_header { bl_statements return <b style = color:red> cond_or_expr </b>; } } </br>
+class type_name super_e { class_body_decls method_header { bl_statements return <b style = color:red> cond_and_expr </b>; } } </br>
+class type_name super_e { class_body_decls method_header { bl_statements return <b style = color:red> incl_or_expr </b>; } } </br>
+class type_name super_e { class_body_decls method_header { bl_statements return <b style = color:red> excl_or_expr </b>; } } </br>
+class type_name super_e { class_body_decls method_header { bl_statements return <b style = color:red> and_expr </b>; } } </br>
+class type_name super_e { class_body_decls method_header { bl_statements return <b style = color:red> equality_expr </b>; } } </br>
+class type_name super_e { class_body_decls method_header { bl_statements return <b style = color:red> rel_expr </b>; } } </br>
+class type_name super_e { class_body_decls method_header { bl_statements return <b style = color:red> shift_expr </b>; } } </br>
+class type_name super_e { class_body_decls method_header { bl_statements return <b style = color:red> add_expr </b>; } } </br>
+class type_name super_e { class_body_decls method_header { bl_statements return <b style = color:red> mul_expr </b>; } } </br>
+class type_name super_e { class_body_decls method_header { bl_statements return <b style = color:red> unary_expr </b>; } } </br>
+class type_name super_e { class_body_decls method_header { bl_statements return <b style = color:red> unary_expr_not_plus_minus </b>; } } </br>
+class type_name super_e { class_body_decls method_header { bl_statements return <b style = color:red> postfix_expr </b>; } } </br>
+class type_name super_e { class_body_decls method_header { bl_statements return <b style = color:red> primary </b>; } } </br>
+class type_name super_e { class_body_decls method_header { bl_statements return <b style = color:red> primary_no_new_array </b>; } } </br>
+class type_name super_e { class_body_decls method_header { bl_statements return <b style = color:red> literal </b>; } } </br>
+class type_name super_e { class_body_decls method_header { bl_statements return <b style = color:red> int_literal </b>; } } </br>
+class type_name super_e { class_body_decls method_header { <b style = color:red> bl_statements </b>return 0 ; } } </br>
+class type_name super_e { class_body_decls method_header { <b style = color:red> block_statement </b>return 0 ; } } </br>
+class type_name super_e { class_body_decls method_header { <b style = color:red> statement </b>return 0 ; } } </br>
+class type_name super_e { class_body_decls method_header { <b style = color:red> st_wo_tsub </b>return 0 ; } } </br>
+class type_name super_e { class_body_decls method_header { <b style = color:red> expr_st </b>return 0 ; } } </br>
+class type_name super_e { class_body_decls method_header { <b style = color:red> st_expr </b>; return 0 ; } } </br>
+class type_name super_e { class_body_decls method_header { <b style = color:red> method_invo </b>; return 0 ; } } </br>
+class type_name super_e { class_body_decls method_header { name ( <b style = color:red> arg_list_e </b>) ; return 0 ; } } </br>
+class type_name super_e { class_body_decls method_header { <b style = color:red> name </b>( ) ; return 0 ; } } </br>
+class type_name super_e { class_body_decls method_header { <b style = color:red> identifier </b>( ) ; return 0 ; } } </br>
+class type_name super_e { class_body_decls <b style = color:red> method_header </b>{ foo ( ) ; return 0 ; } } </br>
+class type_name super_e { class_body_decls type <b style = color:red> method_declarator </b>{ foo ( ) ; return 0 ; } } </br>
+class type_name super_e { class_body_decls type identifier ( <b style = color:red> formal_para_list_e </b>) { foo ( ) ; return 0 ; } } </br>
+class type_name super_e { class_body_decls type <b style = color:red> identifier </b>( ) { foo ( ) ; return 0 ; } } </br>
+class type_name super_e { class_body_decls <b style = color:red> type </b>main ( ) { foo ( ) ; return 0 ; } } </br>
+class type_name super_e { class_body_decls <b style = color:red> primitive_type </b>main ( ) { foo ( ) ; return 0 ; } } </br>
+class type_name super_e { class_body_decls <b style = color:red> numeric_type </b>main ( ) { foo ( ) ; return 0 ; } } </br>
+class type_name super_e { class_body_decls <b style = color:red> integer_type </b>main ( ) { foo ( ) ; return 0 ; } } </br>
+class type_name super_e { <b style = color:red> class_body_decls </b>int main ( ) { foo ( ) ; return 0 ; } } </br>
+class type_name super_e { <b style = color:red> class_body_decl </b>int main ( ) { foo ( ) ; return 0 ; } } </br>
+class type_name super_e { <b style = color:red> const_decl </b>int main ( ) { foo ( ) ; return 0 ; } } </br>
+class type_name super_e { const_declarator <b style = color:red> const_body </b>int main ( ) { foo ( ) ; return 0 ; } } </br>
+class type_name super_e { const_declarator { <b style = color:red> bl_statements_e </b>} int main ( ) { foo ( ) ; return 0 ; } } </br>
+class type_name super_e { const_declarator { <b style = color:red> bl_statements </b>} int main ( ) { foo ( ) ; return 0 ; } } </br>
+class type_name super_e { const_declarator { <b style = color:red> block_statement </b>} int main ( ) { foo ( ) ; return 0 ; } } </br>
+class type_name super_e { const_declarator { <b style = color:red> loc_var_dec_st </b>} int main ( ) { foo ( ) ; return 0 ; } } </br>
+class type_name super_e { const_declarator { <b style = color:red> loc_var_dec </b>; } int main ( ) { foo ( ) ; return 0 ; } } </br>
+class type_name super_e { const_declarator { type <b style = color:red> var_declarators </b>; } int main ( ) { foo ( ) ; return 0 ; } } </br>
+class type_name super_e { const_declarator { type <b style = color:red> var_declarator </b>; } int main ( ) { foo ( ) ; return 0 ; } } </br>
+class type_name super_e { const_declarator { type var_decl_id = <b style = color:red> var_init </b>; } int main ( ) { foo ( ) ; return 0 ; } } </br>
+class type_name super_e { const_declarator { type var_decl_id = <b style = color:red> expr </b>; } int main ( ) { foo ( ) ; return 0 ; } } </br>
+class type_name super_e { const_declarator { type var_decl_id = <b style = color:red> cond_expr </b>; } int main ( ) { foo ( ) ; return 0 ; } } </br>
+class type_name super_e { const_declarator { type var_decl_id = <b style = color:red> cond_or_expr </b>; } int main ( ) { foo ( ) ; return 0 ; } } </br>
+class type_name super_e { const_declarator { type var_decl_id = <b style = color:red> cond_and_expr </b>; } int main ( ) { foo ( ) ; return 0 ; } } </br>
+class type_name super_e { const_declarator { type var_decl_id = <b style = color:red> incl_or_expr </b>; } int main ( ) { foo ( ) ; return 0 ; } } </br>
+class type_name super_e { const_declarator { type var_decl_id = <b style = color:red> excl_or_expr </b>; } int main ( ) { foo ( ) ; return 0 ; } } </br>
+class type_name super_e { const_declarator { type var_decl_id = <b style = color:red> and_expr </b>; } int main ( ) { foo ( ) ; return 0 ; } } </br>
+class type_name super_e { const_declarator { type var_decl_id = <b style = color:red> equality_expr </b>; } int main ( ) { foo ( ) ; return 0 ; } } </br>
+class type_name super_e { const_declarator { type var_decl_id = <b style = color:red> rel_expr </b>; } int main ( ) { foo ( ) ; return 0 ; } } </br>
+class type_name super_e { const_declarator { type var_decl_id = <b style = color:red> shift_expr </b>; } int main ( ) { foo ( ) ; return 0 ; } } </br>
+class type_name super_e { const_declarator { type var_decl_id = <b style = color:red> add_expr </b>; } int main ( ) { foo ( ) ; return 0 ; } } </br>
+class type_name super_e { const_declarator { type var_decl_id = <b style = color:red> mul_expr </b>; } int main ( ) { foo ( ) ; return 0 ; } } </br>
+class type_name super_e { const_declarator { type var_decl_id = <b style = color:red> unary_expr </b>; } int main ( ) { foo ( ) ; return 0 ; } } </br>
+class type_name super_e { const_declarator { type var_decl_id = <b style = color:red> unary_expr_not_plus_minus </b>; } int main ( ) { foo ( ) ; return 0 ; } } </br>
+class type_name super_e { const_declarator { type var_decl_id = <b style = color:red> postfix_expr </b>; } int main ( ) { foo ( ) ; return 0 ; } } </br>
+class type_name super_e { const_declarator { type var_decl_id = <b style = color:red> primary </b>; } int main ( ) { foo ( ) ; return 0 ; } } </br>
+class type_name super_e { const_declarator { type var_decl_id = <b style = color:red> primary_no_new_array </b>; } int main ( ) { foo ( ) ; return 0 ; } } </br>
+class type_name super_e { const_declarator { type var_decl_id = <b style = color:red> literal </b>; } int main ( ) { foo ( ) ; return 0 ; } } </br>
+class type_name super_e { const_declarator { type var_decl_id = <b style = color:red> int_literal </b>; } int main ( ) { foo ( ) ; return 0 ; } } </br>
+class type_name super_e { const_declarator { type <b style = color:red> var_decl_id </b>= 1 ; } int main ( ) { foo ( ) ; return 0 ; } } </br>
+class type_name super_e { const_declarator { type <b style = color:red> identifier </b>= 1 ; } int main ( ) { foo ( ) ; return 0 ; } } </br>
+class type_name super_e { const_declarator { <b style = color:red> type </b>i = 1 ; } int main ( ) { foo ( ) ; return 0 ; } } </br>
+class type_name super_e { const_declarator { <b style = color:red> primitive_type </b>i = 1 ; } int main ( ) { foo ( ) ; return 0 ; } } </br>
+class type_name super_e { const_declarator { <b style = color:red> numeric_type </b>i = 1 ; } int main ( ) { foo ( ) ; return 0 ; } } </br>
+class type_name super_e { const_declarator { <b style = color:red> integer_type </b>i = 1 ; } int main ( ) { foo ( ) ; return 0 ; } } </br>
+class type_name super_e { <b style = color:red> const_declarator </b>{ int i = 1 ; } int main ( ) { foo ( ) ; return 0 ; } } </br>
+class type_name super_e { type_name ( <b style = color:red> formal_para_list_e </b>) { int i = 1 ; } int main ( ) { foo ( ) ; return 0 ; } } </br>
+class type_name <b style = color:red> super_e </b>{ type_name ( ) { int i = 1 ; } int main ( ) { foo ( ) ; return 0 ; } } </br>
+class type_name { type_name ( ) { int i = 1 ; } int main ( ) { foo ( ) ; return 0 ; } } </br>
+</body></html>
