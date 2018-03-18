@@ -3,7 +3,7 @@ class $StringExample
 	void main()
 	{	
 		//String s1 = "Compiler Design";
-		 x = 307					// checking for the literals
+		 x = 307;					// checking for the literals
 		//String s2 = s1 + " " + x;
 		String s3 = s2.substring(10,17);
 		String s4 = "is fun";
