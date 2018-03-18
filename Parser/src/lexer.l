@@ -100,7 +100,26 @@ int yynerrs;
 \"([\\][\"]|[^\"\n])*\" 	{yylval.sval=strdup(yytext);return STR_LIT;}
 \'[\\]?.[\']			{yylval.sval=strdup(yytext);return CHAR_LIT;}
 \'.|\"[^\"\n]*		return ERROR;
-[0-9]*[.][0-9]+([eE][+-]?[0-9]+)?		{yylval.fval=atof(yytext);return FLOAT_LIT;}
+[0-9]*[.][0-9]+([eE][+-]?[0-9]+)?		{int i,l=strlen(yytext),n=0;
+						 float f;
+						 char *s;
+						 for(i=0;i<l;i++)
+							if(yytext[i]=='e' || yytext[i]=='E')
+								break;
+						 if(i<l)
+							n=atoi(yytext+i+1);
+						 s=(char *)malloc(sizeof(char)*(i));
+						 strncpy(s,yytext,i);
+						 f=atof(s);
+						 if(n>0)
+						 	for(i=1;i<=n;i++)
+								f=f*10;
+						 else if(n<0)
+							for(i=1;i<=-n;i++)
+								f=f/10;
+						 free(s);
+						 yylval.fval=f;
+  						 return FLOAT_LIT;}
 [0][xX][0-9a-fA-F]+				{yylval.ival=atoi(yytext);return INT_LIT_H;}
 [0][0-7]+					{yylval.ival=atoi(yytext);return INT_LIT_O;}
 [0-9]+						{yylval.ival=atoi(yytext);return INT_LIT_D;}
