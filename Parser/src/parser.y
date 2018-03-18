@@ -435,6 +435,7 @@ char *find2(int k){
 	case 227 : strcpy(str, popStr(lexeme)); break;
 	case 228 : strcpy(str, "scan ( identifier )"); break;
 	case 229 : strcpy(str, "print ( var_inits )"); break;
+	case 230 : strcpy(str, "String"); break;
 	}
 	return str;
 }
@@ -588,8 +589,9 @@ var_init		: expr 									{push(s1,31);push(s2,44);}
 			;
 
 type		: primitive_type 							{push(s1,32);push(s2,46);}
-		| reference_type 								{push(s1,32);push(s2,47);}
-		| VOID 											{push(s1,32);push(s2,48);}
+		| reference_type 							{push(s1,32);push(s2,47);}
+		| VOID 									{push(s1,32);push(s2,48);}
+		| STRING								{push(s1,32);push(s2,230);}
 		;
 
 primitive_type  : numeric_type 							{push(s1,33);push(s2,49);}
