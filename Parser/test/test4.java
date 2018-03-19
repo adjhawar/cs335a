@@ -1,3 +1,4 @@
+class $ABC{
 void bubblesort(int list[])
 {
 		int temp;
@@ -21,4 +22,5 @@ void bubblesort(int list[])
 		{
 			print(list[i] + " ");	
 		}
+}
 }
