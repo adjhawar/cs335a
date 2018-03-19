@@ -1,4 +1,4 @@
-class TowerHanoi
+class $TowerHanoi
 {
 	 void tower(int n, char fr, char tr, char ar)
 	{
@@ -8,10 +8,8 @@ class TowerHanoi
 	        return;
 	    }
 	    tower(n-1, fr, ar, tr);
-	    else
 	    print("Move disk" + n + "from rod" + fr +" to rod " + tr);
 	    tower(n-1, ar, tr, fr);
-	    b
 	}
 	void main()
 	{
