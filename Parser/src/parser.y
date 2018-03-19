@@ -1009,8 +1009,8 @@ int main(int argc, char** argv){
 void printCode()
 {
 	char c[50],b[100],a[50];
-	char final[200][100];
-	char trav[200][100];
+	char final[10000][100];
+	char trav[10000][100];
 	int i=0,j=0;
 	sprintf(a,"%s","compilation_unit");  
 	pushStr(str1,a); 
@@ -1019,7 +1019,7 @@ void printCode()
 	do
 	{	
 	strcpy(a,find1(pop(s1)));
-		while(!isEmptyStr(str1) && i<200)
+		while(!isEmptyStr(str1) && i<10000)
 		{
 			strcpy(final[i],popStr(str1)); 
 			i++;
@@ -1039,7 +1039,7 @@ void printCode()
 			pushStr(str1,final[i]);
 		}
 		fprintf(out,"</br>\n");
-		while(!isEmptyStr(str1) && j<200)
+		while(!isEmptyStr(str1) && j<10000)
 		{
 			strcpy(trav[j],popStr(str1));
 			if(strcmp(trav[j++],a)==0)
