@@ -100,7 +100,7 @@ int yynerrs;
 \"([\\][\"]|[^\"\n])*\" 	{yylval.sval=strdup(yytext);return STR_LIT;}
 \'[\\]?.[\']			{yylval.sval=strdup(yytext);return CHAR_LIT;}
 \'.|\"[^\"\n]*		return ERROR;
-[0-9]*[.][0-9]+([eE][+-]?[0-9]+)?		{int i,l=strlen(yytext),n=0;
+([0-9]*[.][0-9]*([eE][+-]?[0-9]+)?)|([0-9]+[eE][+-]?[0-9]+)		{int i,l=strlen(yytext),n=0;
 						 float f;
 						 char *s;
 						 for(i=0;i<l;i++)
