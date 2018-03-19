@@ -9,7 +9,7 @@ extern int yyparse();
 extern FILE *yyin;
 FILE *out;
 void yyerror(const char *s);
-int maxsize = 10000;
+int maxsize = 1000000;
 struct Stack{
     int size;
     int* array;
@@ -37,7 +37,18 @@ int isEmpty(struct Stack* stack){
 }
 
 void push(struct Stack* stack, int item){
-    stack->array[++stack->size] = item;
+    if (stack == NULL){
+        printf("Invalid argument. p == NULL.\n");
+    }
+    else if (stack->array == NULL) {
+        printf("Stack not initialized.\n");
+            return;
+    }
+    else if (stack->size == maxsize) {
+        printf("Stack is full\n");
+        return;
+    }
+    else stack->array[++stack->size] = item;
 }
 
 int pop(struct Stack* stack){
@@ -52,7 +63,7 @@ struct StackStr* createCharStack(){
 	stack->array = (char**) malloc(maxsize * sizeof(char *));
         for(int i=0;i< maxsize; i++)
         {
-            stack->array[i]=(char*)malloc(50 * sizeof(char ));
+            stack->array[i]=(char*)malloc(100 * sizeof(char ));
 	}
 	return stack;
 }
@@ -66,6 +77,17 @@ int isEmptyStr(struct StackStr* stack){
 }
 
 void pushStr(struct StackStr* stack, char* item){
+    if (stack == NULL){
+        printf("Invalid argument. p == NULL.\n");
+    }
+    else if (stack->array == NULL) {
+        printf("Stack not initialized.\n");
+            return;
+    }
+    else if (stack->size == maxsize) {
+        printf("Stack is full\n");
+        return;
+    }
     strcpy(stack->array[++stack->size],item);
 }
 
@@ -131,7 +153,7 @@ char *find1(int k){
 	case 44: strcpy(str, "loc_var_dec"); break;
 	case 45: strcpy(str, "statement"); break;
 	case 46: strcpy(str, "st_no_short_if"); break;
-        case 47: strcpy(str, "st_wo_tsub"); break;
+    case 47: strcpy(str, "st_wo_tsub"); break;
 	case 48: strcpy(str, "empty_st"); break;
 	case 49: strcpy(str, "expr_st"); break;
 	case 50: strcpy(str, "st_expr"); break;
@@ -448,7 +470,7 @@ char *find2(int k){
 	char *sval;
 	float fval;
 }
- %error-verbose
+%error-verbose
 %start compilation_unit
 
 %token CLASS INSTANCEOF NEW SUPER THIS
@@ -949,10 +971,10 @@ int main(int argc, char** argv){
 	s1 = createIntStack();
 	s2 = createIntStack();
 	lexeme = createCharStack();
-         str1 = createCharStack();
-         str2= createCharStack();
-         str4= createCharStack();
-         push(s1,0);
+    str1 = createCharStack();
+    str2= createCharStack();
+    str4= createCharStack();
+    push(s1,0);
 	FILE *fptr = fopen(argv[1], "r");
 	char ext[6];
 	strcpy(ext, ".html");
@@ -973,14 +995,22 @@ int main(int argc, char** argv){
 		yyparse();
 	}
         printCode();
+        free(s1);
+        free(s2);
+        free(str1);
+        free(str2);
+        free(str4);
+        free(lexeme);
+        fclose(fptr);
+        fclose(out);
 	return 0;
 }
 
 void printCode()
 {
 	char c[50],b[100],a[50];
-	char final[200][100];
-	char trav[200][100];
+	char final[2000][100];
+	char trav[2000][100];
 	int i=0,j=0;
 	sprintf(a,"%s","compilation_unit");  
 	pushStr(str1,a); 
@@ -989,14 +1019,19 @@ void printCode()
 	do
 	{	
 	strcpy(a,find1(pop(s1)));
-		while(!isEmptyStr(str1))
+		while(!isEmptyStr(str1) && i<2000)
 		{
 			strcpy(final[i],popStr(str1)); 
 			i++;
 		}
+		int f = -1;
+		for (int j=i-1; j>=0; j--){
+			if(!strcmp(final[j],a))
+				f = j;
+		}
 		while(i>0)
 		{	i--;
-			if(!strcmp(final[i],a)){
+			if(f==i){
 				fprintf(out, "<b style = color:red> %s </b>", final[i]);
 			}
 			else
@@ -1004,7 +1039,7 @@ void printCode()
 			pushStr(str1,final[i]);
 		}
 		fprintf(out,"</br>\n");
-		while(!isEmptyStr(str1))
+		while(!isEmptyStr(str1) && i<2000)
 		{
 			strcpy(trav[j],popStr(str1));
 			if(strcmp(trav[j++],a)==0)

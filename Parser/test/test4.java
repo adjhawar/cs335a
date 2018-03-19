@@ -1,5 +1,6 @@
-void bubblesort(int list[])
-{
+class $sort{
+	void bubblesort(int list[])
+	{
 		int temp;
 		int len= list.length;
 		for(int i = 0; i < len; i++)
@@ -21,4 +22,5 @@ void bubblesort(int list[])
 		{
 			print(list[i] + " ");	
 		}
+	}
 }
