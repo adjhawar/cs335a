@@ -1,6 +1,12 @@
+<<<<<<< HEAD
+class $ABC{
+void bubblesort(int list[])
+{
+=======
 class $sort{
 	void bubblesort(int list[])
 	{
+>>>>>>> e8c3ad1ac0cbf2bf75369d44ba874dbecffd405e
 		int temp;
 		int len= list.length;
 		for(int i = 0; i < len; i++)
@@ -22,5 +28,10 @@ class $sort{
 		{
 			print(list[i] + " ");	
 		}
+<<<<<<< HEAD
+}
+}
+=======
 	}
 }
+>>>>>>> e8c3ad1ac0cbf2bf75369d44ba874dbecffd405e
