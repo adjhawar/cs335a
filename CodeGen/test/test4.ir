@@ -1,0 +1,14 @@
+1, scan, a
+2, =, b, 0
+3, call, log
+4, print, b
+5, ret
+6, label, log
+7, ifgoto, eq, a, 1, 11 
+8, +, b, b, 1
+9, /, a, a, 2
+10, call, log
+11, ret
+
+
+

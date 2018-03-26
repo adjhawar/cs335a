@@ -10,7 +10,9 @@ void getReg(int i)
 {
 	int r;
 	if(ir[i].typ==label)
+	{	printf(".globl %s\n",ir[i].in1->lexeme);
 		printf("%s:\t",ir[i].in1->lexeme);
+	}
 	else if(ir[i].label==true)
 		printf("L%d:\t",i+1);
 	if(ir[i].typ==Ind_Ass_1){
@@ -41,7 +43,7 @@ void getReg(int i)
 				printf("\t movq %s,%s\n",ir[i].in1->lexeme,registers[temp]);
 				reg_des[temp]=ir[i].in1;
 				ir[i].in1->add_des.reg_no=temp;
-				printf("\t movq $%s,(%s,%s,8)\n",registers[temp],registers[r],registers[ir[i].in2->add_des.reg_no]);
+				printf("\t movq %s,(%s,%s,8)\n",registers[temp],registers[r],registers[ir[i].in2->add_des.reg_no]);
 			}}
 		else {
 			int temp1=empty_reg(i);
@@ -57,7 +59,7 @@ void getReg(int i)
 				printf("\t movq %s,%s\n",ir[i].in1->lexeme,registers[temp]);
 				reg_des[temp]=ir[i].in1;
 				ir[i].in1->add_des.reg_no=temp;
-				printf("\t movq $%s,(%s,%s,8)\n",registers[temp],registers[r],registers[temp1]);}
+				printf("\t movq %s,(%s,%s,8)\n",registers[temp],registers[r],registers[temp1]);}
 		}}
 	else if(ir[i].typ==Ind_Ass_2){
 		if(ir[i].in1->add_des.reg_no==-1){
@@ -112,7 +114,6 @@ void getReg(int i)
 				}}
 			else if(ir[i].out->add_des.reg_no!=-1)
 			{
-				ir[i].out->add_des.mem=true;
 				if(ir[i].in1->add_des.reg_no==-1)
 					printf("movq %s,%s\n",ir[i].in1->lexeme,registers[ir[i].out->add_des.reg_no]);
 				else
@@ -138,7 +139,7 @@ void getReg(int i)
 			} //make for every operator
 			else{
 				r=ir[i].in1->add_des.reg_no;
-				printf("\t movq %s,%s\n",registers[r],ir[i].in1->lexeme);
+			//	printf("\t movq %s,%s\n",registers[r],ir[i].in1->lexeme);
 				ir[i].in1->add_des.reg_no=-1;
 				reg_des[r]=NULL;
 			}
@@ -318,7 +319,7 @@ void getReg(int i)
 				reg_des[0]=NULL;
 				if(ir[i].out->add_des.reg_no==-1){
 					printf("\t movq %%rdx,%s\n",ir[i].out->lexeme);
-					ir[i].out->add_des.reg_no=0;}
+					ir[i].out->add_des.reg_no=3;}
 				else{
 					reg_des[3]=NULL;
 					printf("\t movq %%rdx,%s\n",registers[ir[i].out->add_des.reg_no]);}}
@@ -470,7 +471,7 @@ int empty_reg(int lineno)
       }
     }
     if (reg_des[l] != NULL){
-    printf("movq %s %s\n",registers[l],reg_des[l]->lexeme);
+//    printf("movq %s %s\n",registers[l],reg_des[l]->lexeme);
     reg_des[l]->add_des.reg_no =-1;
     reg_des[l] = NULL;
 	}

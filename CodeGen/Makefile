@@ -1,6 +1,9 @@
-all : binary
+all: binary
 
-binary : 
-		gcc *.c 
-		./a.out > test.s
-		gcc test.s -o test
+binary: 
+		mkdir -p bin
+		gcc ./src/*.c -o codegen
+		mv codegen bin/
+
+clean: 
+	rm -r bin

@@ -1,0 +1,12 @@
+1, =, b, 1
+2, scan, n
+3, call, fac
+4, print, b
+5, ret
+6, label, fac
+7, ifgoto, eq, n, 1, 11
+8, *, b, b, n
+9, -, n, n, 1
+10, call, fac
+11, ret
+
