@@ -646,5 +646,3 @@ int main(int argc, char** argv){
         fclose(out);
 	return 0;
 }
-
-
