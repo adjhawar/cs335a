@@ -96,11 +96,19 @@ char* popStr(struct StackStr* stack){
     return stack->array[stack->size--];
 }
 
+char* tempVar(){
+	static int i=0;
+	sprintf(TEMP,"temp%d",i);
+	i++;
+	return TEMP;
+}
+
 struct Stack* s1;
 struct Stack* s2;
 struct StackStr* lexeme;
 struct StackStr* str1 ;
 struct StackStr* str2;
+char TEMP[7];
 
 %}
 
@@ -147,7 +155,7 @@ type_declarations_e	: type_declarations
 
 type_declarations	: type_declaration 							
 			| type_declarations type_declaration 					
-			| error VOID
+			| error VOID						{yyerrok;}
 			;
 
 type_declaration	: class_declaration 							
@@ -305,8 +313,8 @@ statement	: st_wo_tsub
 		| if_then_st 							
 		| if_then_else_st 						
 		| while_st 							
-		| for_st 							(s2,72);}									
-		| error TRM										{yyerrok;}
+		| for_st 															
+		| error TRM									{yyerrok;}
 		| error BLOCK_E 								{yyerrok;}
 		;
 
