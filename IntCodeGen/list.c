@@ -78,4 +78,4 @@ void printList(list3AC *list){
 		printf("%s\n",list->instr);
 		list=list->next;
 	}
-}
+}		

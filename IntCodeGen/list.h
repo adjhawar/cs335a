@@ -9,6 +9,7 @@ typedef struct list3AC{
 
 typedef struct Attr{
 	char place[50];
+	char type[10];
 	list3AC *code;
 }Attr;
 

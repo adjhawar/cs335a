@@ -546,7 +546,7 @@ mul_expr	: unary_expr
 						attr->code=append(attr->code,temp.code);
 						attr->code=append(attr->code,temp2.code);
 						char t[100];
-						sprintf(t,"%s = %s \% %s",attr->place,temp.place,temp2.place);
+						sprintf(t,"%s = %s /% %s",attr->place,temp.place,temp2.place);
 						attr->code=append(attr->code,newList(t));
 						push(attr_stack,attr);
 						free(attr);}
@@ -724,12 +724,12 @@ identifier		: ID			{pushStr(lexeme,$1);
 struct StackStr* str4;
 int main(int argc, char** argv){
 //	s1 = createIntStack();
-	//s2 = createIntStack();
+	attr_stack = createIntStack();
 	lexeme = createCharStack();
     str1 = createCharStack();
     str2= createCharStack();
     str4= createCharStack();
-
+	attr=(Attr *)malloc(sizeof(Attr));
     //push(s1,0);
 	FILE *fptr = fopen(argv[1], "r");
 	if(argc==2 && fptr!=NULL){
@@ -743,7 +743,7 @@ int main(int argc, char** argv){
 	while(!feof(yyin)){
 		yyparse();
 	}
-        
+	printList(pop(attr_stack).code);        
        // free(s1);
        // free(s2);
         free(str1);
