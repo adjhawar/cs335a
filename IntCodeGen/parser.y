@@ -177,7 +177,7 @@ explicit_const_invo	: THIS PAREN_S arg_list_e PAREN_E
 			| SUPER PAREN_S arg_list_e PAREN_E					
 			;
 
-field_decl		: type var_declarators  TRM 	 {p =Insert(attr_stack->attr[attr_stack->size].place);
+field_decl		: type var_declarators TRM 	 {p =Insert(attr_stack->attr[attr_stack->size].place);
 							strcpy(p->type,attr_stack->attr[attr_stack->size-1].type);}			
 			;
 
@@ -189,7 +189,10 @@ var_declarator		: var_decl_id
 			| var_decl_id OP_ASS var_init 						
 			;
 
-var_decl_id		: identifier 								
+var_decl_id		: ID 		{Attr *attr=(Attr *)malloc(sizeof(Attr));
+				  strcpy(attr->place,$1);
+				  push(attr_stack,attr);
+				  free(attr); }
 			| var_decl_id ARRAY_S ARRAY_E 						
 			;
 
@@ -268,7 +271,8 @@ block_statement	: loc_var_dec_st
 loc_var_dec_st	: loc_var_dec TRM 						
 		;
 
-loc_var_dec	: type var_declarators 						
+loc_var_dec	: type var_declarators 				{p =Insert(attr_stack->attr[attr_stack->size].place);
+							strcpy(p->type,attr_stack->attr[attr_stack->size-1].type);}			
 		;
 
 statement	: st_wo_tsub 							
@@ -459,8 +463,8 @@ rel_expr	: shift_expr
 shift_expr	: add_expr					
 		| shift_expr OP_LSH add_expr		{Attr *attr=(Attr *)malloc(sizeof(Attr));
 						strcpy(attr->place,tempVar());
-						Attr temp=pop(attr_stack);
 						Attr temp2=pop(attr_stack);
+						Attr temp=pop(attr_stack);
 						attr->code=append(attr->code,temp.code);
 						attr->code=append(attr->code,temp2.code);
 						char t[100];
@@ -470,8 +474,8 @@ shift_expr	: add_expr
 						free(attr);}		
 		| shift_expr OP_RSH add_expr		{Attr *attr=(Attr *)malloc(sizeof(Attr));
 						strcpy(attr->place,tempVar());
-						Attr temp=pop(attr_stack);
 						Attr temp2=pop(attr_stack);
+						Attr temp=pop(attr_stack);
 						attr->code=append(attr->code,temp.code);
 						attr->code=append(attr->code,temp2.code);
 						char t[100];
@@ -483,10 +487,10 @@ shift_expr	: add_expr
 						strcpy(attr->place,tempVar());
 						Attr temp=pop(attr_stack);
 						Attr temp2=pop(attr_stack);
-						attr->code=append(attr->code,temp.code);
 						attr->code=append(attr->code,temp2.code);
+						attr->code=append(attr->code,temp.code);
 						char t[100];
-						sprintf(t,"%s = %s >>> %s",attr->place,temp.place,temp2.place);
+						sprintf(t,"%s = %s >>> %s",attr->place,temp2.place,temp.place);
 						attr->code=append(attr->code,newList(t));
 						push(attr_stack,attr);
 						free(attr);}		
@@ -497,10 +501,10 @@ add_expr	: mul_expr
 						strcpy(attr->place,tempVar());
 						Attr temp=pop(attr_stack);
 						Attr temp2=pop(attr_stack);
-						attr->code=append(attr->code,temp.code);
 						attr->code=append(attr->code,temp2.code);
+						attr->code=append(attr->code,temp.code);
 						char t[100];
-						sprintf(t,"%s = %s + %s",attr->place,temp.place,temp2.place);
+						sprintf(t,"%s = %s + %s",attr->place,temp2.place,temp.place);
 						attr->code=append(attr->code,newList(t));
 						push(attr_stack,attr);
 						free(attr);}		
@@ -508,10 +512,10 @@ add_expr	: mul_expr
 						strcpy(attr->place,tempVar());
 						Attr temp=pop(attr_stack);
 						Attr temp2=pop(attr_stack);
-						attr->code=append(attr->code,temp.code);
 						attr->code=append(attr->code,temp2.code);
+						attr->code=append(attr->code,temp.code);
 						char t[100];
-						sprintf(t,"%s = %s - %s",attr->place,temp.place,temp2.place);
+						sprintf(t,"%s = %s - %s",attr->place,temp2.place,temp.place);
 						attr->code=append(attr->code,newList(t));
 						push(attr_stack,attr);
 						free(attr);}		
@@ -522,10 +526,10 @@ mul_expr	: unary_expr
 						strcpy(attr->place,tempVar());
 						Attr temp=pop(attr_stack);
 						Attr temp2=pop(attr_stack);
-						attr->code=append(attr->code,temp.code);
 						attr->code=append(attr->code,temp2.code);
+						attr->code=append(attr->code,temp.code);
 						char t[100];
-						sprintf(t,"%s = %s * %s",attr->place,temp.place,temp2.place);
+						sprintf(t,"%s = %s * %s",attr->place,temp2.place,temp.place);
 						attr->code=append(attr->code,newList(t));
 						push(attr_stack,attr);
 						free(attr);}
@@ -533,10 +537,10 @@ mul_expr	: unary_expr
 						strcpy(attr->place,tempVar());
 						Attr temp=pop(attr_stack);
 						Attr temp2=pop(attr_stack);
-						attr->code=append(attr->code,temp.code);
 						attr->code=append(attr->code,temp2.code);
+						attr->code=append(attr->code,temp.code);
 						char t[100];
-						sprintf(t,"%s = %s / %s",attr->place,temp.place,temp2.place);
+						sprintf(t,"%s = %s / %s",attr->place,temp2.place,temp.place);
 						attr->code=append(attr->code,newList(t));
 						push(attr_stack,attr);
 						free(attr);}
@@ -544,10 +548,10 @@ mul_expr	: unary_expr
 						strcpy(attr->place,tempVar());
 						Attr temp=pop(attr_stack);
 						Attr temp2=pop(attr_stack);
-						attr->code=append(attr->code,temp.code);
 						attr->code=append(attr->code,temp2.code);
+						attr->code=append(attr->code,temp.code);
 						char t[100];
-						sprintf(t,"%s = %s /% %s",attr->place,temp.place,temp2.place);
+						sprintf(t,"%s = %s %% %s",attr->place,temp2.place,temp.place);
 						attr->code=append(attr->code,newList(t));
 						push(attr_stack,attr);
 						free(attr);}
@@ -710,14 +714,13 @@ int_literal		: INT_LIT_H		{char ch[20];sprintf(ch,"%d",$1);pushStr(lexeme,ch);}
 			| INT_LIT_D		{char ch[20];sprintf(ch,"%d",$1);pushStr(lexeme,ch);}
 			;
 
-identifier		: ID			{pushStr(lexeme,$1);	
-				  //SymtabEntry *p=look_up($1);
+identifier		: ID			{SymtabEntry *p=look_up($1);
 				  Attr *attr=(Attr *)malloc(sizeof(Attr));
-				  //if(p!=NULL){
-					   strcpy(attr->place,$1);
+				  if(p!=NULL){
+					  strcpy(attr->place,$1);
 					  push(attr_stack,attr);
-				 /* }else
-					  yyerrok;*/
+				  }else
+					  yyerrok;
 				  free(attr);
 			  }
 			;
@@ -751,7 +754,8 @@ SymtabEntry *temp=head;
 	while(temp){
 		printf("%s,%s\n",temp->lexeme,temp->type);
 		temp=temp->next;
-	}	
+	}
+	printList(pop(attr_stack).code);	
         free(str1);
         free(str2);
         free(str4);
