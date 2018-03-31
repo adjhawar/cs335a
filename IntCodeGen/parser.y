@@ -12,7 +12,8 @@ extern FILE *yyin;
 FILE *out;
 void yyerror(const char *s);
 char TEMP[7];
-SymtabEntry *head,*tail;
+SymtabEntry *head,*tail, *p;
+Attr* attr1;
 struct StackStr{
 	int size;
 	char **array;
@@ -176,7 +177,7 @@ explicit_const_invo	: THIS PAREN_S arg_list_e PAREN_E
 			| SUPER PAREN_S arg_list_e PAREN_E					
 			;
 
-field_decl		: type var_declarators  TRM 						
+field_decl		: type var_declarators  TRM 	 {p = Insert(attr_stack->attr[attr_stack->size-1].place); 						strcpy(p->type,attr_stack->attr[attr_stack->size-2].type);}				
 			;
 
 var_declarators		: var_declarator 							
@@ -221,21 +222,21 @@ var_init		: expr
 
 type		: primitive_type 							
 		| reference_type 							
-		| VOID 									
-		| STRING								
+		| VOID 	{strcpy(attr->type, "void");push(attr_stack,attr);}							
+		| STRING	{strcpy(attr->type, "string");push(attr_stack,attr);}							
 		;
 
 primitive_type  : numeric_type 							
-		| BOOL 								
+		| BOOL 	{strcpy(attr->type, "bool");push(attr_stack,attr);}							
 		;
 
 numeric_type	: integer_type 							
-		| FLOAT 							
+		| FLOAT 	{strcpy(attr->type, "float");push(attr_stack,attr);}						
 		;
 
-integer_type	: BYTE 								
-		| CHAR 								
-		| INT 								
+integer_type	: BYTE 	{strcpy(attr->type, "byte");push(attr_stack,attr);}							
+		| CHAR 	{strcpy(attr->type, "char");push(attr_stack,attr);}							
+		| INT 	{strcpy(attr->type, "int");push(attr_stack,attr);}									
 		;
 
 reference_type	: class_type 							
