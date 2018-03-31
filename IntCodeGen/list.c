@@ -1,10 +1,50 @@
-#include<stdio.h>
-#include<stdlib.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <limits.h>
+#include "list.h"
 
-typedef struct list3AC{
-	char instr[100];
-	struct list3AC *next;
-}list3AC;
+int maxsize = 100;
+struct Stack* createIntStack(){
+	struct Stack* stack = (struct Stack*) malloc(sizeof(struct Stack));
+	stack->size = -1;
+	stack->attr = (Attr*) malloc(maxsize * sizeof(Attr));
+	return stack;
+}
+
+int isFull(struct Stack* stack){
+   return stack->size == maxsize - 1; 
+}
+ 
+int isEmpty(struct Stack* stack){
+   return stack->size == -1;
+}
+
+void push(struct Stack* stack, Attr *attr){
+    if (stack == NULL){
+        printf("Invalid argument. stack pointer is NULL.\n");
+    }
+    else if (stack->attr == NULL) {
+        printf("Stack not initialized.\n");
+            return;
+    }
+    else if (stack->size == maxsize) {
+        printf("Stack is full\n");
+        return;
+    }
+    else{
+    	stack->size += 1; 
+	strcpy(stack->attr[stack->size].place, attr->place);
+	stack->attr[stack->size].code = attr->code;
+	}
+}
+
+Attr pop(struct Stack* stack){
+    if (isEmpty(stack))
+        printf("Empty stack\n");
+    return stack->attr[stack->size--];
+}
+ 
 
 //returns the tail of the list
 list3AC* getTail(list3AC *list){
@@ -36,7 +76,7 @@ void printList(list3AC *list){
 	}
 }
 
-/*
+
 int main(){
 	int i=0;
 	list3AC *head=newList("a");
@@ -60,6 +100,15 @@ int main(){
 		t->next=NULL;
 	}
 	head=append(head1,head);
-	printList(head);
+	Attr *attr1, attr2;
+	attr1 = (Attr*) malloc(sizeof(Attr));
+	strcpy(attr1->place, "place");
+	attr1->code = head;
+	struct Stack *s1 = createIntStack();
+	push(s1,attr1);
+	attr2 = pop(s1);
+	printf("%s ", attr2.place);
+	printList(attr2.code);
+//	printList(head);
 	return 0;
-}	*/
+}

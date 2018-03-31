@@ -11,61 +11,12 @@ FILE *out;
 void yyerror(const char *s);
 int maxsize = 100;
 
-typedef struct Attr{
-	char place[50];
-	list3AC *code;
-}Attr;
-
-
-struct Stack{
-	int size;
-	Attr *attr;
-};
-
 struct StackStr{
 	int size;
 	char **array;
 };
 
-struct Stack* createIntStack(){
-	struct Stack* stack = (struct Stack*) malloc(sizeof(struct Stack));
-	stack->size = -1;
-	stack->attr = (Attr*) malloc(maxsize * sizeof(Attr));
-	return stack;
-}
 
-int isFull(struct Stack* stack){
-   return stack->size == maxsize - 1; 
-}
- 
-int isEmpty(struct Stack* stack){
-   return stack->size == -1;
-}
-
-void push(struct Stack* stack, Attr *attr){
-    if (stack == NULL){
-        printf("Invalid argument. stack pointer is NULL.\n");
-    }
-    else if (stack->attr == NULL) {
-        printf("Stack not initialized.\n");
-            return;
-    }
-    else if (stack->size == maxsize) {
-        printf("Stack is full\n");
-        return;
-    }
-    else{
-    	stack->size += 1; 
-	strcpy(stack->attr[stack->size]->place, attr->place);
-	stack->attr[stack->size]->code = attr->code;
-}
-
-int pop(struct Stack* stack){
-    if (isEmpty(stack))
-        return INT_MIN;
-    return stack->attr[stack->size--];
-}
- 
 struct StackStr* createCharStack(){
 	struct StackStr* stack= (struct StackStr*)malloc(sizeof(struct StackStr));
 	stack->size = -1;
@@ -113,8 +64,6 @@ char* tempVar(){
 	return TEMP;
 }
 
-struct Stack* s1;
-struct Stack* s2;
 struct StackStr* lexeme;
 struct StackStr* str1 ;
 struct StackStr* str2;
