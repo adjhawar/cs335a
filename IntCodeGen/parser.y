@@ -13,7 +13,7 @@ FILE *out;
 void yyerror(const char *s);
 char TEMP[7];
 SymtabEntry *head,*tail, *p;
-Attr* attr1;
+Attr* attr;
 struct StackStr{
 	int size;
 	char **array;
@@ -732,13 +732,6 @@ int main(int argc, char** argv){
 
     //push(s1,0);
 	FILE *fptr = fopen(argv[1], "r");
-	char ext[6];
-	strcpy(ext, ".html");
-	char *temp;
-	char *outputfile = strtok(argv[1], ".");
-	temp = strtok_r(outputfile, "/", &outputfile);
-	strcat(outputfile,ext);
-	out = fopen(outputfile, "w");
 	if(argc==2 && fptr!=NULL){
 		yyin = fptr;
 	}
