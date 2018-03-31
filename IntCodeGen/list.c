@@ -36,6 +36,7 @@ void push(struct Stack* stack, Attr *attr){
     else{
     	stack->size += 1; 
 	strcpy(stack->attr[stack->size].place, attr->place);
+	strcpy(stack->attr[stack->size].type, attr->type);
 	stack->attr[stack->size].code = attr->code;
 	}
 }

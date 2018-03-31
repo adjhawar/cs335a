@@ -177,7 +177,8 @@ explicit_const_invo	: THIS PAREN_S arg_list_e PAREN_E
 			| SUPER PAREN_S arg_list_e PAREN_E					
 			;
 
-field_decl		: type var_declarators  TRM 	 {p = Insert(attr_stack->attr[attr_stack->size-1].place); 						strcpy(p->type,attr_stack->attr[attr_stack->size-2].type);}				
+field_decl		: type var_declarators  TRM 	 {p =Insert(attr_stack->attr[attr_stack->size].place);
+							strcpy(p->type,attr_stack->attr[attr_stack->size-1].type);}			
 			;
 
 var_declarators		: var_declarator 							
@@ -709,14 +710,14 @@ int_literal		: INT_LIT_H		{char ch[20];sprintf(ch,"%d",$1);pushStr(lexeme,ch);}
 			| INT_LIT_D		{char ch[20];sprintf(ch,"%d",$1);pushStr(lexeme,ch);}
 			;
 
-identifier		: ID			{pushStr(lexeme,$1);
-				  SymtabEntry *p=look_up($1);
+identifier		: ID			{pushStr(lexeme,$1);	
+				  //SymtabEntry *p=look_up($1);
 				  Attr *attr=(Attr *)malloc(sizeof(Attr));
-				  if(p!=NULL){
-					  strcpy(attr->place,p->lexeme);
+				  //if(p!=NULL){
+					   strcpy(attr->place,$1);
 					  push(attr_stack,attr);
-				  }else
-					  yyerrok;
+				 /* }else
+					  yyerrok;*/
 				  free(attr);
 			  }
 			;
@@ -724,6 +725,7 @@ identifier		: ID			{pushStr(lexeme,$1);
 struct StackStr* str4;
 int main(int argc, char** argv){
 //	s1 = createIntStack();
+	p=(SymtabEntry *)malloc(sizeof(SymtabEntry));
 	attr_stack = createIntStack();
 	lexeme = createCharStack();
     str1 = createCharStack();
@@ -743,14 +745,19 @@ int main(int argc, char** argv){
 	while(!feof(yyin)){
 		yyparse();
 	}
-	printList(pop(attr_stack).code);        
        // free(s1);
        // free(s2);
+SymtabEntry *temp=head;
+	while(temp){
+		printf("%s,%s\n",temp->lexeme,temp->type);
+		temp=temp->next;
+	}	
         free(str1);
         free(str2);
         free(str4);
         free(lexeme);
+	free(p);
+	free(attr_stack);
         fclose(fptr);
-        fclose(out);
 	return 0;
 }
