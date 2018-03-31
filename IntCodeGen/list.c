@@ -3,6 +3,7 @@
 #include <string.h>
 #include <limits.h>
 #include "list.h"
+#include "y.tab.h"
 
 int maxsize = 100;
 struct Stack* createIntStack(){
@@ -55,9 +56,12 @@ list3AC* getTail(list3AC *list){
 
 //join two lists
 list3AC* append(list3AC* head1, list3AC* head2){
-	list3AC* tail1=getTail(head1);
-	tail1->next=head2;	
-	return head1;
+	if(head1){
+		list3AC* tail1=getTail(head1);
+		tail1->next=head2;	
+		return head1;}
+	else
+		return head2;
 }
 
 //creates a new list node and returns its pointer
@@ -74,41 +78,4 @@ void printList(list3AC *list){
 		printf("%s\n",list->instr);
 		list=list->next;
 	}
-}
-
-
-int main(){
-	int i=0;
-	list3AC *head=newList("a");
-	list3AC *head1=newList("1");
-	list3AC *t=head;
-	for(i=0;i<10;i++){
-		if(i==9)
-			t->next=newList("c");
-		else
-			t->next=newList("b");
-		t=t->next;
-		t->next=NULL;
-	}
-	t=head1;
-	for(i=0;i<10;i++){
-		if(i==9)
-			t->next=newList("3");
-		else
-			t->next=newList("2");
-		t=t->next;
-		t->next=NULL;
-	}
-	head=append(head1,head);
-	Attr *attr1, attr2;
-	attr1 = (Attr*) malloc(sizeof(Attr));
-	strcpy(attr1->place, "place");
-	attr1->code = head;
-	struct Stack *s1 = createIntStack();
-	push(s1,attr1);
-	attr2 = pop(s1);
-	printf("%s ", attr2.place);
-	printList(attr2.code);
-//	printList(head);
-	return 0;
 }

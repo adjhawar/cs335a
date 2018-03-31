@@ -1,22 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-typedef struct Add_des{
-	int reg_no;
-	bool mem;
-}Add_des;
+#include "list.h"
 
 //Data structure to hold symbol table
-typedef struct SymtabEntry{
-	char lexeme[50];
-	char type[10];
-	Add_des add_des;
-	int nextuse;
-	bool liveness;
-	struct SymtabEntry *next;
-}SymtabEntry;
-
 SymtabEntry* look_up(char *lex){
 	SymtabEntry* temp = head;
 	if(strcmp(lex, "0")==0 || strcmp(lex, "0\n")==0 || atoi(lex)) 
@@ -56,7 +43,5 @@ SymtabEntry* Insert(char* lex)
 			tail = temp;
 		}
 		return temp;
-	//}
-	
 }
 }

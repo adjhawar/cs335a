@@ -4,13 +4,15 @@
 #include <string.h>
 #include <limits.h>
 #include <ctype.h>
+#include "list.h"
+
 extern int yylex();
 extern int yyparse();
 extern FILE *yyin;
 FILE *out;
 void yyerror(const char *s);
-int maxsize = 100;
-
+char TEMP[7];
+SymtabEntry *head,*tail;
 struct StackStr{
 	int size;
 	char **array;
@@ -67,8 +69,7 @@ char* tempVar(){
 struct StackStr* lexeme;
 struct StackStr* str1 ;
 struct StackStr* str2;
-char TEMP[7];
-
+struct Stack* attr_stack;
 %}
 
 %locations
@@ -481,21 +482,61 @@ unary_expr	: preinc_expr
 		| unary_expr_not_plus_minus	
 		;
 
-preinc_expr	: OP_INC unary_expr		
+preinc_expr	: OP_INC unary_expr			{Attr *attr=(Attr *)malloc(sizeof(Attr));
+						strcpy(attr->place,tempVar());
+						Attr temp=pop(attr_stack);
+						attr->code=append(attr->code,temp.code);
+						char t[100];
+						sprintf(t,"%s = %s++",attr->place,temp.place);
+						attr->code=append(attr->code,newList(t));
+						push(attr_stack,attr);
+						free(attr);}	
 		;
 
-predec_expr	: OP_DEC unary_expr		
+predec_expr	: OP_DEC unary_expr			{Attr *attr=(Attr *)malloc(sizeof(Attr));
+						strcpy(attr->place,tempVar());
+						Attr temp=pop(attr_stack);
+						attr->code=append(attr->code,temp.code);
+						char t[100];
+						sprintf(t,"%s = %s++",attr->place,temp.place);
+						attr->code=append(attr->code,newList(t));
+						push(attr_stack,attr);
+						free(attr);}	
 		;
 
 unary_expr_not_plus_minus	: postfix_expr		
-				| OP_NEG unary_expr	
+				| OP_NEG unary_expr	{Attr *attr=(Attr *)malloc(sizeof(Attr));
+						strcpy(attr->place,tempVar());
+						Attr temp=pop(attr_stack);
+						attr->code=append(attr->code,temp.code);
+						char t[100];
+						sprintf(t,"%s = %s++",attr->place,temp.place);
+						attr->code=append(attr->code,newList(t));
+						push(attr_stack,attr);
+						free(attr);}	
 				| cast_expr		
 				;
 
-postdec_expr	: postfix_expr OP_DEC		
+postdec_expr	: postfix_expr OP_DEC			{Attr *attr=(Attr *)malloc(sizeof(Attr));
+						strcpy(attr->place,tempVar());
+						Attr temp=pop(attr_stack);
+						attr->code=append(attr->code,temp.code);
+						char t[100];
+						sprintf(t,"%s = %s++",attr->place,temp.place);
+						attr->code=append(attr->code,newList(t));
+						push(attr_stack,attr);
+						free(attr);}	
 		;
 
-postinc_expr	: postfix_expr OP_INC		
+postinc_expr	: postfix_expr OP_INC			{Attr *attr=(Attr *)malloc(sizeof(Attr));
+						strcpy(attr->place,tempVar());
+						Attr temp=pop(attr_stack);
+						attr->code=append(attr->code,temp.code);
+						char t[100];
+						sprintf(t,"%s = %s++",attr->place,temp.place);
+						attr->code=append(attr->code,newList(t));
+						push(attr_stack,attr);
+						free(attr);}	
 		;
 
 postfix_expr	: primary		
@@ -550,7 +591,7 @@ array_access	: name ARRAY_S expr ARRAY_E
 		;
 
 type_name		: CID			{pushStr(lexeme,$1);}
-				| error ID
+			| error ID	
 			;
 
 name			: identifier			
@@ -571,18 +612,28 @@ int_literal		: INT_LIT_H		{char ch[20];sprintf(ch,"%d",$1);pushStr(lexeme,ch);}
 			| INT_LIT_D		{char ch[20];sprintf(ch,"%d",$1);pushStr(lexeme,ch);}
 			;
 
-identifier		: ID			{pushStr(lexeme,$1);}
+identifier		: ID			{pushStr(lexeme,$1);
+				  SymtabEntry *p=look_up($1);
+				  Attr *attr=(Attr *)malloc(sizeof(Attr));
+				  if(p!=NULL){
+					  strcpy(attr->place,p->lexeme);
+					  push(attr_stack,attr);
+				  }else
+					  yyerrok;
+				  free(attr);
+			  }
 			;
 %%
 struct StackStr* str4;
 int main(int argc, char** argv){
-	s1 = createIntStack();
-	s2 = createIntStack();
+//	s1 = createIntStack();
+	//s2 = createIntStack();
 	lexeme = createCharStack();
     str1 = createCharStack();
     str2= createCharStack();
     str4= createCharStack();
-    push(s1,0);
+
+    //push(s1,0);
 	FILE *fptr = fopen(argv[1], "r");
 	char ext[6];
 	strcpy(ext, ".html");
@@ -603,8 +654,8 @@ int main(int argc, char** argv){
 		yyparse();
 	}
         
-        free(s1);
-        free(s2);
+       // free(s1);
+       // free(s2);
         free(str1);
         free(str2);
         free(str4);
