@@ -9,21 +9,28 @@ extern int yyparse();
 extern FILE *yyin;
 FILE *out;
 void yyerror(const char *s);
-int maxsize = 1000000;
+int maxsize = 100;
+
+typedef struct Attr{
+	char place[50];
+	list3AC *code;
+}Attr;
+
+
 struct Stack{
-    int size;
-    int* array;
+	int size;
+	Attr *attr;
 };
 
 struct StackStr{
 	int size;
 	char **array;
 };
-void printStack(struct StackStr* str3);
+
 struct Stack* createIntStack(){
 	struct Stack* stack = (struct Stack*) malloc(sizeof(struct Stack));
 	stack->size = -1;
-	stack->array = (int*) malloc(maxsize * sizeof(int));
+	stack->attr = (Attr*) malloc(maxsize * sizeof(Attr));
 	return stack;
 }
 
@@ -35,11 +42,11 @@ int isEmpty(struct Stack* stack){
    return stack->size == -1;
 }
 
-void push(struct Stack* stack, int item){
+void push(struct Stack* stack, Attr *attr){
     if (stack == NULL){
-        printf("Invalid argument. p == NULL.\n");
+        printf("Invalid argument. stack pointer is NULL.\n");
     }
-    else if (stack->array == NULL) {
+    else if (stack->attr == NULL) {
         printf("Stack not initialized.\n");
             return;
     }
@@ -47,13 +54,16 @@ void push(struct Stack* stack, int item){
         printf("Stack is full\n");
         return;
     }
-    else stack->array[++stack->size] = item;
+    else{
+    	stack->size += 1; 
+	strcpy(stack->attr[stack->size]->place, attr->place);
+	stack->attr[stack->size]->code = attr->code;
 }
 
 int pop(struct Stack* stack){
     if (isEmpty(stack))
         return INT_MIN;
-    return stack->array[stack->size--];
+    return stack->attr[stack->size--];
 }
  
 struct StackStr* createCharStack(){
@@ -305,8 +315,8 @@ statement	: st_wo_tsub
 		| if_then_st 							
 		| if_then_else_st 						
 		| while_st 							
-		| for_st 							(s2,72);}									
-		| error TRM										{yyerrok;}
+		| for_st 										
+		| error TRM									{yyerrok;}
 		| error BLOCK_E 								{yyerrok;}
 		;
 
