@@ -90,7 +90,7 @@ struct Stack* attr_stack;
 	char *sval;
 	float fval;
 	char *type;
-	Attr *attr;
+	struct Attr *attr;
 }
 %error-verbose
 %start compilation_unit
@@ -369,7 +369,7 @@ switch_label	: CASE expr COLON
 		| DEFAULT COLON 					
 		;
 
-while_st	: WHILE PAREN_S expr PAREN_E statement 			{ char* begin = newLabel(); char* end = newLabel;
+while_st	: WHILE PAREN_S expr PAREN_E statement 			{/* char* begin = newLabel(); char* end = newLabel;
                                                                           sprintf(t,"label , %s",begin);
        								          $$->code = newList(t);
                       						          $$->code = append($$->code , $2->code,);
@@ -379,7 +379,7 @@ while_st	: WHILE PAREN_S expr PAREN_E statement 			{ char* begin = newLabel(); c
 									  sprintf(t,"goto , %s",begin);
        								          $$->code = append($$->code,newList(t));
 									  sprintf(t,"label , %s",end);
-       								          $$->code = append($$->code,newList(t));  }
+       								          $$->code = append($$->code,newList(t)); */ }
 		;
 
 while_st_no_short_if	: WHILE PAREN_S expr PAREN_E st_no_short_if	
