@@ -13,15 +13,15 @@ int yynerrs;
 "this"			return THIS;
 "extends"		return EXTENDS;
 
-"boolean"		return BOOL;
-"byte"			return BYTE;
-"char"			return CHAR;
+"boolean"		{yylval.sval=strdup(yytext);return BOOL;}
+"byte"			{yylval.sval=strdup(yytext);return BYTE;}
+"char"			{yylval.sval=strdup(yytext);return CHAR;}
 "true"			return T;
-"float"			return FLOAT;
-"int"			return INT;
+"float"			{yylval.sval=strdup(yytext);return FLOAT;}
+"int"			{yylval.sval=strdup(yytext);return INT;}
 "false"			return F;
 "null"			return N;
-"String"		return STRING;
+"String"		{yylval.sval=strdup(yytext);return STRING;}
 "void"			return VOID;
 
 "break"			return BREAK;

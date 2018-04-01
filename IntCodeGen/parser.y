@@ -12,6 +12,8 @@ extern FILE *yyin;
 FILE *out;
 void yyerror(const char *s);
 char TEMP[7];
+char t[100];
+int flag1;
 SymtabEntry *head,*tail, *p;
 Attr* attr;
 struct StackStr{
@@ -84,7 +86,7 @@ struct Stack* attr_stack;
 %start compilation_unit
 
 %token CLASS INSTANCEOF NEW SUPER THIS
-%token BOOL BYTE CHAR T FLOAT INT F N VOID
+%token <sval>BOOL BYTE CHAR T FLOAT INT F N VOID
 %token BREAK CASE DEFAULT ELSE IF SWITCH
 %token CONT DO FOR WHILE
 %token RETURN
@@ -94,13 +96,13 @@ struct Stack* attr_stack;
 %token ARRAY_S ARRAY_E BLOCK_S BLOCK_E PAREN_S PAREN_E
 %token OP_ASS OP_ADD_ASS OP_SUB_ASS OP_DIV_ASS OP_MUL_ASS OP_MOD_ASS OP_LSH_ASS OP_RSH_ASS OP_AND_ASS OP_OR_ASS OP_XOR_ASS OP_ZRSH_ASS
 %token OP_CON_Q OP_CON_AND OP_CON_OR
-%token OP_OR OP_XOR OP_AND OP_EQ OP_NEQ OP_GRE OP_LES OP_GEQ OP_LEQ
+%token OP_OR OP_XOR OP_AND OP_EQ OP_NEQ OP_GRE OP_LES OP_GEQ OP_LEQ OP_NEG
 %token OP_RSH OP_LSH OP_ADD OP_SUB OP_MUL OP_DIV OP_MOD OP_INC OP_DEC OP_DOT OP_ZRSH
 %token <ival>INT_LIT_D INT_LIT_O INT_LIT_H
 %token <fval>FLOAT_LIT
-%token <sval>CHAR_LIT STR_LIT
+%token <sval>CHAR_LIT STR_LIT STRING
 %token ERROR
-%token PRINT SCAN OP_NEG STRING
+%token PRINT SCAN
 %token EXTENDS
 
 /*%type*/
@@ -177,8 +179,8 @@ explicit_const_invo	: THIS PAREN_S arg_list_e PAREN_E
 			| SUPER PAREN_S arg_list_e PAREN_E					
 			;
 
-field_decl		: type var_declarators TRM 	 {p =Insert(attr_stack->attr[attr_stack->size].place);
-							strcpy(p->type,attr_stack->attr[attr_stack->size-1].type);}			
+field_decl		: type var_declarators TRM 	 {/*p =Insert(attr_stack->attr[attr_stack->size].place);
+							strcpy(p->type,attr_stack->attr[attr_stack->size].type);*/}			
 			;
 
 var_declarators		: var_declarator 							
@@ -189,10 +191,7 @@ var_declarator		: var_decl_id
 			| var_decl_id OP_ASS var_init 						
 			;
 
-var_decl_id		: ID 		{Attr *attr=(Attr *)malloc(sizeof(Attr));
-				  strcpy(attr->place,$1);
-				  push(attr_stack,attr);
-				  free(attr); }
+var_decl_id		: ID 		{p=Insert($1); }
 			| var_decl_id ARRAY_S ARRAY_E 						
 			;
 
@@ -226,21 +225,21 @@ var_init		: expr
 
 type		: primitive_type 							
 		| reference_type 							
-		| VOID 	{strcpy(attr->type, "void");push(attr_stack,attr);}							
-		| STRING	{strcpy(attr->type, "string");push(attr_stack,attr);}							
+		| VOID 	{/*strcpy(attr->type, "void");push(attr_stack,attr);*/}							
+		| STRING	{/*strcpy(attr->type, "string");push(attr_stack,attr);*/}							
 		;
 
 primitive_type  : numeric_type 							
-		| BOOL 	{strcpy(attr->type, "bool");push(attr_stack,attr);}							
+		| BOOL 	{/*strcpy(attr->type, "bool");push(attr_stack,attr);*/}							
 		;
 
 numeric_type	: integer_type 							
-		| FLOAT 	{strcpy(attr->type, "float");push(attr_stack,attr);}						
+		| FLOAT 	{/*strcpy(attr->type, "float");push(attr_stack,attr);*/}						
 		;
 
-integer_type	: BYTE 	{strcpy(attr->type, "byte");push(attr_stack,attr);}							
-		| CHAR 	{strcpy(attr->type, "char");push(attr_stack,attr);}							
-		| INT 	{strcpy(attr->type, "int");push(attr_stack,attr);}									
+integer_type	: BYTE 	{}			
+		| CHAR 	{}							
+		| INT 	{}									
 		;
 
 reference_type	: class_type 							
@@ -271,8 +270,8 @@ block_statement	: loc_var_dec_st
 loc_var_dec_st	: loc_var_dec TRM 						
 		;
 
-loc_var_dec	: type var_declarators 				{p =Insert(attr_stack->attr[attr_stack->size].place);
-							strcpy(p->type,attr_stack->attr[attr_stack->size-1].type);}			
+loc_var_dec	: type var_declarators 				{/*p =Insert(attr_stack->attr[attr_stack->size].place);
+							strcpy(p->type,attr_stack->attr[attr_stack->size-1].type);*/}			
 		;
 
 statement	: st_wo_tsub 							
@@ -402,7 +401,37 @@ expr		: cond_expr
 		| assgn		
 		;
 
-assgn		: lhs assgn_op expr	
+assgn		: lhs assgn_op expr			{Attr temp2=pop(attr_stack);
+						Attr temp1=pop(attr_stack);
+						switch(flag1){
+						case 0:sprintf(t,"%s = %s",temp1.place,temp2.place);
+							break;
+						case 1:sprintf(t,"%s = %s * %s",temp1.place,temp1.place,temp2.place);
+							break;
+						case 2:sprintf(t,"%s = %s / %s",temp1.place,temp1.place,temp2.place);
+							break;
+						case 3:sprintf(t,"%s = %s %% %s",temp1.place,temp1.place,temp2.place);
+							break;
+						case 4:sprintf(t,"%s = %s + %s",temp1.place,temp1.place,temp2.place);
+							break;
+						case 5:sprintf(t,"%s = %s - %s",temp1.place,temp1.place,temp2.place);
+							break;
+						case 6:sprintf(t,"%s = %s << %s",temp1.place,temp1.place,temp2.place);
+							break;
+						case 7:sprintf(t,"%s = %s >> %s",temp1.place,temp1.place,temp2.place);
+							break;
+						case 8:sprintf(t,"%s = %s >>> %s",temp1.place,temp1.place,temp2.place);
+							break;
+						case 9:sprintf(t,"%s = %s & %s",temp1.place,temp1.place,temp2.place);
+							break;
+						case 10:sprintf(t,"%s = %s ^ %s",temp1.place,temp1.place,temp2.place);
+							break;
+						case 11:sprintf(t,"%s = %s | %s",temp1.place,temp1.place,temp2.place);
+							break;}
+						sprintf(temp2.place,"%s",temp1.place);
+						temp2.code=append(temp2.code,newList(t));
+						push(attr_stack,&temp2);
+						}	
 		;
 
 lhs		: name		
@@ -410,18 +439,18 @@ lhs		: name
 		| array_access	
 		;
 
-assgn_op	: OP_ASS	
-		| OP_MUL_ASS	
-		| OP_DIV_ASS	
-		| OP_MOD_ASS	
-		| OP_ADD_ASS	
-		| OP_SUB_ASS	
-		| OP_LSH_ASS	
-		| OP_RSH_ASS	
-		| OP_ZRSH_ASS	
-		| OP_AND_ASS	
-		| OP_XOR_ASS	
-		| OP_OR_ASS	
+assgn_op	: OP_ASS		{flag1=0;}	
+		| OP_MUL_ASS		{flag1=1;}
+		| OP_DIV_ASS		{flag1=2;}
+		| OP_MOD_ASS		{flag1=3;}
+		| OP_ADD_ASS		{flag1=4;}
+		| OP_SUB_ASS		{flag1=5;}
+		| OP_LSH_ASS		{flag1=6;}
+		| OP_RSH_ASS		{flag1=7;}
+		| OP_ZRSH_ASS		{flag1=8;}
+		| OP_AND_ASS		{flag1=9;}
+		| OP_XOR_ASS		{flag1=10;}
+		| OP_OR_ASS		{flag1=11;}
 		;
 
 cond_expr	: cond_or_expr					
@@ -429,22 +458,68 @@ cond_expr	: cond_or_expr
 		;
 
 cond_or_expr	: cond_and_expr					
-		| cond_or_expr OP_CON_OR cond_and_expr		
+		| cond_or_expr OP_CON_OR cond_and_expr		{Attr *a1=(Attr *)malloc(sizeof(Attr));
+							strcpy(a1->place,tempVar());
+							Attr temp2=pop(attr_stack);
+							Attr temp1=pop(attr_stack);
+							a1->code=append(temp1.code,temp2.code);
+							sprintf(t,"%s = %s || %s",a1->place,temp1.place,temp2.place);
+							a1->code=append(a1->code,newList(t));
+							push(attr_stack,a1);
+							free(a1);
+							}
 		;
 
 cond_and_expr	: incl_or_expr					
-		| cond_and_expr OP_CON_AND incl_or_expr		
+		| cond_and_expr OP_CON_AND incl_or_expr		{Attr *a1=(Attr *)malloc(sizeof(Attr));
+							strcpy(a1->place,tempVar());
+							Attr temp2=pop(attr_stack);
+							Attr temp1=pop(attr_stack);
+							a1->code=append(temp1.code,temp2.code);
+							sprintf(t,"%s = %s && %s",a1->place,temp1.place,temp2.place);
+							a1->code=append(a1->code,newList(t));
+							push(attr_stack,a1);
+							free(a1);
+							}
 		;
 
-incl_or_expr	: excl_or_expr					
+incl_or_expr	: excl_or_expr
+		| incl_or_expr OP_OR excl_or_expr		{Attr *a1=(Attr *)malloc(sizeof(Attr));
+							strcpy(a1->place,tempVar());
+							Attr temp2=pop(attr_stack);
+							Attr temp1=pop(attr_stack);
+							a1->code=append(temp1.code,temp2.code);
+							sprintf(t,"%s = %s | %s",a1->place,temp1.place,temp2.place);
+							a1->code=append(a1->code,newList(t));
+							push(attr_stack,a1);
+							free(a1);
+							}			
 		;
 
 excl_or_expr	: and_expr					
-		| excl_or_expr OP_XOR and_expr			
+		| excl_or_expr OP_XOR and_expr			{Attr *a1=(Attr *)malloc(sizeof(Attr));
+							strcpy(a1->place,tempVar());
+							Attr temp2=pop(attr_stack);
+							Attr temp1=pop(attr_stack);
+							a1->code=append(temp1.code,temp2.code);
+							sprintf(t,"%s = %s ^ %s",a1->place,temp1.place,temp2.place);
+							a1->code=append(a1->code,newList(t));
+							push(attr_stack,a1);
+							free(a1);
+							}
 		;
 
 and_expr 	: equality_expr					
-		| and_expr OP_AND equality_expr			
+		| and_expr OP_AND equality_expr			{Attr *a1=(Attr *)malloc(sizeof(Attr));
+							strcpy(a1->place,tempVar());
+							Attr temp2=pop(attr_stack);
+							Attr temp1=pop(attr_stack);
+							a1->code=append(temp1.code,temp2.code);
+							sprintf(t,"%s = %s & %s",a1->place,temp1.place,temp2.place);
+							a1->code=append(a1->code,newList(t));
+							push(attr_stack,a1);
+							free(a1);
+							}
 		;
 
 equality_expr	: rel_expr					
@@ -461,100 +536,92 @@ rel_expr	: shift_expr
 		;
 
 shift_expr	: add_expr					
-		| shift_expr OP_LSH add_expr		{Attr *attr=(Attr *)malloc(sizeof(Attr));
-						strcpy(attr->place,tempVar());
-						Attr temp2=pop(attr_stack);
-						Attr temp=pop(attr_stack);
-						attr->code=append(attr->code,temp.code);
-						attr->code=append(attr->code,temp2.code);
-						char t[100];
-						sprintf(t,"%s = %s << %s",attr->place,temp.place,temp2.place);
-						attr->code=append(attr->code,newList(t));
-						push(attr_stack,attr);
-						free(attr);}		
-		| shift_expr OP_RSH add_expr		{Attr *attr=(Attr *)malloc(sizeof(Attr));
-						strcpy(attr->place,tempVar());
-						Attr temp2=pop(attr_stack);
-						Attr temp=pop(attr_stack);
-						attr->code=append(attr->code,temp.code);
-						attr->code=append(attr->code,temp2.code);
-						char t[100];
-						sprintf(t,"%s = %s >> %s",attr->place,temp.place,temp2.place);
-						attr->code=append(attr->code,newList(t));
-						push(attr_stack,attr);
-						free(attr);}		
-		| shift_expr OP_ZRSH add_expr		{Attr *attr=(Attr *)malloc(sizeof(Attr));
-						strcpy(attr->place,tempVar());
-						Attr temp=pop(attr_stack);
-						Attr temp2=pop(attr_stack);
-						attr->code=append(attr->code,temp2.code);
-						attr->code=append(attr->code,temp.code);
-						char t[100];
-						sprintf(t,"%s = %s >>> %s",attr->place,temp2.place,temp.place);
-						attr->code=append(attr->code,newList(t));
-						push(attr_stack,attr);
-						free(attr);}		
+		| shift_expr OP_LSH add_expr			{Attr *a1=(Attr *)malloc(sizeof(Attr));
+							strcpy(a1->place,tempVar());
+							Attr temp2=pop(attr_stack);
+							Attr temp1=pop(attr_stack);
+							a1->code=append(temp1.code,temp2.code);
+							sprintf(t,"%s = %s << %s",a1->place,temp1.place,temp2.place);
+							a1->code=append(a1->code,newList(t));
+							push(attr_stack,a1);
+							free(a1);
+							}		
+		| shift_expr OP_RSH add_expr			{Attr *a1=(Attr *)malloc(sizeof(Attr));
+							strcpy(a1->place,tempVar());
+							Attr temp2=pop(attr_stack);
+							Attr temp1=pop(attr_stack);
+							a1->code=append(temp1.code,temp2.code);
+							sprintf(t,"%s = %s >> %s",a1->place,temp1.place,temp2.place);
+							a1->code=append(a1->code,newList(t));
+							push(attr_stack,a1);
+							free(a1);
+							}		
+		| shift_expr OP_ZRSH add_expr			{Attr *a1=(Attr *)malloc(sizeof(Attr));
+							strcpy(a1->place,tempVar());
+							Attr temp2=pop(attr_stack);
+							Attr temp1=pop(attr_stack);
+							a1->code=append(temp1.code,temp2.code);
+							sprintf(t,"%s = %s >>> %s",a1->place,temp1.place,temp2.place);
+							a1->code=append(a1->code,newList(t));
+							push(attr_stack,a1);
+							free(a1);
+							}		
 		;
 
 add_expr	: mul_expr					
-		| add_expr OP_ADD mul_expr		{Attr *attr=(Attr *)malloc(sizeof(Attr));
-						strcpy(attr->place,tempVar());
-						Attr temp=pop(attr_stack);
-						Attr temp2=pop(attr_stack);
-						attr->code=append(attr->code,temp2.code);
-						attr->code=append(attr->code,temp.code);
-						char t[100];
-						sprintf(t,"%s = %s + %s",attr->place,temp2.place,temp.place);
-						attr->code=append(attr->code,newList(t));
-						push(attr_stack,attr);
-						free(attr);}		
-		| add_expr OP_SUB mul_expr		{Attr *attr=(Attr *)malloc(sizeof(Attr));
-						strcpy(attr->place,tempVar());
-						Attr temp=pop(attr_stack);
-						Attr temp2=pop(attr_stack);
-						attr->code=append(attr->code,temp2.code);
-						attr->code=append(attr->code,temp.code);
-						char t[100];
-						sprintf(t,"%s = %s - %s",attr->place,temp2.place,temp.place);
-						attr->code=append(attr->code,newList(t));
-						push(attr_stack,attr);
-						free(attr);}		
+		| add_expr OP_ADD mul_expr			{Attr *a1=(Attr *)malloc(sizeof(Attr));
+							strcpy(a1->place,tempVar());
+							Attr temp2=pop(attr_stack);
+							Attr temp1=pop(attr_stack);
+							a1->code=append(temp1.code,temp2.code);
+							sprintf(t,"%s = %s + %s",a1->place,temp1.place,temp2.place);
+							a1->code=append(a1->code,newList(t));
+							push(attr_stack,a1);
+							free(a1);
+							}
+		| add_expr OP_SUB mul_expr			{Attr *a1=(Attr *)malloc(sizeof(Attr));
+							strcpy(a1->place,tempVar());
+							Attr temp2=pop(attr_stack);
+							Attr temp1=pop(attr_stack);
+							a1->code=append(temp1.code,temp2.code);
+							sprintf(t,"%s = %s - %s",a1->place,temp1.place,temp2.place);
+							a1->code=append(a1->code,newList(t));
+							push(attr_stack,a1);
+							free(a1);
+							}		
 		;
 
 mul_expr	: unary_expr			
-		| mul_expr OP_MUL unary_expr		{Attr *attr=(Attr *)malloc(sizeof(Attr));
-						strcpy(attr->place,tempVar());
-						Attr temp=pop(attr_stack);
-						Attr temp2=pop(attr_stack);
-						attr->code=append(attr->code,temp2.code);
-						attr->code=append(attr->code,temp.code);
-						char t[100];
-						sprintf(t,"%s = %s * %s",attr->place,temp2.place,temp.place);
-						attr->code=append(attr->code,newList(t));
-						push(attr_stack,attr);
-						free(attr);}
-		| mul_expr OP_DIV unary_expr		{Attr *attr=(Attr *)malloc(sizeof(Attr));
-						strcpy(attr->place,tempVar());
-						Attr temp=pop(attr_stack);
-						Attr temp2=pop(attr_stack);
-						attr->code=append(attr->code,temp2.code);
-						attr->code=append(attr->code,temp.code);
-						char t[100];
-						sprintf(t,"%s = %s / %s",attr->place,temp2.place,temp.place);
-						attr->code=append(attr->code,newList(t));
-						push(attr_stack,attr);
-						free(attr);}
-		| mul_expr OP_MOD unary_expr		{Attr *attr=(Attr *)malloc(sizeof(Attr));
-						strcpy(attr->place,tempVar());
-						Attr temp=pop(attr_stack);
-						Attr temp2=pop(attr_stack);
-						attr->code=append(attr->code,temp2.code);
-						attr->code=append(attr->code,temp.code);
-						char t[100];
-						sprintf(t,"%s = %s %% %s",attr->place,temp2.place,temp.place);
-						attr->code=append(attr->code,newList(t));
-						push(attr_stack,attr);
-						free(attr);}
+		| mul_expr OP_MUL unary_expr			{Attr *a1=(Attr *)malloc(sizeof(Attr));
+							strcpy(a1->place,tempVar());
+							Attr temp2=pop(attr_stack);
+							Attr temp1=pop(attr_stack);
+							a1->code=append(temp1.code,temp2.code);
+							sprintf(t,"%s = %s * %s",a1->place,temp1.place,temp2.place);
+							a1->code=append(a1->code,newList(t));
+							push(attr_stack,a1);
+							free(a1);
+							}
+		| mul_expr OP_DIV unary_expr			{Attr *a1=(Attr *)malloc(sizeof(Attr));
+							strcpy(a1->place,tempVar());
+							Attr temp2=pop(attr_stack);
+							Attr temp1=pop(attr_stack);
+							a1->code=append(temp1.code,temp2.code);
+							sprintf(t,"%s = %s / %s",a1->place,temp1.place,temp2.place);
+							a1->code=append(a1->code,newList(t));
+							push(attr_stack,a1);
+							free(a1);
+							}
+		| mul_expr OP_MOD unary_expr			{Attr *a1=(Attr *)malloc(sizeof(Attr));
+							strcpy(a1->place,tempVar());
+							Attr temp2=pop(attr_stack);
+							Attr temp1=pop(attr_stack);
+							a1->code=append(temp1.code,temp2.code);
+							sprintf(t,"%s = %s %% %s",a1->place,temp1.place,temp2.place);
+							a1->code=append(a1->code,newList(t));
+							push(attr_stack,a1);
+							free(a1);
+							}
 		;
 
 cast_expr	: PAREN_S primitive_type PAREN_E unary_expr		
@@ -563,82 +630,73 @@ cast_expr	: PAREN_S primitive_type PAREN_E unary_expr
 
 unary_expr	: preinc_expr		
 		| predec_expr		
-		| OP_ADD unary_expr			{Attr *attr=(Attr *)malloc(sizeof(Attr));
-						strcpy(attr->place,tempVar());
-						Attr temp=pop(attr_stack);
-						attr->code=append(attr->code,temp.code);
-						char t[100];
-						sprintf(t,"%s = + %s",attr->place,temp.place);
-						attr->code=append(attr->code,newList(t));
-						push(attr_stack,attr);
-						free(attr);}
-		| OP_SUB unary_expr			{Attr *attr=(Attr *)malloc(sizeof(Attr));
-						strcpy(attr->place,tempVar());
-						Attr temp=pop(attr_stack);
-						attr->code=append(attr->code,temp.code);
-						char t[100];
-						sprintf(t,"%s = - %s",attr->place,temp.place);
-						attr->code=append(attr->code,newList(t));
-						push(attr_stack,attr);
-						free(attr);}
+		| OP_ADD unary_expr				{char temp[10];
+							strcpy(temp,tempVar());
+							Attr temp1=pop(attr_stack);
+							sprintf(t,"%s = + %s",temp,temp1.place);
+							temp1.code=append(temp1.code,newList(t));
+							sprintf(temp1.place,"%s",temp);
+							push(attr_stack,&temp1);
+							}
+		| OP_SUB unary_expr				{char temp[10];
+							strcpy(temp,tempVar());
+							Attr temp1=pop(attr_stack);
+							sprintf(t,"%s = - %s",temp,temp1.place);
+							temp1.code=append(temp1.code,newList(t));
+							sprintf(temp1.place,"%s",temp);
+							push(attr_stack,&temp1);
+							}
 		| unary_expr_not_plus_minus	
 		;
 
-preinc_expr	: OP_INC unary_expr			{Attr *attr=(Attr *)malloc(sizeof(Attr));
-						strcpy(attr->place,tempVar());
-						Attr temp=pop(attr_stack);
-						attr->code=append(attr->code,temp.code);
-						char t[100];
-						sprintf(t,"%s = ++ %s",attr->place,temp.place);
-						attr->code=append(attr->code,newList(t));
-						push(attr_stack,attr);
-						free(attr);}	
+preinc_expr	: OP_INC unary_expr				{Attr temp1=pop(attr_stack);
+							sprintf(t,"%s = %s + 1",temp1.place,temp1.place);
+							temp1.code=append(temp1.code,newList(t));
+							push(attr_stack,&temp1);
+							}	
 		;
 
-predec_expr	: OP_DEC unary_expr			{Attr *attr=(Attr *)malloc(sizeof(Attr));
-						strcpy(attr->place,tempVar());
-						Attr temp=pop(attr_stack);
-						attr->code=append(attr->code,temp.code);
-						char t[100];
-						sprintf(t,"%s = -- %s",attr->place,temp.place);
-						attr->code=append(attr->code,newList(t));
-						push(attr_stack,attr);
-						free(attr);}	
+predec_expr	: OP_DEC unary_expr				{Attr temp1=pop(attr_stack);
+							sprintf(t,"%s = %s - 1",temp1.place,temp1.place);
+							temp1.code=append(temp1.code,newList(t));
+							push(attr_stack,&temp1);
+							}	
 		;
 
 unary_expr_not_plus_minus	: postfix_expr		
-				| OP_NEG unary_expr	{Attr *attr=(Attr *)malloc(sizeof(Attr));
-						strcpy(attr->place,tempVar());
-						Attr temp=pop(attr_stack);
-						attr->code=append(attr->code,temp.code);
-						char t[100];
-						sprintf(t,"%s = ! %s",attr->place,temp.place);
-						attr->code=append(attr->code,newList(t));
-						push(attr_stack,attr);
-						free(attr);}	
+				| OP_NEG unary_expr		{char temp[10];
+							strcpy(temp,tempVar());
+							Attr temp1=pop(attr_stack);
+							sprintf(t,"%s = ! %s",temp,temp1.place);
+							temp1.code=append(temp1.code,newList(t));
+							sprintf(temp1.place,"%s",temp);
+							push(attr_stack,&temp1);
+							}	
 				| cast_expr		
 				;
 
-postdec_expr	: postfix_expr OP_DEC			{Attr *attr=(Attr *)malloc(sizeof(Attr));
-						strcpy(attr->place,tempVar());
-						Attr temp=pop(attr_stack);
-						attr->code=append(attr->code,temp.code);
-						char t[100];
-						sprintf(t,"%s = %s --",attr->place,temp.place);
-						attr->code=append(attr->code,newList(t));
-						push(attr_stack,attr);
-						free(attr);}	
+postdec_expr	: postfix_expr OP_DEC				{Attr temp1=pop(attr_stack);
+							char temp[10];
+							sprintf(temp,"%s",tempVar());
+							sprintf(t,"%s = %s",temp,temp1.place);
+							temp1.code=append(temp1.code,newList(t));
+							sprintf(t,"%s = %s - 1",temp1.place,temp1.place);
+							temp1.code=append(temp1.code,newList(t));
+							sprintf(temp1.place,"%s",temp);
+							push(attr_stack,&temp1);
+							}	
 		;
 
-postinc_expr	: postfix_expr OP_INC			{Attr *attr=(Attr *)malloc(sizeof(Attr));
-						strcpy(attr->place,tempVar());
-						Attr temp=pop(attr_stack);
-						attr->code=append(attr->code,temp.code);
-						char t[100];
-						sprintf(t,"%s = %s ++",attr->place,temp.place);
-						attr->code=append(attr->code,newList(t));
-						push(attr_stack,attr);
-						free(attr);}	
+postinc_expr	: postfix_expr OP_INC				{Attr temp1=pop(attr_stack);
+							char temp[10];
+							sprintf(temp,"%s",tempVar());
+							sprintf(t,"%s = %s",temp,temp1.place);
+							temp1.code=append(temp1.code,newList(t));
+							sprintf(t,"%s = %s + 1",temp1.place,temp1.place);
+							temp1.code=append(temp1.code,newList(t));
+							sprintf(temp1.place,"%s",temp);
+							push(attr_stack,&temp1);
+							}							
 		;
 
 postfix_expr	: primary		
@@ -714,28 +772,29 @@ int_literal		: INT_LIT_H		{char ch[20];sprintf(ch,"%d",$1);pushStr(lexeme,ch);}
 			| INT_LIT_D		{char ch[20];sprintf(ch,"%d",$1);pushStr(lexeme,ch);}
 			;
 
-identifier		: ID			{SymtabEntry *p=look_up($1);
-				  Attr *attr=(Attr *)malloc(sizeof(Attr));
-				  if(p!=NULL){
-					  strcpy(attr->place,$1);
-					  push(attr_stack,attr);
-				  }else
-					  yyerrok;
-				  free(attr);
-			  }
+identifier		: ID			{SymtabEntry *tempo=look_up($1);
+					if(tempo!=NULL){
+						Attr *a1=(Attr *)malloc(sizeof(Attr));
+						strcpy(a1->place,$1);
+						a1->code=NULL;
+						push(attr_stack,a1);
+						free(a1);
+						}
+					else
+						yyerrok;}
 			;
 %%
 struct StackStr* str4;
 int main(int argc, char** argv){
-//	s1 = createIntStack();
+	//	s1 = createIntStack();
 	p=(SymtabEntry *)malloc(sizeof(SymtabEntry));
 	attr_stack = createIntStack();
 	lexeme = createCharStack();
-    str1 = createCharStack();
-    str2= createCharStack();
-    str4= createCharStack();
+	str1 = createCharStack();
+	str2= createCharStack();
+	str4= createCharStack();
 	attr=(Attr *)malloc(sizeof(Attr));
-    //push(s1,0);
+	//push(s1,0);
 	FILE *fptr = fopen(argv[1], "r");
 	if(argc==2 && fptr!=NULL){
 		yyin = fptr;
@@ -744,24 +803,24 @@ int main(int argc, char** argv){
 		printf("Error in opening file \n . Aborting....");
 		exit(0);
 	}
-
 	while(!feof(yyin)){
 		yyparse();
 	}
-       // free(s1);
-       // free(s2);
-SymtabEntry *temp=head;
+	// free(s1);
+	// free(s2);
+/*	SymtabEntry *temp=head;
 	while(temp){
 		printf("%s,%s\n",temp->lexeme,temp->type);
 		temp=temp->next;
-	}
-	printList(pop(attr_stack).code);	
-        free(str1);
-        free(str2);
-        free(str4);
-        free(lexeme);
+	}*/
+	while(!isEmpty(attr_stack))
+		printList(pop(attr_stack).code);
+	free(str1);
+	free(str2);
+	free(str4);
+	free(lexeme);
 	free(p);
 	free(attr_stack);
-        fclose(fptr);
+	fclose(fptr);
 	return 0;
 }

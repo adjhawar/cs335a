@@ -36,7 +36,7 @@ void push(struct Stack* stack, Attr *attr){
     else{
     	stack->size += 1; 
 	strcpy(stack->attr[stack->size].place, attr->place);
-	strcpy(stack->attr[stack->size].type, attr->type);
+	//strcpy(stack->attr[stack->size].type, attr->type);
 	stack->attr[stack->size].code = attr->code;
 	}
 }
@@ -49,9 +49,11 @@ Attr pop(struct Stack* stack){
  
 
 //returns the tail of the list
-list3AC* getTail(list3AC *list){
+list3AC* getTail(list3AC *list1){
+	list3AC *list=list1;
+	if(list){
 	while(list->next)
-		list=list->next;
+		list=list->next;}
 	return list;
 }
 
@@ -59,7 +61,7 @@ list3AC* getTail(list3AC *list){
 list3AC* append(list3AC* head1, list3AC* head2){
 	if(head1){
 		list3AC* tail1=getTail(head1);
-		tail1->next=head2;	
+		tail1->next=head2;
 		return head1;}
 	else
 		return head2;
@@ -74,9 +76,11 @@ list3AC* newList(char *str){
 }
 
 //prints the list
-void printList(list3AC *list){
+void printList(list3AC *list1){
+	list3AC *list=list1;
 	while(list){
 		printf("%s\n",list->instr);
 		list=list->next;
 	}
-}		
+}	
+
