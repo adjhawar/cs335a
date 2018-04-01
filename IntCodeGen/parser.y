@@ -360,12 +360,22 @@ switch_label	: CASE expr COLON
 		| DEFAULT COLON 					
 		;
 
-while_st	: WHILE PAREN_S expr PAREN_E statement 			
+while_st	: WHILE PAREN_S expr PAREN_E statement 			{ char* begin = newLabel(); char* end = newLabel;
+                                                                          sprintf(t,"label , %s",begin);
+       								          $$->code = newList(t);
+                      						          $$->code = append($$->code , $2->code,);
+									  sprintf(t,"ifgoto, eq,%d,0,%s",$2,end);
+									  $$->code = append($$->code ,newList(t));
+									  $$->code = append($$->code,$4->code);
+									  sprintf(t,"goto , %s",begin);
+       								          $$->code = append($$->code,newList(t));
+									  sprintf(t,"label , %s",end);
+       								          $$->code = append($$->code,newList(t));  }
 		;
 
 while_st_no_short_if	: WHILE PAREN_S expr PAREN_E st_no_short_if	
 			;
-
+ 
 do_st		: DO statement WHILE PAREN_S expr PAREN_E  TRM		
 		;
 

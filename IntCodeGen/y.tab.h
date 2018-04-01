@@ -106,28 +106,28 @@ extern int yydebug;
     OP_LES = 316,
     OP_GEQ = 317,
     OP_LEQ = 318,
-    OP_RSH = 319,
-    OP_LSH = 320,
-    OP_ADD = 321,
-    OP_SUB = 322,
-    OP_MUL = 323,
-    OP_DIV = 324,
-    OP_MOD = 325,
-    OP_INC = 326,
-    OP_DEC = 327,
-    OP_DOT = 328,
-    OP_ZRSH = 329,
-    INT_LIT_D = 330,
-    INT_LIT_O = 331,
-    INT_LIT_H = 332,
-    FLOAT_LIT = 333,
-    CHAR_LIT = 334,
-    STR_LIT = 335,
-    ERROR = 336,
-    PRINT = 337,
-    SCAN = 338,
-    OP_NEG = 339,
-    STRING = 340,
+    OP_NEG = 319,
+    OP_RSH = 320,
+    OP_LSH = 321,
+    OP_ADD = 322,
+    OP_SUB = 323,
+    OP_MUL = 324,
+    OP_DIV = 325,
+    OP_MOD = 326,
+    OP_INC = 327,
+    OP_DEC = 328,
+    OP_DOT = 329,
+    OP_ZRSH = 330,
+    INT_LIT_D = 331,
+    INT_LIT_O = 332,
+    INT_LIT_H = 333,
+    FLOAT_LIT = 334,
+    CHAR_LIT = 335,
+    STR_LIT = 336,
+    STRING = 337,
+    ERROR = 338,
+    PRINT = 339,
+    SCAN = 340,
     EXTENDS = 341
   };
 #endif
@@ -193,28 +193,28 @@ extern int yydebug;
 #define OP_LES 316
 #define OP_GEQ 317
 #define OP_LEQ 318
-#define OP_RSH 319
-#define OP_LSH 320
-#define OP_ADD 321
-#define OP_SUB 322
-#define OP_MUL 323
-#define OP_DIV 324
-#define OP_MOD 325
-#define OP_INC 326
-#define OP_DEC 327
-#define OP_DOT 328
-#define OP_ZRSH 329
-#define INT_LIT_D 330
-#define INT_LIT_O 331
-#define INT_LIT_H 332
-#define FLOAT_LIT 333
-#define CHAR_LIT 334
-#define STR_LIT 335
-#define ERROR 336
-#define PRINT 337
-#define SCAN 338
-#define OP_NEG 339
-#define STRING 340
+#define OP_NEG 319
+#define OP_RSH 320
+#define OP_LSH 321
+#define OP_ADD 322
+#define OP_SUB 323
+#define OP_MUL 324
+#define OP_DIV 325
+#define OP_MOD 326
+#define OP_INC 327
+#define OP_DEC 328
+#define OP_DOT 329
+#define OP_ZRSH 330
+#define INT_LIT_D 331
+#define INT_LIT_O 332
+#define INT_LIT_H 333
+#define FLOAT_LIT 334
+#define CHAR_LIT 335
+#define STR_LIT 336
+#define STRING 337
+#define ERROR 338
+#define PRINT 339
+#define SCAN 340
 #define EXTENDS 341
 
 /* Value type.  */
@@ -222,7 +222,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 78 "parser.y" /* yacc.c:1909  */
+#line 80 "parser.y" /* yacc.c:1909  */
 
 	int ival;
 	char *sval;
