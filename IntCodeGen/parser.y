@@ -122,7 +122,7 @@ struct Stack* attr_stack;
 %type <attr>cond_expr name array_access field_access 
 %type <attr>cond_or_expr cond_and_expr incl_or_expr excl_or_expr and_expr equality_expr rel_expr shift_expr add_expr mul_expr
 %type <attr>unary_expr preinc_expr predec_expr unary_expr_not_plus_minus postdec_expr postinc_expr postfix_expr cast_expr
-%type <attr>primary array_creat_expr primary_no_new_array st_expr
+%type <attr>primary array_creat_expr primary_no_new_array st_expr literal
 %%
 
 compilation_unit	: type_declarations_e 							
@@ -689,10 +689,10 @@ postinc_expr	: postfix_expr OP_INC				{char temp[10];
 							}							
 		;
 
-postfix_expr	: primary		
+postfix_expr	: primary			{$$=$1;}
 		| name			{$$=$1;}		
-		| postinc_expr		
-		| postdec_expr		
+		| postinc_expr		{$$=$1;}
+		| postdec_expr		{$$=$1;}
 		;
 
 method_invo	: name PAREN_S arg_list_e PAREN_E 		
@@ -704,11 +704,11 @@ field_access	: primary OP_DOT identifier
 		| SUPER OP_DOT identifier		
 		;
 
-primary		: primary_no_new_array		
+primary		: primary_no_new_array		{$$=$1;}	
 		| array_creat_expr		
 		;
 
-primary_no_new_array	: literal		
+primary_no_new_array	: literal			{$$=$1;}
 			| THIS			
 			| PAREN_S expr PAREN_E	
 			| object_expr		
@@ -752,9 +752,9 @@ literal			: int_literal
 			| FLOAT_LIT		{char ch[20];sprintf(ch,"%f",$1);pushStr(lexeme,ch);}
 			| CHAR_LIT		{pushStr(lexeme,$1);}
 			| STR_LIT		{pushStr(lexeme,$1);}
-			| T			
-			| F			
-			| N			
+			| T		{strcpy($$->place,"1");}	
+			| F		{strcpy($$->place,"0");}	
+			| N		{strcpy($$->place,"null");}	
 			;
 
 int_literal		: INT_LIT_H		{char ch[20];sprintf(ch,"%d",$1);pushStr(lexeme,ch);}
