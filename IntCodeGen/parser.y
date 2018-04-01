@@ -12,6 +12,7 @@ extern FILE *yyin;
 FILE *out;
 void yyerror(const char *s);
 char TEMP[7];
+char LABEL[5];
 char t[100];
 int flag1;
 SymtabEntry *head,*tail, *p,*p1;
@@ -69,6 +70,13 @@ char* tempVar(){
 	return TEMP;
 }
 
+char* newLabel(){
+	static int z=0;
+	sprintf(LABEL,"L%d",z);
+	z++;
+	return LABEL;
+}
+
 struct StackStr* lexeme;
 struct StackStr* str1 ;
 struct StackStr* str2;
@@ -83,7 +91,6 @@ struct Stack* attr_stack;
 	float fval;
 	char *type;
 	Attr *attr;
-
 }
 %error-verbose
 %start compilation_unit
