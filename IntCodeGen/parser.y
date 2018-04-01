@@ -12,6 +12,7 @@ extern FILE *yyin;
 FILE *out;
 void yyerror(const char *s);
 char TEMP[7];
+char t1[7];
 char LABEL[5];
 char t[100];
 int flag1;
@@ -115,8 +116,8 @@ struct Stack* attr_stack;
 %token PRINT SCAN
 %token EXTENDS
 
-%type <sval>error integer_type reference_type primitive_type array_type class_type numeric_type type_name type
-
+%type <sval>error integer_type reference_type primitive_type array_type class_type numeric_type type_name type identifier name var_decl_id 
+%type <attr>postfix_expr unary_expr_not_plus_minus unary_expr mul_expr add_expr shift_expr rel_expr
 %%
 
 compilation_unit	: type_declarations_e 							
@@ -201,7 +202,7 @@ var_declarator		: var_decl_id
 			| var_decl_id OP_ASS var_init 						
 			;
 
-var_decl_id		: ID 		{}
+var_decl_id		: ID 		{strcpy($$, $1);}
 			| var_decl_id ARRAY_S ARRAY_E 						
 			;
 
@@ -411,7 +412,7 @@ expr		: cond_expr
 		| assgn		
 		;
 
-assgn		: lhs assgn_op expr			{Attr temp2=pop(attr_stack);
+assgn		: lhs assgn_op expr			/*{Attr temp2=pop(attr_stack);
 						Attr temp1=pop(attr_stack);
 						switch(flag1){
 						case 0:sprintf(t,"%s = %s",temp1.place,temp2.place);
@@ -441,7 +442,7 @@ assgn		: lhs assgn_op expr			{Attr temp2=pop(attr_stack);
 						sprintf(temp2.place,"%s",temp1.place);
 						temp2.code=append(temp2.code,newList(t));
 						push(attr_stack,&temp2);
-						}	
+						}	*/
 		;
 
 lhs		: name		
@@ -537,15 +538,16 @@ equality_expr	: rel_expr
 		| equality_expr OP_NEQ rel_expr			
 		;
 
-rel_expr	: shift_expr					
-		| rel_expr OP_LES shift_expr			
+rel_expr	: shift_expr			{strcpy($$->place, $1->place);}		
+		| rel_expr OP_LES shift_expr	{strcpy(t1, tempVar());
+					printf("%s = %s < %s\n", t1, $1->place, $3->place);}		
 		| rel_expr OP_GRE shift_expr			
 		| rel_expr OP_LEQ shift_expr			
 		| rel_expr OP_GEQ shift_expr			
 		| rel_expr INSTANCEOF reference_type		
 		;
 
-shift_expr	: add_expr					
+shift_expr	: add_expr					{strcpy($$->place, $1->place);}				
 		| shift_expr OP_LSH add_expr			{Attr *a1=(Attr *)malloc(sizeof(Attr));
 							strcpy(a1->place,tempVar());
 							Attr temp2=pop(attr_stack);
@@ -578,7 +580,7 @@ shift_expr	: add_expr
 							}		
 		;
 
-add_expr	: mul_expr					
+add_expr	: mul_expr						{strcpy($$->place, $1->place);}
 		| add_expr OP_ADD mul_expr			{Attr *a1=(Attr *)malloc(sizeof(Attr));
 							strcpy(a1->place,tempVar());
 							Attr temp2=pop(attr_stack);
@@ -601,7 +603,7 @@ add_expr	: mul_expr
 							}		
 		;
 
-mul_expr	: unary_expr			
+mul_expr	: unary_expr					{strcpy($$->place, $1->place);}
 		| mul_expr OP_MUL unary_expr			{Attr *a1=(Attr *)malloc(sizeof(Attr));
 							strcpy(a1->place,tempVar());
 							Attr temp2=pop(attr_stack);
@@ -656,7 +658,7 @@ unary_expr	: preinc_expr
 							sprintf(temp1.place,"%s",temp);
 							push(attr_stack,&temp1);
 							}
-		| unary_expr_not_plus_minus	
+		| unary_expr_not_plus_minus			{strcpy($$->place, $1->place);}
 		;
 
 preinc_expr	: OP_INC unary_expr				{Attr temp1=pop(attr_stack);
@@ -673,7 +675,7 @@ predec_expr	: OP_DEC unary_expr				{Attr temp1=pop(attr_stack);
 							}	
 		;
 
-unary_expr_not_plus_minus	: postfix_expr		
+unary_expr_not_plus_minus	: postfix_expr		{strcpy($$->place, $1->place);}
 				| OP_NEG unary_expr		{char temp[10];
 							strcpy(temp,tempVar());
 							Attr temp1=pop(attr_stack);
@@ -710,7 +712,7 @@ postinc_expr	: postfix_expr OP_INC				{Attr temp1=pop(attr_stack);
 		;
 
 postfix_expr	: primary		
-		| name		
+		| name		 {strcpy($$->place, $1);}
 		| postinc_expr		
 		| postdec_expr		
 		;
@@ -764,7 +766,7 @@ type_name		: CID			{pushStr(lexeme,$1);}
 			| error ID	
 			;
 
-name			: identifier			
+name			: identifier	{strcpy($$, $1);}			
 			| name OP_DOT identifier	
 			;
 
@@ -782,7 +784,8 @@ int_literal		: INT_LIT_H		{char ch[20];sprintf(ch,"%d",$1);pushStr(lexeme,ch);}
 			| INT_LIT_D		{char ch[20];sprintf(ch,"%d",$1);pushStr(lexeme,ch);}
 			;
 
-identifier		: ID			{SymtabEntry *tempo=look_up($1);
+identifier		: ID			{strcpy($$, $1);
+					SymtabEntry *tempo=look_up($1);
 					if(tempo!=NULL){
 						Attr *a1=(Attr *)malloc(sizeof(Attr));
 						strcpy(a1->place,$1);
@@ -823,8 +826,8 @@ int main(int argc, char** argv){
 		printf("%s,%s\n",temp->lexeme,temp->type);
 		temp=temp->next;
 	}*/
-	while(!isEmpty(attr_stack))
-		printList(pop(attr_stack).code);
+	//while(!isEmpty(attr_stack))
+		//printList(pop(attr_stack).code);
 	free(str1);
 	free(str2);
 	free(str4);
