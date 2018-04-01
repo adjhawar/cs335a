@@ -122,7 +122,7 @@ struct Stack* attr_stack;
 %type <attr>cond_expr name array_access field_access 
 %type <attr>cond_or_expr cond_and_expr incl_or_expr excl_or_expr and_expr equality_expr rel_expr shift_expr add_expr mul_expr
 %type <attr>unary_expr preinc_expr predec_expr unary_expr_not_plus_minus postdec_expr postinc_expr postfix_expr cast_expr
-%type <attr>primary array_creat_expr primary_no_new_array
+%type <attr>primary array_creat_expr primary_no_new_array st_expr
 %%
 
 compilation_unit	: type_declarations_e 							
@@ -325,14 +325,14 @@ st_wo_tsub	: block
 empty_st	:  TRM 										
 		;
 
-expr_st		: st_expr  TRM 								
+expr_st		: st_expr  TRM 			{printList($1->code);}					
 		;
 
-st_expr		: assgn 	{printList($1->code);}								
-		| preinc_expr 									
-		| postinc_expr 									
-		| predec_expr 									
-		| postdec_expr 									
+st_expr		: assgn 			{$$=$1;}								
+		| preinc_expr 			{$$=$1;}							
+		| postinc_expr 			{$$=$1;}						
+		| predec_expr 			{$$=$1;}						
+		| postdec_expr 			{$$=$1;}						
 		| method_invo 									
 		| object_expr 									
 		;
