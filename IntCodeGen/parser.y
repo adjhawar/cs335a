@@ -211,11 +211,7 @@ var_declarator		: var_decl_id 			{$$=strdup($$);}
 			| var_decl_id OP_ASS var_init 	{$$=strdup($1);}					
 			;
 
-<<<<<<< HEAD
-var_decl_id		: ID 		{strcpy($$, $1);}
-=======
 var_decl_id		: ID 				{$$=strdup($1);}
->>>>>>> 4c579b09942d0d22e72ad107a23d72d9dcd05184
 			| var_decl_id ARRAY_S ARRAY_E 						
 			;
 
