@@ -15,7 +15,7 @@ SymtabEntry* look_up(char *lex){
 	return temp;
 }
 
-SymtabEntry* Insert(char* lex)
+SymtabEntry* Insert(char* lex, char *type)
 {
 	SymtabEntry *tem = look_up(lex);
 	if(tem){
@@ -27,6 +27,7 @@ SymtabEntry* Insert(char* lex)
 		temp->liveness = false;
 		temp->nextuse = -1;
 		strcpy(temp->lexeme,lex);
+		strcpy(temp->type,type);
 		if(strcmp(lex, "0")==0 || atoi(lex)) 
 			strcpy(temp->type,"const");
 		temp->next=NULL;

@@ -15,7 +15,7 @@ char TEMP[7];
 char LABEL[5];
 char t[100];
 int flag1;
-SymtabEntry *head,*tail, *p;
+SymtabEntry *head,*tail, *p,*p1;
 Attr* attr;
 struct StackStr{
 	int size;
@@ -89,8 +89,8 @@ struct Stack* attr_stack;
 	int ival;
 	char *sval;
 	float fval;
-	struct Attr *attr;
-
+	char *type;
+	Attr *attr;
 }
 %error-verbose
 %start compilation_unit
@@ -115,7 +115,9 @@ struct Stack* attr_stack;
 %token PRINT SCAN
 %token EXTENDS
 
-%type <sval>error integer_type reference_type primitive_type array_type class_type numeric_type type_name type
+%type <type>error integer_type reference_type primitive_type array_type class_type numeric_type type_name type
+%type <sval>var_decl_id var_declarator 
+%type <attr>var_declarators
 
 %%
 
@@ -193,15 +195,22 @@ field_decl		: type var_declarators TRM 	 {/*p =Insert(attr_stack->attr[attr_stac
 							strcpy(p->type,attr_stack->attr[attr_stack->size].type);*/}			
 			;
 
-var_declarators		: var_declarator 							
-			| var_declarators SEP var_declarator 					
+var_declarators		: var_declarator 		{$$=(Attr *)malloc(sizeof(Attr));
+						 strcpy($$->place,$1);
+						 strcpy($$->type,$<type>0);
+						 p=Insert($1,$$->type);}
+
+			| var_declarators SEP var_declarator 			{$$=(Attr *)malloc(sizeof(Attr));
+						 strcpy($$->place,$3);
+						 strcpy($$->type,$<type>0);
+						 p=Insert($3,$$->type);}	
 			;
 
-var_declarator		: var_decl_id 								
-			| var_decl_id OP_ASS var_init 						
+var_declarator		: var_decl_id 			{$$=strdup($$);}			
+			| var_decl_id OP_ASS var_init 	{$$=strdup($1);}					
 			;
 
-var_decl_id		: ID 		{}
+var_decl_id		: ID 				{$$=strdup($1);}
 			| var_decl_id ARRAY_S ARRAY_E 						
 			;
 
@@ -233,23 +242,23 @@ var_init		: expr
 			| array_init 								
 			;
 
-type		: primitive_type	{strcpy($$,$1);} 							
-		| reference_type 	{strcpy($$,$1);}						
-		| VOID 			{strcpy($$,$1);}							
-		| STRING		{strcpy($$,$1);}							
+type		: primitive_type	{$$=strdup($1);} 							
+		| reference_type 	{$$=strdup($1);}						
+		| VOID 			{$$=strdup($1);}							
+		| STRING		{$$=strdup($1);}							
 		;
 
-primitive_type  : numeric_type 	{strcpy($$,$1);}						
-		| BOOL 		{strcpy($$,$1);}							
+primitive_type  : numeric_type 	{$$=strdup($1);}						
+		| BOOL 		{$$=strdup($1);}							
 		;
 
-numeric_type	: integer_type 	{strcpy($$,$1);}						
-		| FLOAT 	{strcpy($$,$1);}						
+numeric_type	: integer_type 	{$$=strdup($1);}						
+		| FLOAT 	{$$=strdup($1);}						
 		;
 
-integer_type	: BYTE 	{strcpy($$,$1);}		
-		| CHAR 	{strcpy($$,$1);}					
-		| INT 	{strcpy($$,$1);}					
+integer_type	: BYTE 	{$$=strdup($1);}		
+		| CHAR 	{$$=strdup($1);}					
+		| INT 	{$$=strdup($1);}					
 		;
 
 reference_type	: class_type 							
@@ -828,11 +837,11 @@ int main(int argc, char** argv){
 	}
 	// free(s1);
 	// free(s2);
-/*	SymtabEntry *temp=head;
+	SymtabEntry *temp=head;
 	while(temp){
 		printf("%s,%s\n",temp->lexeme,temp->type);
 		temp=temp->next;
-	}*/
+	}
 	while(!isEmpty(attr_stack))
 		printList(pop(attr_stack).code);
 	free(str1);
