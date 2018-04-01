@@ -122,7 +122,8 @@ struct Stack* attr_stack;
 %type <attr>cond_expr name array_access field_access 
 %type <attr>cond_or_expr cond_and_expr incl_or_expr excl_or_expr and_expr equality_expr rel_expr shift_expr add_expr mul_expr
 %type <attr>unary_expr preinc_expr predec_expr unary_expr_not_plus_minus postdec_expr postinc_expr postfix_expr cast_expr
-%type <attr>primary array_creat_expr primary_no_new_array
+%type <attr>primary array_creat_expr primary_no_new_array 
+%type <attr>while_st while_st_no_short_if do_st
 %%
 
 compilation_unit	: type_declarations_e 							
@@ -371,17 +372,17 @@ switch_label	: CASE expr COLON
 		| DEFAULT COLON 					
 		;
 
-while_st	: WHILE PAREN_S expr PAREN_E statement 			{/* char* begin = newLabel(); char* end = newLabel;
+while_st	: WHILE PAREN_S expr PAREN_E statement 			{ char* begin = newLabel(); char* end = newLabel();
                                                                           sprintf(t,"label , %s",begin);
        								          $$->code = newList(t);
-                      						          $$->code = append($$->code , $2->code,);
-									  sprintf(t,"ifgoto, eq,%d,0,%s",$2,end);
+                      						          $$->code = append($$->code , $3->code,);
+									  sprintf(t,"ifgoto, eq,%d,0,%s",$3->place,end);
 									  $$->code = append($$->code ,newList(t));
-									  $$->code = append($$->code,$4->code);
+									  $$->code = append($$->code,$5->code);
 									  sprintf(t,"goto , %s",begin);
        								          $$->code = append($$->code,newList(t));
 									  sprintf(t,"label , %s",end);
-       								          $$->code = append($$->code,newList(t)); */ }
+       								          $$->code = append($$->code,newList(t));  }
 		;
 
 while_st_no_short_if	: WHILE PAREN_S expr PAREN_E st_no_short_if	
@@ -837,7 +838,7 @@ int main(int argc, char** argv){
 	// free(s2);
 	SymtabEntry *temp=head;
 	while(temp){
-		printf("%s,%s\n",temp->lexeme,temp->type);
+	//	printf("%s,%s\n",temp->lexeme,temp->type);
 		temp=temp->next;
 	}
 	while(!isEmpty(attr_stack))
