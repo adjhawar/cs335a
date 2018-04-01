@@ -4,7 +4,6 @@ class $test{
 	int d;
 	void main(){
 	int f,g;
-	a=a+b;
-	a=a*b;
-
+	a+=b;
+	a=b;
 }}
