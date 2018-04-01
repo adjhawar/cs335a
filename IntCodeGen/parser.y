@@ -211,11 +211,8 @@ var_declarator		: var_decl_id 			{$$=strdup($$);}
 			| var_decl_id OP_ASS var_init 	{$$=strdup($1);}					
 			;
 
-<<<<<<< HEAD
-var_decl_id		: ID 		{strcpy($$, $1);}
-=======
+
 var_decl_id		: ID 				{$$=strdup($1);}
->>>>>>> 4c579b09942d0d22e72ad107a23d72d9dcd05184
 			| var_decl_id ARRAY_S ARRAY_E 						
 			;
 
@@ -551,16 +548,35 @@ equality_expr	: rel_expr
 		| equality_expr OP_NEQ rel_expr			
 		;
 
-rel_expr	: shift_expr			{strcpy($$->place, $1->place);}		
-		| rel_expr OP_LES shift_expr	{strcpy(t1, tempVar());
-					printf("%s = %s < %s\n", t1, $1->place, $3->place);}		
-		| rel_expr OP_GRE shift_expr			
-		| rel_expr OP_LEQ shift_expr			
-		| rel_expr OP_GEQ shift_expr			
+rel_expr	: shift_expr			{$$ = $1;}
+		| rel_expr OP_LES shift_expr	{$$=(Attr *)malloc(sizeof(Attr));
+					strcpy($$->place, tempVar());
+					$$->code=append($1->code,$3->code);
+					sprintf(t,"%s = %s < %s",$$->place,$1->place,$3->place);
+					$$->code=append($$->code,newList(t));}
+							
+		| rel_expr OP_GRE shift_expr	{$$=(Attr *)malloc(sizeof(Attr));
+					strcpy($$->place, tempVar());
+					$$->code=append($1->code,$3->code);
+					sprintf(t,"%s = %s > %s",$$->place,$1->place,$3->place);
+					$$->code=append($$->code,newList(t));}
+								
+		| rel_expr OP_LEQ shift_expr	{$$=(Attr *)malloc(sizeof(Attr));
+					strcpy($$->place, tempVar());
+					$$->code=append($1->code,$3->code);
+					sprintf(t,"%s = %s <= %s",$$->place,$1->place,$3->place);
+					$$->code=append($$->code,newList(t));}
+								
+		| rel_expr OP_GEQ shift_expr	{$$=(Attr *)malloc(sizeof(Attr));
+					strcpy($$->place, tempVar());
+					$$->code=append($1->code,$3->code);
+					sprintf(t,"%s = %s >= %s",$$->place,$1->place,$3->place);
+					$$->code=append($$->code,newList(t));}
+								
 		| rel_expr INSTANCEOF reference_type		
 		;
 
-shift_expr	: add_expr					{strcpy($$->place, $1->place);}				
+shift_expr	: add_expr					{$$ = $1;}				
 		| shift_expr OP_LSH add_expr			{Attr *a1=(Attr *)malloc(sizeof(Attr));
 							strcpy(a1->place,tempVar());
 							Attr temp2=pop(attr_stack);
@@ -593,7 +609,7 @@ shift_expr	: add_expr					{strcpy($$->place, $1->place);}
 							}		
 		;
 
-add_expr	: mul_expr						{strcpy($$->place, $1->place);}
+add_expr	: mul_expr						{$$ = $1;}
 		| add_expr OP_ADD mul_expr			{Attr *a1=(Attr *)malloc(sizeof(Attr));
 							strcpy(a1->place,tempVar());
 							Attr temp2=pop(attr_stack);
@@ -616,7 +632,7 @@ add_expr	: mul_expr						{strcpy($$->place, $1->place);}
 							}		
 		;
 
-mul_expr	: unary_expr					{strcpy($$->place, $1->place);}
+mul_expr	: unary_expr					{$$ = $1;}
 		| mul_expr OP_MUL unary_expr			{Attr *a1=(Attr *)malloc(sizeof(Attr));
 							strcpy(a1->place,tempVar());
 							Attr temp2=pop(attr_stack);
@@ -688,7 +704,7 @@ predec_expr	: OP_DEC unary_expr				{Attr temp1=pop(attr_stack);
 							}	
 		;
 
-unary_expr_not_plus_minus	: postfix_expr		{strcpy($$->place, $1->place);}
+unary_expr_not_plus_minus	: postfix_expr		{$$ = $1;}
 				| OP_NEG unary_expr		{char temp[10];
 							strcpy(temp,tempVar());
 							Attr temp1=pop(attr_stack);
