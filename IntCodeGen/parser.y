@@ -12,6 +12,7 @@ extern FILE *yyin;
 FILE *out;
 void yyerror(const char *s);
 char TEMP[7];
+char LABEL[5];
 char t[100];
 int flag1;
 SymtabEntry *head,*tail, *p;
@@ -69,6 +70,13 @@ char* tempVar(){
 	return TEMP;
 }
 
+char* newLabel(){
+	static int z=0;
+	sprintf(LABEL,"L%d",z);
+	z++;
+	return LABEL;
+}
+
 struct StackStr* lexeme;
 struct StackStr* str1 ;
 struct StackStr* str2;
@@ -81,7 +89,7 @@ struct Stack* attr_stack;
 	int ival;
 	char *sval;
 	float fval;
-	Attr *attr;
+	struct Attr *attr;
 
 }
 %error-verbose
@@ -108,7 +116,7 @@ struct Stack* attr_stack;
 %token EXTENDS
 
 %type <sval>error integer_type reference_type primitive_type array_type class_type numeric_type type_name type
-%type
+
 %%
 
 compilation_unit	: type_declarations_e 							
