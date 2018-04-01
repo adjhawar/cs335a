@@ -471,81 +471,61 @@ assgn_op	: OP_ASS		{flag1=0;}
 		| OP_OR_ASS		{flag1=11;}
 		;
 
-cond_expr	: cond_or_expr					
+cond_expr	: cond_or_expr					{$$=$1;}			
 		| cond_or_expr OP_CON_Q expr COLON cond_expr	
 		;
 
-cond_or_expr	: cond_and_expr					
-		| cond_or_expr OP_CON_OR cond_and_expr		{Attr *a1=(Attr *)malloc(sizeof(Attr));
-							strcpy(a1->place,tempVar());
-							Attr temp2=pop(attr_stack);
-							Attr temp1=pop(attr_stack);
-							a1->code=append(temp1.code,temp2.code);
-							sprintf(t,"%s = %s || %s",a1->place,temp1.place,temp2.place);
-							a1->code=append(a1->code,newList(t));
-							push(attr_stack,a1);
-							free(a1);
+cond_or_expr	: cond_and_expr					{$$=$1;}		
+		| cond_or_expr OP_CON_OR cond_and_expr		{$$=(Attr *)malloc(sizeof(Attr));
+							strcpy($$->place,tempVar());
+							$$->code=append($1->code,$3->code);
+							sprintf(t,"%s = %s || %s",$$->place,$1->place,$3->place);
+							$$->code=append($$->code,newList(t));
 							}
 		;
 
-cond_and_expr	: incl_or_expr					
-		| cond_and_expr OP_CON_AND incl_or_expr		{Attr *a1=(Attr *)malloc(sizeof(Attr));
-							strcpy(a1->place,tempVar());
-							Attr temp2=pop(attr_stack);
-							Attr temp1=pop(attr_stack);
-							a1->code=append(temp1.code,temp2.code);
-							sprintf(t,"%s = %s && %s",a1->place,temp1.place,temp2.place);
-							a1->code=append(a1->code,newList(t));
-							push(attr_stack,a1);
-							free(a1);
+cond_and_expr	: incl_or_expr						{$$=$1;}
+		| cond_and_expr OP_CON_AND incl_or_expr		{$$=(Attr *)malloc(sizeof(Attr));
+							strcpy($$->place,tempVar());
+							$$->code=append($1->code,$3->code);
+							sprintf(t,"%s = %s && %s",$$->place,$1->place,$3->place);
+							$$->code=append($$->code,newList(t));
 							}
 		;
 
-incl_or_expr	: excl_or_expr
-		| incl_or_expr OP_OR excl_or_expr		{Attr *a1=(Attr *)malloc(sizeof(Attr));
-							strcpy(a1->place,tempVar());
-							Attr temp2=pop(attr_stack);
-							Attr temp1=pop(attr_stack);
-							a1->code=append(temp1.code,temp2.code);
-							sprintf(t,"%s = %s | %s",a1->place,temp1.place,temp2.place);
-							a1->code=append(a1->code,newList(t));
-							push(attr_stack,a1);
-							free(a1);
+incl_or_expr	: excl_or_expr	{$$=$1;}
+		| incl_or_expr OP_OR excl_or_expr		{$$=(Attr *)malloc(sizeof(Attr));
+							strcpy($$->place,tempVar());
+							$$->code=append($1->code,$3->code);
+							sprintf(t,"%s = %s | %s",$$->place,$1->place,$3->place);
+							$$->code=append($$->code,newList(t));
 							}			
 		;
 
-excl_or_expr	: and_expr					
-		| excl_or_expr OP_XOR and_expr			{Attr *a1=(Attr *)malloc(sizeof(Attr));
-							strcpy(a1->place,tempVar());
-							Attr temp2=pop(attr_stack);
-							Attr temp1=pop(attr_stack);
-							a1->code=append(temp1.code,temp2.code);
-							sprintf(t,"%s = %s ^ %s",a1->place,temp1.place,temp2.place);
-							a1->code=append(a1->code,newList(t));
-							push(attr_stack,a1);
-							free(a1);
+excl_or_expr	: and_expr			{$$=$1;}			
+		| excl_or_expr OP_XOR and_expr			{$$=(Attr *)malloc(sizeof(Attr));
+							strcpy($$->place,tempVar());
+							$$->code=append($1->code,$3->code);
+							sprintf(t,"%s = %s ^ %s",$$->place,$1->place,$3->place);
+							$$->code=append($$->code,newList(t));
 							}
 		;
 
-and_expr 	: equality_expr					
-		| and_expr OP_AND equality_expr			{Attr *a1=(Attr *)malloc(sizeof(Attr));
-							strcpy(a1->place,tempVar());
-							Attr temp2=pop(attr_stack);
-							Attr temp1=pop(attr_stack);
-							a1->code=append(temp1.code,temp2.code);
-							sprintf(t,"%s = %s & %s",a1->place,temp1.place,temp2.place);
-							a1->code=append(a1->code,newList(t));
-							push(attr_stack,a1);
-							free(a1);
+and_expr 	: equality_expr					{$$=$1;}	
+		| and_expr OP_AND equality_expr			{$$=(Attr *)malloc(sizeof(Attr));
+							strcpy($$->place,tempVar());
+							$$->code=append($1->code,$3->code);
+							sprintf(t,"%s = %s & %s",$$->place,$1->place,$3->place);
+							$$->code=append($$->code,newList(t));
 							}
 		;
 
-equality_expr	: rel_expr					
+equality_expr	: rel_expr						{$$=$1;}
 		| equality_expr OP_EQ rel_expr			
 		| equality_expr OP_NEQ rel_expr			
 		;
 
-rel_expr	: shift_expr					
+rel_expr	: shift_expr						{$$=$1;}
 		| rel_expr OP_LES shift_expr			
 		| rel_expr OP_GRE shift_expr			
 		| rel_expr OP_LEQ shift_expr			
@@ -553,92 +533,60 @@ rel_expr	: shift_expr
 		| rel_expr INSTANCEOF reference_type		
 		;
 
-shift_expr	: add_expr					
-		| shift_expr OP_LSH add_expr			{Attr *a1=(Attr *)malloc(sizeof(Attr));
-							strcpy(a1->place,tempVar());
-							Attr temp2=pop(attr_stack);
-							Attr temp1=pop(attr_stack);
-							a1->code=append(temp1.code,temp2.code);
-							sprintf(t,"%s = %s << %s",a1->place,temp1.place,temp2.place);
-							a1->code=append(a1->code,newList(t));
-							push(attr_stack,a1);
-							free(a1);
+shift_expr	: add_expr						{$$=$1;}
+		| shift_expr OP_LSH add_expr			{$$=(Attr *)malloc(sizeof(Attr));
+							strcpy($$->place,tempVar());
+							$$->code=append($1->code,$3->code);
+							sprintf(t,"%s = %s & %s",$$->place,$1->place,$3->place);
+							$$->code=append($$->code,newList(t));
 							}		
-		| shift_expr OP_RSH add_expr			{Attr *a1=(Attr *)malloc(sizeof(Attr));
-							strcpy(a1->place,tempVar());
-							Attr temp2=pop(attr_stack);
-							Attr temp1=pop(attr_stack);
-							a1->code=append(temp1.code,temp2.code);
-							sprintf(t,"%s = %s >> %s",a1->place,temp1.place,temp2.place);
-							a1->code=append(a1->code,newList(t));
-							push(attr_stack,a1);
-							free(a1);
+		| shift_expr OP_RSH add_expr			{$$=(Attr *)malloc(sizeof(Attr));
+							strcpy($$->place,tempVar());
+							$$->code=append($1->code,$3->code);
+							sprintf(t,"%s = %s >> %s",$$->place,$1->place,$3->place);
+							$$->code=append($$->code,newList(t));
 							}		
-		| shift_expr OP_ZRSH add_expr			{Attr *a1=(Attr *)malloc(sizeof(Attr));
-							strcpy(a1->place,tempVar());
-							Attr temp2=pop(attr_stack);
-							Attr temp1=pop(attr_stack);
-							a1->code=append(temp1.code,temp2.code);
-							sprintf(t,"%s = %s >>> %s",a1->place,temp1.place,temp2.place);
-							a1->code=append(a1->code,newList(t));
-							push(attr_stack,a1);
-							free(a1);
+		| shift_expr OP_ZRSH add_expr			{$$=(Attr *)malloc(sizeof(Attr));
+							strcpy($$->place,tempVar());
+							$$->code=append($1->code,$3->code);
+							sprintf(t,"%s = %s >>> %s",$$->place,$1->place,$3->place);
+							$$->code=append($$->code,newList(t));
 							}		
 		;
 
-add_expr	: mul_expr					
-		| add_expr OP_ADD mul_expr			{Attr *a1=(Attr *)malloc(sizeof(Attr));
-							strcpy(a1->place,tempVar());
-							Attr temp2=pop(attr_stack);
-							Attr temp1=pop(attr_stack);
-							a1->code=append(temp1.code,temp2.code);
-							sprintf(t,"%s = %s + %s",a1->place,temp1.place,temp2.place);
-							a1->code=append(a1->code,newList(t));
-							push(attr_stack,a1);
-							free(a1);
+add_expr	: mul_expr						{$$=$1;}
+		| add_expr OP_ADD mul_expr			{$$=(Attr *)malloc(sizeof(Attr));
+							strcpy($$->place,tempVar());
+							$$->code=append($1->code,$3->code);
+							sprintf(t,"%s = %s + %s",$$->place,$1->place,$3->place);
+							$$->code=append($$->code,newList(t));
 							}
-		| add_expr OP_SUB mul_expr			{Attr *a1=(Attr *)malloc(sizeof(Attr));
-							strcpy(a1->place,tempVar());
-							Attr temp2=pop(attr_stack);
-							Attr temp1=pop(attr_stack);
-							a1->code=append(temp1.code,temp2.code);
-							sprintf(t,"%s = %s - %s",a1->place,temp1.place,temp2.place);
-							a1->code=append(a1->code,newList(t));
-							push(attr_stack,a1);
-							free(a1);
+		| add_expr OP_SUB mul_expr			{$$=(Attr *)malloc(sizeof(Attr));
+							strcpy($$->place,tempVar());
+							$$->code=append($1->code,$3->code);
+							sprintf(t,"%s = %s - %s",$$->place,$1->place,$3->place);
+							$$->code=append($$->code,newList(t));
 							}		
 		;
 
-mul_expr	: unary_expr			
-		| mul_expr OP_MUL unary_expr			{Attr *a1=(Attr *)malloc(sizeof(Attr));
-							strcpy(a1->place,tempVar());
-							Attr temp2=pop(attr_stack);
-							Attr temp1=pop(attr_stack);
-							a1->code=append(temp1.code,temp2.code);
-							sprintf(t,"%s = %s * %s",a1->place,temp1.place,temp2.place);
-							a1->code=append(a1->code,newList(t));
-							push(attr_stack,a1);
-							free(a1);
+mul_expr	: unary_expr				{$$=$1;}
+		| mul_expr OP_MUL unary_expr			{$$=(Attr *)malloc(sizeof(Attr));
+							strcpy($$->place,tempVar());
+							$$->code=append($1->code,$3->code);
+							sprintf(t,"%s = %s * %s",$$->place,$1->place,$3->place);
+							$$->code=append($$->code,newList(t));
 							}
-		| mul_expr OP_DIV unary_expr			{Attr *a1=(Attr *)malloc(sizeof(Attr));
-							strcpy(a1->place,tempVar());
-							Attr temp2=pop(attr_stack);
-							Attr temp1=pop(attr_stack);
-							a1->code=append(temp1.code,temp2.code);
-							sprintf(t,"%s = %s / %s",a1->place,temp1.place,temp2.place);
-							a1->code=append(a1->code,newList(t));
-							push(attr_stack,a1);
-							free(a1);
+		| mul_expr OP_DIV unary_expr			{$$=(Attr *)malloc(sizeof(Attr));
+							strcpy($$->place,tempVar());
+							$$->code=append($1->code,$3->code);
+							sprintf(t,"%s = %s / %s",$$->place,$1->place,$3->place);
+							$$->code=append($$->code,newList(t));
 							}
-		| mul_expr OP_MOD unary_expr			{Attr *a1=(Attr *)malloc(sizeof(Attr));
-							strcpy(a1->place,tempVar());
-							Attr temp2=pop(attr_stack);
-							Attr temp1=pop(attr_stack);
-							a1->code=append(temp1.code,temp2.code);
-							sprintf(t,"%s = %s %% %s",a1->place,temp1.place,temp2.place);
-							a1->code=append(a1->code,newList(t));
-							push(attr_stack,a1);
-							free(a1);
+		| mul_expr OP_MOD unary_expr			{$$=(Attr *)malloc(sizeof(Attr));
+							strcpy($$->place,tempVar());
+							$$->code=append($1->code,$3->code);
+							sprintf(t,"%s = %s %% %s",$$->place,$1->place,$3->place);
+							$$->code=append($$->code,newList(t));
 							}
 		;
 
@@ -646,8 +594,8 @@ cast_expr	: PAREN_S primitive_type PAREN_E unary_expr
 		| PAREN_S reference_type PAREN_E unary_expr_not_plus_minus		
 		;
 
-unary_expr	: preinc_expr		
-		| predec_expr		
+unary_expr	: preinc_expr			{$$=$1;}
+		| predec_expr			{$$=$1;}
 		| OP_ADD unary_expr				{char temp[10];
 							strcpy(temp,tempVar());
 							Attr temp1=pop(attr_stack);
