@@ -118,7 +118,11 @@ struct Stack* attr_stack;
 %type <type>error integer_type reference_type primitive_type array_type class_type numeric_type type_name type
 %type <sval>var_decl_id var_declarator 
 %type <attr>var_declarators
-
+%type <attr>assgn lhs expr identifier
+%type <attr>cond_expr name array_access field_access 
+%type <attr>cond_or_expr cond_and_expr incl_or_expr excl_or_expr and_expr equality_expr rel_expr shift_expr add_expr mul_expr
+%type <attr>unary_expr preinc_expr predec_expr unary_expr_not_plus_minus postdec_expr postinc_expr postfix_expr cast_expr
+%type <attr>primary array_creat_expr primary_no_new_array
 %%
 
 compilation_unit	: type_declarations_e 							
@@ -191,8 +195,7 @@ explicit_const_invo	: THIS PAREN_S arg_list_e PAREN_E
 			| SUPER PAREN_S arg_list_e PAREN_E					
 			;
 
-field_decl		: type var_declarators TRM 	 {/*p =Insert(attr_stack->attr[attr_stack->size].place);
-							strcpy(p->type,attr_stack->attr[attr_stack->size].type);*/}			
+field_decl		: type var_declarators TRM			
 			;
 
 var_declarators		: var_declarator 		{$$=(Attr *)malloc(sizeof(Attr));
@@ -289,8 +292,7 @@ block_statement	: loc_var_dec_st
 loc_var_dec_st	: loc_var_dec TRM 						
 		;
 
-loc_var_dec	: type var_declarators 				{/*p =Insert(attr_stack->attr[attr_stack->size].place);
-							strcpy(p->type,attr_stack->attr[attr_stack->size-1].type);*/}			
+loc_var_dec	: type var_declarators 			
 		;
 
 statement	: st_wo_tsub 							
@@ -326,7 +328,7 @@ empty_st	:  TRM
 expr_st		: st_expr  TRM 								
 		;
 
-st_expr		: assgn 									
+st_expr		: assgn 	{printList($1->code);}								
 		| preinc_expr 									
 		| postinc_expr 									
 		| predec_expr 									
@@ -413,7 +415,7 @@ for_update_e	: for_update
 for_update	: st_expr_list	
 		;
 
-st_expr_list	: st_expr			
+st_expr_list	: st_expr 		
 		| st_expr_list SEP st_expr	
 		;
 
@@ -430,40 +432,37 @@ expr		: cond_expr
 		| assgn		
 		;
 
-assgn		: lhs assgn_op expr			{Attr temp2=pop(attr_stack);
-						Attr temp1=pop(attr_stack);
-						switch(flag1){
-						case 0:sprintf(t,"%s = %s",temp1.place,temp2.place);
+assgn		: lhs assgn_op expr			{switch(flag1){
+						case 0:sprintf(t,"%s = %s",$1->place,$3->place);
 							break;
-						case 1:sprintf(t,"%s = %s * %s",temp1.place,temp1.place,temp2.place);
+						case 1:sprintf(t,"%s = %s * %s",$1->place,$1->place,$3->place);
 							break;
-						case 2:sprintf(t,"%s = %s / %s",temp1.place,temp1.place,temp2.place);
+						case 2:sprintf(t,"%s = %s / %s",$1->place,$1->place,$3->place);
 							break;
-						case 3:sprintf(t,"%s = %s %% %s",temp1.place,temp1.place,temp2.place);
+						case 3:sprintf(t,"%s = %s %% %s",$1->place,$1->place,$3->place);
 							break;
-						case 4:sprintf(t,"%s = %s + %s",temp1.place,temp1.place,temp2.place);
+						case 4:sprintf(t,"%s = %s + %s",$1->place,$1->place,$3->place);
 							break;
-						case 5:sprintf(t,"%s = %s - %s",temp1.place,temp1.place,temp2.place);
+						case 5:sprintf(t,"%s = %s - %s",$1->place,$1->place,$3->place);
 							break;
-						case 6:sprintf(t,"%s = %s << %s",temp1.place,temp1.place,temp2.place);
+						case 6:sprintf(t,"%s = %s << %s",$1->place,$1->place,$3->place);
 							break;
-						case 7:sprintf(t,"%s = %s >> %s",temp1.place,temp1.place,temp2.place);
+						case 7:sprintf(t,"%s = %s >> %s",$1->place,$1->place,$3->place);
 							break;
-						case 8:sprintf(t,"%s = %s >>> %s",temp1.place,temp1.place,temp2.place);
+						case 8:sprintf(t,"%s = %s >>> %s",$1->place,$1->place,$3->place);
 							break;
-						case 9:sprintf(t,"%s = %s & %s",temp1.place,temp1.place,temp2.place);
+						case 9:sprintf(t,"%s = %s & %s",$1->place,$1->place,$3->place);
 							break;
-						case 10:sprintf(t,"%s = %s ^ %s",temp1.place,temp1.place,temp2.place);
+						case 10:sprintf(t,"%s = %s ^ %s",$1->place,$1->place,$3->place);
 							break;
-						case 11:sprintf(t,"%s = %s | %s",temp1.place,temp1.place,temp2.place);
+						case 11:sprintf(t,"%s = %s | %s",$1->place,$1->place,$3->place);
 							break;}
-						sprintf(temp2.place,"%s",temp1.place);
-						temp2.code=append(temp2.code,newList(t));
-						push(attr_stack,&temp2);
+						$$=$3;
+						$$->code=append($3->code,newList(t));
 						}	
 		;
 
-lhs		: name		
+lhs		: name		{$$=$1;}
 		| field_access	
 		| array_access	
 		;
@@ -729,7 +728,7 @@ postinc_expr	: postfix_expr OP_INC				{Attr temp1=pop(attr_stack);
 		;
 
 postfix_expr	: primary		
-		| name		
+		| name			{$$=$1;}		
 		| postinc_expr		
 		| postdec_expr		
 		;
@@ -783,7 +782,7 @@ type_name		: CID			{pushStr(lexeme,$1);}
 			| error ID	
 			;
 
-name			: identifier			
+name			: identifier		{$$=$1;}		
 			| name OP_DOT identifier	
 			;
 
@@ -803,11 +802,10 @@ int_literal		: INT_LIT_H		{char ch[20];sprintf(ch,"%d",$1);pushStr(lexeme,ch);}
 
 identifier		: ID			{SymtabEntry *tempo=look_up($1);
 					if(tempo!=NULL){
-						Attr *a1=(Attr *)malloc(sizeof(Attr));
-						strcpy(a1->place,$1);
-						a1->code=NULL;
-						push(attr_stack,a1);
-						free(a1);
+						$$=(Attr *)malloc(sizeof(Attr));
+						strcpy($$->place,$1);
+						strcpy($$->type,tempo->type);
+						$$->code=NULL;
 						}
 					else
 						yyerrok;}
