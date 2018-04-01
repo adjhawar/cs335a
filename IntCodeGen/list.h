@@ -43,4 +43,4 @@ list3AC* append(list3AC* head1, list3AC* head2);
 list3AC* newList(char *str);
 void printList(list3AC *list);
 SymtabEntry* look_up(char *lex);
-SymtabEntry* Insert(char* lex);
+SymtabEntry* Insert(char* lex, char *type);
