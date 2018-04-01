@@ -81,6 +81,8 @@ struct Stack* attr_stack;
 	int ival;
 	char *sval;
 	float fval;
+	Attr *attr;
+
 }
 %error-verbose
 %start compilation_unit
@@ -105,8 +107,8 @@ struct Stack* attr_stack;
 %token PRINT SCAN
 %token EXTENDS
 
-/*%type*/
-
+%type <sval>error integer_type reference_type primitive_type array_type class_type numeric_type type_name type
+%type
 %%
 
 compilation_unit	: type_declarations_e 							
@@ -191,7 +193,7 @@ var_declarator		: var_decl_id
 			| var_decl_id OP_ASS var_init 						
 			;
 
-var_decl_id		: ID 		{p=Insert($1); }
+var_decl_id		: ID 		{}
 			| var_decl_id ARRAY_S ARRAY_E 						
 			;
 
@@ -223,23 +225,23 @@ var_init		: expr
 			| array_init 								
 			;
 
-type		: primitive_type 							
-		| reference_type 							
-		| VOID 	{/*strcpy(attr->type, "void");push(attr_stack,attr);*/}							
-		| STRING	{/*strcpy(attr->type, "string");push(attr_stack,attr);*/}							
+type		: primitive_type	{strcpy($$,$1);} 							
+		| reference_type 	{strcpy($$,$1);}						
+		| VOID 			{strcpy($$,$1);}							
+		| STRING		{strcpy($$,$1);}							
 		;
 
-primitive_type  : numeric_type 							
-		| BOOL 	{/*strcpy(attr->type, "bool");push(attr_stack,attr);*/}							
+primitive_type  : numeric_type 	{strcpy($$,$1);}						
+		| BOOL 		{strcpy($$,$1);}							
 		;
 
-numeric_type	: integer_type 							
-		| FLOAT 	{/*strcpy(attr->type, "float");push(attr_stack,attr);*/}						
+numeric_type	: integer_type 	{strcpy($$,$1);}						
+		| FLOAT 	{strcpy($$,$1);}						
 		;
 
-integer_type	: BYTE 	{}			
-		| CHAR 	{}							
-		| INT 	{}									
+integer_type	: BYTE 	{strcpy($$,$1);}		
+		| CHAR 	{strcpy($$,$1);}					
+		| INT 	{strcpy($$,$1);}					
 		;
 
 reference_type	: class_type 							

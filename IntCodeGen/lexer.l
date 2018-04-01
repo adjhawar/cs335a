@@ -1,4 +1,5 @@
 %{
+#include "list.h"
 #include "y.tab.h"
 #include <string.h>
 int yylineno;
