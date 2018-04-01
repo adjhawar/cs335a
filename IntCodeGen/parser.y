@@ -598,70 +598,63 @@ unary_expr	: preinc_expr			{$$=$1;}
 		| predec_expr			{$$=$1;}
 		| OP_ADD unary_expr				{char temp[10];
 							strcpy(temp,tempVar());
-							Attr temp1=pop(attr_stack);
-							sprintf(t,"%s = + %s",temp,temp1.place);
-							temp1.code=append(temp1.code,newList(t));
-							sprintf(temp1.place,"%s",temp);
-							push(attr_stack,&temp1);
+							sprintf(t,"%s = + %s",temp,$2->place);
+							$2->code=append($2->code,newList(t));
+							sprintf($2->place,"%s",temp);
+							$$=$2;
 							}
 		| OP_SUB unary_expr				{char temp[10];
 							strcpy(temp,tempVar());
-							Attr temp1=pop(attr_stack);
-							sprintf(t,"%s = - %s",temp,temp1.place);
-							temp1.code=append(temp1.code,newList(t));
-							sprintf(temp1.place,"%s",temp);
-							push(attr_stack,&temp1);
+							sprintf(t,"%s = - %s",temp,$2->place);
+							$2->code=append($2->code,newList(t));
+							sprintf($2->place,"%s",temp);
+							$$=$2;
 							}
 		| unary_expr_not_plus_minus	
 		;
 
-preinc_expr	: OP_INC unary_expr				{Attr temp1=pop(attr_stack);
-							sprintf(t,"%s = %s + 1",temp1.place,temp1.place);
-							temp1.code=append(temp1.code,newList(t));
-							push(attr_stack,&temp1);
+preinc_expr	: OP_INC unary_expr				{sprintf(t,"%s = %s + 1",$2->place,$2->place);
+							$2->code=append($2->code,newList(t));
+							$$=$2;
 							}	
 		;
 
-predec_expr	: OP_DEC unary_expr				{Attr temp1=pop(attr_stack);
-							sprintf(t,"%s = %s - 1",temp1.place,temp1.place);
-							temp1.code=append(temp1.code,newList(t));
-							push(attr_stack,&temp1);
+predec_expr	: OP_DEC unary_expr				{sprintf(t,"%s = %s - 1",$2->place,$2->place);
+							$2->code=append($2->code,newList(t));
+							$$=$2;
 							}	
 		;
 
-unary_expr_not_plus_minus	: postfix_expr		
+unary_expr_not_plus_minus	: postfix_expr		{$$=$1;}
 				| OP_NEG unary_expr		{char temp[10];
 							strcpy(temp,tempVar());
-							Attr temp1=pop(attr_stack);
-							sprintf(t,"%s = ! %s",temp,temp1.place);
-							temp1.code=append(temp1.code,newList(t));
-							sprintf(temp1.place,"%s",temp);
-							push(attr_stack,&temp1);
+							sprintf(t,"%s = ! %s",temp,$2->place);
+							$2->code=append($2->code,newList(t));
+							sprintf($2->place,"%s",temp);
+							$$=$2;
 							}	
 				| cast_expr		
 				;
 
-postdec_expr	: postfix_expr OP_DEC				{Attr temp1=pop(attr_stack);
-							char temp[10];
+postdec_expr	: postfix_expr OP_DEC				{char temp[10];
 							sprintf(temp,"%s",tempVar());
-							sprintf(t,"%s = %s",temp,temp1.place);
-							temp1.code=append(temp1.code,newList(t));
-							sprintf(t,"%s = %s - 1",temp1.place,temp1.place);
-							temp1.code=append(temp1.code,newList(t));
-							sprintf(temp1.place,"%s",temp);
-							push(attr_stack,&temp1);
+							sprintf(t,"%s = %s",temp,$1->place);
+							$1->code=append($1->code,newList(t));
+							sprintf(t,"%s = %s - 1",$1->place,$1->place);
+							$1->code=append($1->code,newList(t));
+							sprintf($1->place,"%s",temp);
+							$$=$1;
 							}	
 		;
 
-postinc_expr	: postfix_expr OP_INC				{Attr temp1=pop(attr_stack);
-							char temp[10];
+postinc_expr	: postfix_expr OP_INC				{char temp[10];
 							sprintf(temp,"%s",tempVar());
-							sprintf(t,"%s = %s",temp,temp1.place);
-							temp1.code=append(temp1.code,newList(t));
-							sprintf(t,"%s = %s + 1",temp1.place,temp1.place);
-							temp1.code=append(temp1.code,newList(t));
-							sprintf(temp1.place,"%s",temp);
-							push(attr_stack,&temp1);
+							sprintf(t,"%s = %s",temp,$1->place);
+							$1->code=append($1->code,newList(t));
+							sprintf(t,"%s = %s + 1",$1->place,$1->place);
+							$1->code=append($1->code,newList(t));
+							sprintf($1->place,"%s",temp);
+							$$=$1;
 							}							
 		;
 
