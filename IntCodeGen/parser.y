@@ -90,7 +90,7 @@ struct Stack* attr_stack;
 	char *sval;
 	float fval;
 	char *type;
-	Attr *attr;
+	struct Attr *attr;
 }
 %error-verbose
 %start compilation_unit
@@ -521,8 +521,17 @@ and_expr 	: equality_expr					{$$=$1;}
 		;
 
 equality_expr	: rel_expr						{$$=$1;}
-		| equality_expr OP_EQ rel_expr			
-		| equality_expr OP_NEQ rel_expr			
+		| equality_expr OP_EQ rel_expr	{$$=(Attr *)malloc(sizeof(Attr));
+					strcpy($$->place, tempVar());
+					$$->code=append($1->code,$3->code);
+					sprintf(t,"%s = %s == %s",$$->place,$1->place,$3->place);
+					$$->code=append($$->code,newList(t));}
+							
+		| equality_expr OP_NEQ rel_expr	{$$=(Attr *)malloc(sizeof(Attr));
+					strcpy($$->place, tempVar());
+					$$->code=append($1->code,$3->code);
+					sprintf(t,"%s = %s != %s",$$->place,$1->place,$3->place);
+					$$->code=append($$->code,newList(t));}		
 		;
 
 
