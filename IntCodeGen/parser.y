@@ -126,7 +126,7 @@ struct Stack* attr_stack;
 %type <attr>block block_statement bl_statements bl_statements_e statement st_no_short_if st_wo_tsub
 %type <attr>if_then_st if_then_else_st for_st while_st empty_st do_st switch_st break_st continue_st return_st
 %type <attr>if_then_else_no_short_if_st while_st_no_short_if for_st_no_short_if 
-%type <attr>switch_block_st_gr_e switch_block_st_grps for_init_e for_init st_expr_list loc_var_dec for_update_e for_update
+%type <attr>switch_block_st_gr_e switch_block_st_grps for_init_e for_init st_expr_list loc_var_dec for_update_e for_update loc_var_dec_st
 
 %%
 
@@ -295,17 +295,17 @@ block_statement	: loc_var_dec_st 	{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL
 		| statement 		{$$=$1;}					
 		;
 
-loc_var_dec_st	: loc_var_dec TRM 						
+loc_var_dec_st	: loc_var_dec TRM 	{$$=$1;}						
 		;
 
-loc_var_dec	: type var_declarators 			
+loc_var_dec	: type var_declarators 	{$$=$2;}		
 		;
 
 statement	: st_wo_tsub 		{$$=$1;}					
 		| if_then_st 		{$$=$1;}					
 		| if_then_else_st 	{$$=$1;}					
 		| while_st		{$$=$1;}
-		| for_st 		{$$=$1;}												
+		| for_st 		{$$=$1;}											
 		| error TRM		{yyerrok;}
 		| error BLOCK_E 	{yyerrok;}
 		;
@@ -385,7 +385,7 @@ if_then_else_no_short_if_st	: IF PAREN_S expr PAREN_E st_no_short_if ELSE st_no_
        								          $$->code = append($$->code,newList(t));
 									  $$->code = append($$->code,$7->code);
 									  sprintf(t,"label , %s",end);
-       								          $$->code = append($$->code,newList(t));  									   	  }	
+       								          $$->code = append($$->code,newList(t)); }	
 		;
 
 switch_st	: SWITCH PAREN_S expr PAREN_E switch_block 	
@@ -402,12 +402,8 @@ switch_block_st_grps	: switch_block_st_grp
 			| switch_block_st_grps switch_block_st_grp 	
 			;
 
-switch_block_st_grp	: switch_labels bl_statements 		
+switch_block_st_grp	: switch_label bl_statements 		
 			;
-
-switch_labels	: switch_label 					
-		| switch_labels switch_label 			
-		;
 
 switch_label	: CASE expr COLON 					
 		| DEFAULT COLON 					
@@ -461,7 +457,7 @@ do_st		: DO statement WHILE PAREN_S expr PAREN_E  TRM          { char begin[5],e
        								          $$->code = append($$->code,newList(t));  }		
 		;
 
-for_st		: FOR PAREN_S for_init_e TRM expr_e TRM for_update_e  PAREN_E statement	       { char begin[5],end[5];
+for_st		: FOR PAREN_S for_init_e TRM expr_e TRM for_update_e PAREN_E statement	       { char begin[5],end[5];
 									  			strcpy(begin,newLabel());
 									  			strcpy(end,newLabel());
 												$$=(Attr *)malloc(sizeof(Attr));
@@ -502,7 +498,7 @@ for_update	: st_expr_list	{$$=$1;}
 		;
 
 st_expr_list	: st_expr 	{$$=$1;}	
-		| st_expr_list SEP st_expr	
+		| st_expr_list SEP st_expr	{$1->code=append($1->code,$3->code);$$=$1;}
 		;
 
 break_st	: BREAK TRM	
