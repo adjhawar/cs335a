@@ -5,5 +5,12 @@ class $test{
 	void main(){
 	int f,g;
 	a+=b;
-	a=b;
+	while(b>c)
+{
+       a=b;
+       b=b+d;
+
+}
+        g=c;
+        
 }}
