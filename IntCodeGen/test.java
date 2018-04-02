@@ -5,12 +5,9 @@ class $test{
 	void main(){
 	int f,g;
 	a+=b;
-	while(b>c)
-{
-       a=b;
-       b=b+d;
-
-}
+	if(a>b)
+        a=b;
+        else
         g=c;
         
 }}
