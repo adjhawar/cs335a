@@ -231,7 +231,7 @@ method_header		: type method_declarator
 method_declarator	: identifier PAREN_S formal_para_list_e PAREN_E 			
 			;
 
-method_body		: block 								
+method_body		: block 		{printList($1->code);}						
 			| TRM 									
 			;
 
@@ -279,10 +279,10 @@ class_type	: type_name
 array_type	: type ARRAY_S ARRAY_E 						
 		;
 
-block		: BLOCK_S bl_statements_e BLOCK_E 			
+block		: BLOCK_S bl_statements_e BLOCK_E 	{$$=$2;}		
 		;
 
-bl_statements_e	: bl_statements 	{printList($1->code);}					
+bl_statements_e	: bl_statements 	{$$=$1;}					
 		| /* empty */ 		{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}					
 		;
 
