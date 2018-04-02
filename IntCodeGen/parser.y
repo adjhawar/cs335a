@@ -116,8 +116,9 @@ struct Stack* attr_stack;
 %token EXTENDS
 
 %type <type>error integer_type reference_type primitive_type array_type class_type numeric_type type_name type
-%type <sval>var_decl_id var_declarator 
-%type <attr>var_declarators
+%type <sval>var_decl_id
+%type <ival>int_literal 
+%type <attr>var_declarators var_declarator
 %type <attr>assgn lhs expr identifier
 %type <attr>cond_expr name array_access field_access 
 %type <attr>cond_or_expr cond_and_expr incl_or_expr excl_or_expr and_expr equality_expr rel_expr shift_expr add_expr mul_expr
@@ -127,6 +128,8 @@ struct Stack* attr_stack;
 %type <attr>if_then_st if_then_else_st for_st while_st empty_st do_st switch_st break_st continue_st return_st
 %type <attr>if_then_else_no_short_if_st while_st_no_short_if for_st_no_short_if 
 %type <attr>switch_block_st_gr_e switch_block_st_grps for_init_e for_init st_expr_list loc_var_dec for_update_e for_update loc_var_dec_st
+%type <attr>var_inits var_init var_init_e
+%type <attr>class_body_decls class_body_decl class_body field_decl method_decl class_mem_decl method_body
 
 %%
 
@@ -159,20 +162,20 @@ supers			: EXTENDS class_type
 class_body		: BLOCK_S class_body_decl_e BLOCK_E 					
 			;
 
-class_body_decl_e	: class_body_decls 							
+class_body_decl_e	: class_body_decls 						
 			| /* empty */ 								
 			;
 
-class_body_decls	: class_body_decl 							
-			| class_body_decls class_body_decl 					
+class_body_decls	: class_body_decl 			{$$=$1;}	
+			| class_body_decls class_body_decl			
 			;
 
-class_body_decl		: class_mem_decl 							
+class_body_decl		: class_mem_decl 		{$$=$1;}		
 			| const_decl 								
 			;
 
-class_mem_decl		: field_decl 								
-			| method_decl 								
+class_mem_decl		: field_decl 			{$$=$1;printList($1->code);}						
+			| method_decl 			{$$=$1;printList($1->code);}			
 			;
 
 const_decl		: const_declarator const_body						
@@ -200,29 +203,33 @@ explicit_const_invo	: THIS PAREN_S arg_list_e PAREN_E
 			| SUPER PAREN_S arg_list_e PAREN_E					
 			;
 
-field_decl		: type var_declarators TRM			
+field_decl		: type var_declarators TRM	{$$=$2;}			
 			;
 
-var_declarators		: var_declarator 		{$$=(Attr *)malloc(sizeof(Attr));
-						 strcpy($$->place,$1);
+var_declarators		: var_declarator 		{$$=$1;
 						 strcpy($$->type,$<type>0);
-						 p=Insert($1,$$->type);}
+						 p=Insert($$->place,$$->type);}
 
-			| var_declarators SEP var_declarator 			{$$=(Attr *)malloc(sizeof(Attr));
-						 strcpy($$->place,$3);
+			| var_declarators SEP var_declarator 	{$$=$3;
 						 strcpy($$->type,$<type>0);
-						 p=Insert($3,$$->type);}	
+						 $$->code=append($1->code,$3->code);
+						 p=Insert($3->place,$$->type);}	
 			;
 
-var_declarator		: var_decl_id 			{$$=strdup($$);}			
-			| var_decl_id OP_ASS var_init 	{$$=strdup($1);}					
+var_declarator		: var_decl_id 			{$$=(Attr *)malloc(sizeof(Attr));
+								$$->code=NULL;	
+								strcpy($$->place,$1);}			
+			| var_decl_id OP_ASS var_init 	{$$=(Attr *)malloc(sizeof(Attr));
+								sprintf(t,"%s = %s",$1,$3->place);
+								$$->code=append(NULL,newList(t));	
+								strcpy($$->place,$1);}					
 			;
 
-var_decl_id		: ID 				{$$=strdup($1);}
-			| var_decl_id ARRAY_S ARRAY_E 						
+var_decl_id		: ID 					{$$=$1;}
+			| var_decl_id ARRAY_S ARRAY_E 		{$$=$1;}					
 			;
 
-method_decl		: method_header method_body 						
+method_decl		: method_header method_body 	{$$=$2;}
 			;	
 
 method_header		: type method_declarator 						
@@ -231,22 +238,22 @@ method_header		: type method_declarator
 method_declarator	: identifier PAREN_S formal_para_list_e PAREN_E 			
 			;
 
-method_body		: block 		{printList($1->code);}						
-			| TRM 									
+method_body		: block 		{$$=$1;}						
+			| TRM 			{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}					
 			;
 
 array_init		: BLOCK_S var_init_e BLOCK_E 						
 			;
 
-var_init_e		: var_inits 								
-			| /* empty */								
+var_init_e		: var_inits 		{$$=$1;}						
+			| /* empty */		{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}					
 			;
 
-var_inits		: var_init 								
+var_inits		: var_init 		{$$=$1;}						
 			| var_inits SEP var_init 					
 			;
 
-var_init		: expr 									
+var_init		: expr 			{$$=$1;}				
 			| array_init 								
 			;
 
@@ -291,7 +298,7 @@ bl_statements	: block_statement	{$$=$1;}
 							 $$=$1;}
 		;
 
-block_statement	: loc_var_dec_st 	{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}					
+block_statement	: loc_var_dec_st 	{$$=$1;}					
 		| statement 		{$$=$1;}					
 		;
 
@@ -656,7 +663,7 @@ rel_expr	: shift_expr			{$$ = $1;}
 		;
 
 
-shift_expr	: add_expr						{$$=$1;}
+shift_expr	: add_expr				{$$=$1;}
 		| shift_expr OP_LSH add_expr			{$$=(Attr *)malloc(sizeof(Attr));
 							strcpy($$->place,tempVar());
 							$$->code=append($1->code,$3->code);
@@ -678,7 +685,7 @@ shift_expr	: add_expr						{$$=$1;}
 		;
 
 
-add_expr	: mul_expr						{$$=$1;}
+add_expr	: mul_expr				{$$=$1;}
 		| add_expr OP_ADD mul_expr			{$$=(Attr *)malloc(sizeof(Attr));
 							strcpy($$->place,tempVar());
 							$$->code=append($1->code,$3->code);
@@ -692,6 +699,7 @@ add_expr	: mul_expr						{$$=$1;}
 							$$->code=append($$->code,newList(t));
 							}		
 		;
+
 mul_expr	: unary_expr				{$$=$1;}
 		| mul_expr OP_MUL unary_expr			{$$=(Attr *)malloc(sizeof(Attr));
 							strcpy($$->place,tempVar());
@@ -733,7 +741,7 @@ unary_expr	: preinc_expr			{$$=$1;}
 							sprintf($2->place,"%s",temp);
 							$$=$2;
 							}
-		| unary_expr_not_plus_minus	
+		| unary_expr_not_plus_minus	{$$=$1;}
 		;
 
 preinc_expr	: OP_INC unary_expr				{sprintf(t,"%s = %s + 1",$2->place,$2->place);
@@ -781,7 +789,7 @@ postinc_expr	: postfix_expr OP_INC				{char temp[10];
 							}							
 		;
 
-postfix_expr	: primary			{$$=$1;}
+postfix_expr	: primary		{$$=$1;}
 		| name			{$$=$1;}		
 		| postinc_expr		{$$=$1;}
 		| postdec_expr		{$$=$1;}
@@ -802,7 +810,7 @@ primary		: primary_no_new_array		{$$=$1;}
 
 primary_no_new_array	: literal			{$$=$1;}
 			| THIS			
-			| PAREN_S expr PAREN_E	
+			| PAREN_S expr PAREN_E		{$$=$2;}	
 			| object_expr		
 			| field_access		
 			| method_invo		
@@ -840,18 +848,39 @@ name			: identifier		{$$=$1;}
 			| name OP_DOT identifier	
 			;
 
-literal			: int_literal		
-			| FLOAT_LIT		{char ch[20];sprintf(ch,"%f",$1);pushStr(lexeme,ch);}
-			| CHAR_LIT		{pushStr(lexeme,$1);}
-			| STR_LIT		{pushStr(lexeme,$1);}
-			| T			{$$=(Attr *)malloc(sizeof(Attr));strcpy($$->place,"1");}	
-			| F			{$$=(Attr *)malloc(sizeof(Attr));strcpy($$->place,"0");}	
-			| N			{$$=(Attr *)malloc(sizeof(Attr));strcpy($$->place,"null");}	
+literal			: int_literal		{$$=(Attr *)malloc(sizeof(Attr));
+					sprintf($$->place,"%d",$1);
+					strcpy($$->type,"int_lit");
+					$$->code=NULL;}
+			| FLOAT_LIT		{$$=(Attr *)malloc(sizeof(Attr));
+					sprintf($$->place,"%f",$1);
+					strcpy($$->type,"float_lit");
+					$$->code=NULL;}
+			| CHAR_LIT		{$$=(Attr *)malloc(sizeof(Attr));
+					strcpy($$->place,$1);
+					strcpy($$->type,"char_lit");
+					$$->code=NULL;}
+			| STR_LIT		{$$=(Attr *)malloc(sizeof(Attr));
+					strcpy($$->place,$1);
+					strcpy($$->type,"str_lit");
+					$$->code=NULL;}
+			| T			{$$=(Attr *)malloc(sizeof(Attr));
+					strcpy($$->place,"1");
+					strcpy($$->type,"bool_lit");
+					$$->code=NULL;}	
+			| F			{$$=(Attr *)malloc(sizeof(Attr));
+					strcpy($$->type,"bool_lit");
+					$$->code=NULL;
+					strcpy($$->place,"0");}	
+			| N			{$$=(Attr *)malloc(sizeof(Attr));
+					strcpy($$->type,"bool_lit");
+					$$->code=NULL;
+					strcpy($$->place,"null");}	
 			;
 
-int_literal		: INT_LIT_H		{char ch[20];sprintf(ch,"%d",$1);pushStr(lexeme,ch);}
-			| INT_LIT_O		{char ch[20];sprintf(ch,"%d",$1);pushStr(lexeme,ch);}
-			| INT_LIT_D		{char ch[20];sprintf(ch,"%d",$1);pushStr(lexeme,ch);}
+int_literal		: INT_LIT_H		{$$=$1;}
+			| INT_LIT_O		{$$=$1;}
+			| INT_LIT_D		{$$=$1;}
 			;
 
 identifier		: ID			{SymtabEntry *tempo=look_up($1);
