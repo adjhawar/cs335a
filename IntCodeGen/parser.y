@@ -90,7 +90,7 @@ struct Stack* attr_stack;
 	char *sval;
 	float fval;
 	char *type;
-	Attr *attr;
+	struct Attr *attr;
 }
 %error-verbose
 %start compilation_unit
@@ -122,11 +122,12 @@ struct Stack* attr_stack;
 %type <attr>cond_expr name array_access field_access 
 %type <attr>cond_or_expr cond_and_expr incl_or_expr excl_or_expr and_expr equality_expr rel_expr shift_expr add_expr mul_expr
 %type <attr>unary_expr preinc_expr predec_expr unary_expr_not_plus_minus postdec_expr postinc_expr postfix_expr cast_expr
-%type <attr>primary array_creat_expr primary_no_new_array st_expr expr_st expr_e
+%type <attr>primary array_creat_expr primary_no_new_array st_expr expr_st expr_e literal
 %type <attr>block block_statement bl_statements bl_statements_e statement st_no_short_if st_wo_tsub
 %type <attr>if_then_st if_then_else_st for_st while_st empty_st do_st switch_st break_st continue_st return_st
 %type <attr>if_then_else_no_short_if_st while_st_no_short_if for_st_no_short_if 
 %type <attr>switch_block_st_gr_e switch_block_st_grps for_init_e for_init st_expr_list loc_var_dec for_update_e for_update
+
 %%
 
 compilation_unit	: type_declarations_e 							
@@ -526,17 +527,48 @@ and_expr 	: equality_expr					{$$=$1;}
 		;
 
 equality_expr	: rel_expr						{$$=$1;}
-		| equality_expr OP_EQ rel_expr			
-		| equality_expr OP_NEQ rel_expr			
+		| equality_expr OP_EQ rel_expr	{$$=(Attr *)malloc(sizeof(Attr));
+					strcpy($$->place, tempVar());
+					$$->code=append($1->code,$3->code);
+					sprintf(t,"%s = %s == %s",$$->place,$1->place,$3->place);
+					$$->code=append($$->code,newList(t));}
+							
+		| equality_expr OP_NEQ rel_expr	{$$=(Attr *)malloc(sizeof(Attr));
+					strcpy($$->place, tempVar());
+					$$->code=append($1->code,$3->code);
+					sprintf(t,"%s = %s != %s",$$->place,$1->place,$3->place);
+					$$->code=append($$->code,newList(t));}		
 		;
 
-rel_expr	: shift_expr						{$$=$1;}
-		| rel_expr OP_LES shift_expr			
-		| rel_expr OP_GRE shift_expr			
-		| rel_expr OP_LEQ shift_expr			
-		| rel_expr OP_GEQ shift_expr			
+
+rel_expr	: shift_expr			{$$ = $1;}
+		| rel_expr OP_LES shift_expr	{$$=(Attr *)malloc(sizeof(Attr));
+					strcpy($$->place, tempVar());
+					$$->code=append($1->code,$3->code);
+					sprintf(t,"%s = %s < %s",$$->place,$1->place,$3->place);
+					$$->code=append($$->code,newList(t));}
+							
+		| rel_expr OP_GRE shift_expr	{$$=(Attr *)malloc(sizeof(Attr));
+					strcpy($$->place, tempVar());
+					$$->code=append($1->code,$3->code);
+					sprintf(t,"%s = %s > %s",$$->place,$1->place,$3->place);
+					$$->code=append($$->code,newList(t));}
+								
+		| rel_expr OP_LEQ shift_expr	{$$=(Attr *)malloc(sizeof(Attr));
+					strcpy($$->place, tempVar());
+					$$->code=append($1->code,$3->code);
+					sprintf(t,"%s = %s <= %s",$$->place,$1->place,$3->place);
+					$$->code=append($$->code,newList(t));}
+								
+		| rel_expr OP_GEQ shift_expr	{$$=(Attr *)malloc(sizeof(Attr));
+					strcpy($$->place, tempVar());
+					$$->code=append($1->code,$3->code);
+					sprintf(t,"%s = %s >= %s",$$->place,$1->place,$3->place);
+					$$->code=append($$->code,newList(t));}
+								
 		| rel_expr INSTANCEOF reference_type		
 		;
+
 
 shift_expr	: add_expr						{$$=$1;}
 		| shift_expr OP_LSH add_expr			{$$=(Attr *)malloc(sizeof(Attr));
@@ -559,6 +591,7 @@ shift_expr	: add_expr						{$$=$1;}
 							}		
 		;
 
+
 add_expr	: mul_expr						{$$=$1;}
 		| add_expr OP_ADD mul_expr			{$$=(Attr *)malloc(sizeof(Attr));
 							strcpy($$->place,tempVar());
@@ -573,7 +606,6 @@ add_expr	: mul_expr						{$$=$1;}
 							$$->code=append($$->code,newList(t));
 							}		
 		;
-
 mul_expr	: unary_expr				{$$=$1;}
 		| mul_expr OP_MUL unary_expr			{$$=(Attr *)malloc(sizeof(Attr));
 							strcpy($$->place,tempVar());
@@ -663,7 +695,7 @@ postinc_expr	: postfix_expr OP_INC				{char temp[10];
 							}							
 		;
 
-postfix_expr	: primary		
+postfix_expr	: primary			{$$=$1;}
 		| name			{$$=$1;}		
 		| postinc_expr		{$$=$1;}
 		| postdec_expr		{$$=$1;}
@@ -678,11 +710,11 @@ field_access	: primary OP_DOT identifier
 		| SUPER OP_DOT identifier		
 		;
 
-primary		: primary_no_new_array		
+primary		: primary_no_new_array		{$$=$1;}	
 		| array_creat_expr		
 		;
 
-primary_no_new_array	: literal		
+primary_no_new_array	: literal			{$$=$1;}
 			| THIS			
 			| PAREN_S expr PAREN_E	
 			| object_expr		
@@ -726,9 +758,9 @@ literal			: int_literal
 			| FLOAT_LIT		{char ch[20];sprintf(ch,"%f",$1);pushStr(lexeme,ch);}
 			| CHAR_LIT		{pushStr(lexeme,$1);}
 			| STR_LIT		{pushStr(lexeme,$1);}
-			| T			
-			| F			
-			| N			
+			| T			{$$=(Attr *)malloc(sizeof(Attr));strcpy($$->place,"1");}	
+			| F			{$$=(Attr *)malloc(sizeof(Attr));strcpy($$->place,"0");}	
+			| N			{$$=(Attr *)malloc(sizeof(Attr));strcpy($$->place,"null");}	
 			;
 
 int_literal		: INT_LIT_H		{char ch[20];sprintf(ch,"%d",$1);pushStr(lexeme,ch);}
