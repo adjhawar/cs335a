@@ -122,7 +122,11 @@ struct Stack* attr_stack;
 %type <attr>cond_expr name array_access field_access 
 %type <attr>cond_or_expr cond_and_expr incl_or_expr excl_or_expr and_expr equality_expr rel_expr shift_expr add_expr mul_expr
 %type <attr>unary_expr preinc_expr predec_expr unary_expr_not_plus_minus postdec_expr postinc_expr postfix_expr cast_expr
-%type <attr>primary array_creat_expr primary_no_new_array st_expr
+%type <attr>primary array_creat_expr primary_no_new_array st_expr expr_st expr_e
+%type <attr>block block_statement bl_statements bl_statements_e statement st_no_short_if st_wo_tsub
+%type <attr>if_then_st if_then_else_st for_st while_st empty_st do_st switch_st break_st continue_st return_st
+%type <attr>if_then_else_no_short_if_st while_st_no_short_if for_st_no_short_if 
+%type <attr>switch_block_st_gr_e switch_block_st_grps for_init_e for_init st_expr_list loc_var_dec for_update_e for_update
 %%
 
 compilation_unit	: type_declarations_e 							
@@ -277,16 +281,17 @@ array_type	: type ARRAY_S ARRAY_E
 block		: BLOCK_S bl_statements_e BLOCK_E 			
 		;
 
-bl_statements_e	: bl_statements 						
-		| /* empty */ 							
+bl_statements_e	: bl_statements 	{printList($1->code);}					
+		| /* empty */ 		{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}					
 		;
 
-bl_statements	: block_statement						
-		| bl_statements block_statement 				
+bl_statements	: block_statement	{$$=$1;}				
+		| bl_statements block_statement 	{$1->code=append($1->code,$2->code);
+							 $$=$1;}
 		;
 
-block_statement	: loc_var_dec_st 						
-		| statement 							
+block_statement	: loc_var_dec_st 	{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}					
+		| statement 		{$$=$1;}					
 		;
 
 loc_var_dec_st	: loc_var_dec TRM 						
@@ -295,37 +300,37 @@ loc_var_dec_st	: loc_var_dec TRM
 loc_var_dec	: type var_declarators 			
 		;
 
-statement	: st_wo_tsub 							
-		| if_then_st 							
-		| if_then_else_st 						
-		| while_st
-		| for_st 														
-		| error TRM									{yyerrok;}
-		| error BLOCK_E 								{yyerrok;}
+statement	: st_wo_tsub 		{$$=$1;}					
+		| if_then_st 		{$$=$1;}					
+		| if_then_else_st 	{$$=$1;}					
+		| while_st		{$$=$1;}
+		| for_st 		{$$=$1;}												
+		| error TRM		{yyerrok;}
+		| error BLOCK_E 	{yyerrok;}
 		;
 
-st_no_short_if	: st_wo_tsub 							
-		| if_then_else_no_short_if_st 					
-		| while_st_no_short_if 						
-		| for_st_no_short_if 							
+st_no_short_if	: st_wo_tsub 			{$$=$1;}						
+		| if_then_else_no_short_if_st 	{$$=$1;}					
+		| while_st_no_short_if 		{$$=$1;}			
+		| for_st_no_short_if 		{$$=$1;}					
 		;
 
-st_wo_tsub	: block 								
-		| empty_st 									
-		| expr_st 									
-		| switch_st 									
-		| do_st 									
-		| break_st 									
-		| continue_st 									
-		| return_st 									
+st_wo_tsub	: block 	{$$=$1;}							
+		| empty_st 	{$$=$1;}								
+		| expr_st 	{$$=$1;}								
+		| switch_st 	{$$=$1;}								
+		| do_st 	{$$=$1;}								
+		| break_st 	{$$=$1;}								
+		| continue_st 	{$$=$1;}								
+		| return_st 	{$$=$1;}								
 		| SCAN PAREN_S identifier PAREN_E						
 		| PRINT PAREN_S var_inits PAREN_E						
 		;
 
-empty_st	:  TRM 										
+empty_st	: TRM 		{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}								
 		;
 
-expr_st		: st_expr  TRM 			{printList($1->code);}					
+expr_st		: st_expr TRM 			{$$=$1;}					
 		;
 
 st_expr		: assgn 			{$$=$1;}								
@@ -352,8 +357,8 @@ switch_st	: SWITCH PAREN_S expr PAREN_E switch_block
 switch_block	: BLOCK_S switch_block_st_gr_e BLOCK_E 	
 		;
 
-switch_block_st_gr_e	: switch_block_st_grps 			
-			| /* empty */ 				
+switch_block_st_gr_e	: switch_block_st_grps 		{$$=$1;}	
+			| /* empty */ 			{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}	
 			;
 
 switch_block_st_grps	: switch_block_st_grp 			
@@ -386,26 +391,26 @@ for_st		: FOR PAREN_S for_init_e TRM expr_e TRM for_update_e  PAREN_E statement
 for_st_no_short_if	: FOR PAREN_S for_init_e TRM expr_e TRM for_update_e  PAREN_E st_no_short_if	
 		;
 
-for_init_e	: for_init	
-		| /* empty */	
+for_init_e	: for_init	{$$=$1;}
+		| /* empty */	{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}
 		;
 
-for_init	: st_expr_list	
-		| loc_var_dec	
+for_init	: st_expr_list	{$$=$1;}
+		| loc_var_dec	{$$=$1;}
 		;
 
-expr_e		: expr		
-		| /* empty */	
+expr_e		: expr		{$$=$1;}
+		| /* empty */	{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}
 		;
 
-for_update_e	: for_update	
-		| /* empty */	
+for_update_e	: for_update	{$$=$1;}
+		| /* empty */	{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}
 		;
 
-for_update	: st_expr_list	
+for_update	: st_expr_list	{$$=$1;}
 		;
 
-st_expr_list	: st_expr 		
+st_expr_list	: st_expr 	{$$=$1;}	
 		| st_expr_list SEP st_expr	
 		;
 
@@ -418,8 +423,8 @@ continue_st	: CONT TRM
 return_st	: RETURN expr_e TRM	
 		;
 
-expr		: cond_expr	
-		| assgn		
+expr		: cond_expr	{$$=$1;}
+		| assgn		{$$=$1;}
 		;
 
 assgn		: lhs assgn_op expr			{switch(flag1){
@@ -660,8 +665,8 @@ postinc_expr	: postfix_expr OP_INC				{char temp[10];
 
 postfix_expr	: primary		
 		| name			{$$=$1;}		
-		| postinc_expr		
-		| postdec_expr		
+		| postinc_expr		{$$=$1;}
+		| postdec_expr		{$$=$1;}
 		;
 
 method_invo	: name PAREN_S arg_list_e PAREN_E 		
