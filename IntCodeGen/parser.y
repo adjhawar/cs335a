@@ -77,10 +77,6 @@ char* newLabel(){
 	return LABEL;
 }
 
-struct StackStr* lexeme;
-struct StackStr* str1 ;
-struct StackStr* str2;
-struct Stack* attr_stack;
 %}
 
 %locations
@@ -90,7 +86,7 @@ struct Stack* attr_stack;
 	char *sval;
 	float fval;
 	char *type;
-	struct Attr *attr;
+        struct Attr *attr;
 }
 %error-verbose
 %start compilation_unit
@@ -162,15 +158,15 @@ supers			: EXTENDS class_type
 class_body		: BLOCK_S class_body_decl_e BLOCK_E 					
 			;
 
-class_body_decl_e	: class_body_decls 						
+class_body_decl_e	: class_body_decls 				
 			| /* empty */ 								
 			;
 
-class_body_decls	: class_body_decl 			{$$=$1;}	
-			| class_body_decls class_body_decl			
+class_body_decls	: class_body_decl 			
+			| class_body_decls class_body_decl		
 			;
 
-class_body_decl		: class_mem_decl 		{$$=$1;}		
+class_body_decl		: class_mem_decl 		
 			| const_decl 								
 			;
 
@@ -208,9 +204,9 @@ field_decl		: type var_declarators TRM	{$$=$2;}
 
 var_declarators		: var_declarator 		{$$=$1;
 						 strcpy($$->type,$<type>0);
-						 p=Insert($$->place,$$->type);}
+						 p=Insert($1->place,$$->type);}
 
-			| var_declarators SEP var_declarator 	{$$=$3;
+			| var_declarators SEP var_declarator 	{$$=$1;
 						 strcpy($$->type,$<type>0);
 						 $$->code=append($1->code,$3->code);
 						 p=Insert($3->place,$$->type);}	
@@ -840,7 +836,7 @@ array_access	: name ARRAY_S expr ARRAY_E
 		| primary_no_new_array ARRAY_S expr ARRAY_E		
 		;
 
-type_name		: CID			{pushStr(lexeme,$1);}
+type_name		: CID			
 			| error ID	
 			;
 
@@ -898,13 +894,6 @@ struct StackStr* str4;
 int main(int argc, char** argv){
 	//	s1 = createIntStack();
 	p=(SymtabEntry *)malloc(sizeof(SymtabEntry));
-	attr_stack = createIntStack();
-	lexeme = createCharStack();
-	str1 = createCharStack();
-	str2= createCharStack();
-	str4= createCharStack();
-	attr=(Attr *)malloc(sizeof(Attr));
-	//push(s1,0);
 	FILE *fptr = fopen(argv[1], "r");
 	if(argc==2 && fptr!=NULL){
 		yyin = fptr;
@@ -918,19 +907,12 @@ int main(int argc, char** argv){
 	}
 	// free(s1);
 	// free(s2);
-	SymtabEntry *temp=head;
+	/*SymtabEntry *temp=head;
 	while(temp){
 	//	printf("%s,%s\n",temp->lexeme,temp->type);
 		temp=temp->next;
-	}
-	while(!isEmpty(attr_stack))
-		printList(pop(attr_stack).code);
-	free(str1);
-	free(str2);
-	free(str4);
-	free(lexeme);
+	}*/
 	free(p);
-	free(attr_stack);
 	fclose(fptr);
 	return 0;
 }
