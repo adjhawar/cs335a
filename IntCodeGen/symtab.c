@@ -5,7 +5,7 @@
 
 //Data structure to hold symbol table
 SymtabEntry* look_up(Symtab *table, char *lex){
-	SymtabEntry* temp = table->entry;
+	SymtabEntry* temp = table->head;
 	if(strcmp(lex, "0")==0 || strcmp(lex, "0\n")==0 || atoi(lex)) 
 		return NULL;
 	while(temp!=NULL && strcmp(temp->lexeme,lex))
@@ -18,15 +18,25 @@ SymtabEntry* look_up(Symtab *table, char *lex){
 		return NULL;
 }
 
+SymtabEntry* look_upTable(Symtab *table, char *lex){
+	SymtabEntry* temp = table->head;
+	if(strcmp(lex, "0")==0 || strcmp(lex, "0\n")==0 || atoi(lex)) 
+		return NULL;
+	while(temp!=NULL && strcmp(temp->lexeme,lex))
+		temp=temp->next;
+	return temp;
+}
+
 SymtabEntry* Insert(Symtab *table, char* lex, char *type)
 {
-	SymtabEntry *tem = look_up(table,lex);
+	SymtabEntry *tem = look_upTable(table,lex);
 	if(tem){
 		return tem;
 	}
 	else
 	{
 		SymtabEntry *temp =(SymtabEntry *)malloc(sizeof(SymtabEntry));
+		temp->func=NULL;
 		temp->liveness = false;
 		temp->nextuse = -1;
 		strcpy(temp->lexeme,lex);
@@ -36,16 +46,28 @@ SymtabEntry* Insert(Symtab *table, char* lex, char *type)
 		temp->next=NULL;
 		temp->add_des.reg_no = -1;
 		temp->add_des.mem=false;
-		if(head==NULL)
+		if(table->head==NULL)
 		{
-			head = temp;
-			tail = temp;
+			table->head = temp;
+			table->tail = temp;
 		}
 		else
 		{
-			tail->next = temp;
-			tail = temp;
+			table->tail->next = temp;
+			table->tail = temp;
 		}
 		return temp;
 }
+}
+
+void printSymtab(Symtab *table){
+	SymtabEntry *temp=table->head;
+	printf("%s begins\n",table->name);
+	while(temp){
+		printf("%s,%s\n",temp->lexeme,temp->type);
+		if(temp->func)
+			printSymtab(temp->func);
+		temp=temp->next;
+	}
+	printf("%s ends\n",table->name);
 }

@@ -15,54 +15,8 @@ char TEMP[7];
 char LABEL[5];
 char t[100];
 int flag1;
-SymtabEntry *head,*tail, *p,*p1;
-Symtab *mainTable;
-Attr* attr;
-struct StackStr{
-	int size;
-	char **array;
-};
-
-
-struct StackStr* createCharStack(){
-	struct StackStr* stack= (struct StackStr*)malloc(sizeof(struct StackStr));
-	stack->size = -1;
-	stack->array = (char**) malloc(maxsize * sizeof(char *));
-        for(int i=0;i< maxsize; i++)
-        {
-            stack->array[i]=(char*)malloc(100 * sizeof(char ));
-	}
-	return stack;
-}
-
-int isFullStr(struct StackStr* stack){
-   return stack->size == maxsize - 1; 
-}
- 
-int isEmptyStr(struct StackStr* stack){
-   return stack->size == -1;
-}
-
-void pushStr(struct StackStr* stack, char* item){
-    if (stack == NULL){
-        printf("Invalid argument. p == NULL.\n");
-    }
-    else if (stack->array == NULL) {
-        printf("Stack not initialized.\n");
-            return;
-    }
-    else if (stack->size == maxsize) {
-        printf("Stack is full\n");
-        return;
-    }
-    strcpy(stack->array[++stack->size],item);
-}
-
-char* popStr(struct StackStr* stack){
-    if (isEmptyStr(stack))
-        return NULL;
-    return stack->array[stack->size--];
-}
+SymtabEntry *p;
+Symtab *mainTable,*table;
 
 char* tempVar(){
 	static int i=0;
@@ -146,7 +100,7 @@ type_declaration	: class_declaration
 			| TRM 									
 			;
 
-class_declaration	: CLASS type_name super_e class_body 			{strcpy(mainTable->name,$2);}	
+class_declaration	: CLASS type_name super_e class_body 			{strcpy(table->name,$2);}	
 			;
 
 super_e			: supers 								
@@ -192,8 +146,7 @@ formal_para_list	: formal_para
 formal_para		: type var_decl_id			{$$=(Attr *)malloc(sizeof(Attr));
 						 strcpy($$->place,$2);
 						 strcpy($$->type,$1);
-						 $$->code=NULL;
-						 p=Insert(mainTable,$2,$1);}				
+						 $$->code=NULL;}
 			;
 
 const_body		: BLOCK_S explicit_const_invo bl_statements_e BLOCK_E 			
@@ -209,12 +162,12 @@ field_decl		: type var_declarators TRM	{$$=$2;}
 
 var_declarators		: var_declarator 		{$$=$1;
 						 strcpy($$->type,$<type>0);
-						 p=Insert(mainTable,$1->place,$$->type);}
+						 p=Insert(table,$1->place,$$->type);}
 
 			| var_declarators SEP var_declarator 	{$$=$1;
 						 strcpy($$->type,$<type>0);
 						 $$->code=append($1->code,$3->code);
-						 p=Insert(mainTable,$3->place,$$->type);}	
+						 p=Insert(table,$3->place,$$->type);}	
 			;
 
 var_declarator		: var_decl_id 			{$$=(Attr *)malloc(sizeof(Attr));
@@ -230,7 +183,7 @@ var_decl_id		: ID 					{$$=$1;}
 			| var_decl_id ARRAY_S ARRAY_E 		{$$=$1;}					
 			;
 
-method_decl		: method_header method_body 	{$$=$2;$$->code=append($1->code,$2->code);}
+method_decl		: method_header method_body 	{$$=$2;$$->code=append($1->code,$2->code);table=table->prev;}
 			;	
 
 method_header		: type method_declarator 	{$$=(Attr *)malloc(sizeof(Attr));
@@ -239,7 +192,11 @@ method_header		: type method_declarator 	{$$=(Attr *)malloc(sizeof(Attr));
 				 				strcat($$->type,"_func");
 								sprintf(t,"label,%s",$2);
 								$$->code=newList(t);
-				  				p=Insert(mainTable,$2,$$->type);}
+				  				p=Insert(table,$2,$$->type);
+								p->func=(Symtab *)malloc(sizeof(Symtab));
+								p->func->prev=table;
+								table=p->func;
+								strcpy(table->name,$2);}
 			;
 
 method_declarator	: ID PAREN_S formal_para_list_e PAREN_E 	{$$=$1;}			;
@@ -899,7 +856,7 @@ int_literal		: INT_LIT_H		{$$=$1;}
 			| INT_LIT_D		{$$=$1;}
 			;
 
-identifier		: ID			{SymtabEntry *tempo=look_up(mainTable,$1);
+identifier		: ID			{SymtabEntry *tempo=look_up(table,$1);
 					if(tempo!=NULL){
 						$$=(Attr *)malloc(sizeof(Attr));
 						strcpy($$->place,$1);
@@ -910,11 +867,11 @@ identifier		: ID			{SymtabEntry *tempo=look_up(mainTable,$1);
 						yyerrok;}
 			;
 %%
-struct StackStr* str4;
 int main(int argc, char** argv){
 	p=(SymtabEntry *)malloc(sizeof(SymtabEntry));
 	mainTable=(Symtab *)malloc(sizeof(Symtab));
 	mainTable->prev=NULL;
+	table=mainTable;
 	FILE *fptr = fopen(argv[1], "r");
 	if(argc==2 && fptr!=NULL){
 		yyin = fptr;
@@ -926,12 +883,7 @@ int main(int argc, char** argv){
 	while(!feof(yyin)){
 		yyparse();
 	}
-	SymtabEntry *temp=head;
-	printf("%s\n",mainTable->name);
-	while(temp){
-		printf("%s,%s\n",temp->lexeme,temp->type);
-		temp=temp->next;
-	}
+	printSymtab(mainTable);
 	free(p);
 	free(mainTable);
 	fclose(fptr);

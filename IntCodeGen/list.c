@@ -5,49 +5,6 @@
 #include "list.h"
 #include "y.tab.h"
 
-int maxsize = 100;
-struct Stack* createIntStack(){
-	struct Stack* stack = (struct Stack*) malloc(sizeof(struct Stack));
-	stack->size = -1;
-	stack->attr = (Attr*) malloc(maxsize * sizeof(Attr));
-	return stack;
-}
-
-int isFull(struct Stack* stack){
-   return stack->size == maxsize - 1; 
-}
- 
-int isEmpty(struct Stack* stack){
-   return stack->size == -1;
-}
-
-void push(struct Stack* stack, Attr *attr){
-    if (stack == NULL){
-        printf("Invalid argument. stack pointer is NULL.\n");
-    }
-    else if (stack->attr == NULL) {
-        printf("Stack not initialized.\n");
-            return;
-    }
-    else if (stack->size == maxsize) {
-        printf("Stack is full\n");
-        return;
-    }
-    else{
-    	stack->size += 1; 
-	strcpy(stack->attr[stack->size].place, attr->place);
-	//strcpy(stack->attr[stack->size].type, attr->type);
-	stack->attr[stack->size].code = attr->code;
-	}
-}
-
-Attr pop(struct Stack* stack){
-    if (isEmpty(stack))
-        printf("Empty stack\n");
-    return stack->attr[stack->size--];
-}
- 
-
 //returns the tail of the list
 list3AC* getTail(list3AC *list1){
 	list3AC *list=list1;

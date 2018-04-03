@@ -22,32 +22,24 @@ typedef struct SymtabEntry{
 	char lexeme[50];
 	char type[15];
 	struct SymtabEntry *next;
+	struct Symtab *func;
 	Add_des add_des;
 	int nextuse;
 	bool liveness;
 }SymtabEntry;
 
 typedef struct Symtab{
-	SymtabEntry *entry;
+	SymtabEntry *head;
+	SymtabEntry *tail;
 	char name[10];
-	struct Symtab *prev;
-	struct Symtab *next[10];	
+	struct Symtab *prev;	
 }Symtab;
 
-struct Stack{
-	int size;
-	Attr *attr;
-};
-
-extern SymtabEntry *head,*tail;
-struct Stack* createIntStack();
-int isFull(struct Stack* stack);
-int isEmpty(struct Stack* stack);
-void push(struct Stack* stack, Attr *attr);
-Attr pop(struct Stack* stack);
 list3AC* getTail(list3AC *list);
 list3AC* append(list3AC* head1, list3AC* head2);
 list3AC* newList(char *str);
 void printList(list3AC *list);
 SymtabEntry* look_up(Symtab *table, char *lex);
+SymtabEntry* look_upTable(Symtab *table, char *lex);
 SymtabEntry* Insert(Symtab *table, char* lex, char *type);
+void printSymtab(Symtab *table);

@@ -1,13 +1,14 @@
 class $test{
-	int a,b;
-	float c;
-	int d;
-	void main(){
-	int f,g;
-	a+=b;
-	if(a>b)
-        a=b;
-        else
-        g=c;
-        
-}}
+	int a,b=0;
+	int hello(int c){
+		int a=0;
+		c=a++ + b++;
+		d=--c + ++b;
+		return ;
+}
+void main(int j,float a2){
+		j=hello();
+		for(j=0;j<i;j++) 
+			;   
+}
+}
