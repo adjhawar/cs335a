@@ -111,10 +111,10 @@ char* newLabel(){
 %token PRINT SCAN
 %token EXTENDS
 
-%type <type>error integer_type reference_type primitive_type array_type class_type numeric_type type_name type
-%type <sval>var_decl_id
+%type <type>error integer_type reference_type primitive_type array_type class_type numeric_type type
+%type <sval>var_decl_id method_declarator type_name
 %type <ival>int_literal 
-%type <attr>var_declarators var_declarator
+%type <attr>var_declarators var_declarator formal_para method_header
 %type <attr>assgn lhs expr identifier
 %type <attr>cond_expr name array_access field_access 
 %type <attr>cond_or_expr cond_and_expr incl_or_expr excl_or_expr and_expr equality_expr rel_expr shift_expr add_expr mul_expr
@@ -145,7 +145,7 @@ type_declaration	: class_declaration
 			| TRM 									
 			;
 
-class_declaration	: CLASS type_name super_e class_body 					
+class_declaration	: CLASS type_name super_e class_body 		
 			;
 
 super_e			: supers 								
@@ -188,7 +188,11 @@ formal_para_list	: formal_para
 			| formal_para_list SEP formal_para 					
 			;
 
-formal_para		: type var_decl_id							
+formal_para		: type var_decl_id			{$$=(Attr *)malloc(sizeof(Attr));
+						 strcpy($$->place,$2);
+						 strcpy($$->type,$1);
+						 $$->code=NULL;
+						 p=Insert($2,$1);}				
 			;
 
 const_body		: BLOCK_S explicit_const_invo bl_statements_e BLOCK_E 			
@@ -228,11 +232,15 @@ var_decl_id		: ID 					{$$=$1;}
 method_decl		: method_header method_body 	{$$=$2;}
 			;	
 
-method_header		: type method_declarator 						
+method_header		: type method_declarator 	{$$=(Attr *)malloc(sizeof(Attr));
+								strcpy($$->place,$2);
+								strcpy($$->type,$1);
+				 				strcat($$->type,"_func");
+								$$->code=NULL;
+				  				p=Insert($2,$$->type);}
 			;
 
-method_declarator	: identifier PAREN_S formal_para_list_e PAREN_E 			
-			;
+method_declarator	: ID PAREN_S formal_para_list_e PAREN_E 	{$$=$1;}			;
 
 method_body		: block 		{$$=$1;}						
 			| TRM 			{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}					
@@ -253,23 +261,23 @@ var_init		: expr 			{$$=$1;}
 			| array_init 								
 			;
 
-type		: primitive_type	{$$=strdup($1);} 							
-		| reference_type 	{$$=strdup($1);}						
-		| VOID 			{$$=strdup($1);}							
-		| STRING		{$$=strdup($1);}							
+type		: primitive_type	{$$=$1;} 							
+		| reference_type 					
+		| VOID 			{$$=$1;}							
+		| STRING		{$$=$1;}							
 		;
 
-primitive_type  : numeric_type 	{$$=strdup($1);}						
-		| BOOL 		{$$=strdup($1);}							
+primitive_type  : numeric_type 	{$$=$1;}						
+		| BOOL 		{$$=$1;}							
 		;
 
-numeric_type	: integer_type 	{$$=strdup($1);}						
-		| FLOAT 	{$$=strdup($1);}						
+numeric_type	: integer_type 	{$$=$1;}						
+		| FLOAT 	{$$=$1;}						
 		;
 
-integer_type	: BYTE 	{$$=strdup($1);}		
-		| CHAR 	{$$=strdup($1);}					
-		| INT 	{$$=strdup($1);}					
+integer_type	: BYTE 	{$$=$1;}		
+		| CHAR 	{$$=$1;}					
+		| INT 	{$$=$1;}					
 		;
 
 reference_type	: class_type 							
@@ -836,7 +844,7 @@ array_access	: name ARRAY_S expr ARRAY_E
 		| primary_no_new_array ARRAY_S expr ARRAY_E		
 		;
 
-type_name		: CID			
+type_name		: CID			{$$=$1;}	
 			| error ID	
 			;
 
@@ -892,7 +900,6 @@ identifier		: ID			{SymtabEntry *tempo=look_up($1);
 %%
 struct StackStr* str4;
 int main(int argc, char** argv){
-	//	s1 = createIntStack();
 	p=(SymtabEntry *)malloc(sizeof(SymtabEntry));
 	FILE *fptr = fopen(argv[1], "r");
 	if(argc==2 && fptr!=NULL){
@@ -905,13 +912,11 @@ int main(int argc, char** argv){
 	while(!feof(yyin)){
 		yyparse();
 	}
-	// free(s1);
-	// free(s2);
-	/*SymtabEntry *temp=head;
+	SymtabEntry *temp=head;
 	while(temp){
-	//	printf("%s,%s\n",temp->lexeme,temp->type);
+		printf("%s,%s\n",temp->lexeme,temp->type);
 		temp=temp->next;
-	}*/
+	}
 	free(p);
 	fclose(fptr);
 	return 0;

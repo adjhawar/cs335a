@@ -23,7 +23,7 @@ int yynerrs;
 "false"			return F;
 "null"			return N;
 "String"		{yylval.sval=strdup(yytext);return STRING;}
-"void"			return VOID;
+"void"			{yylval.sval=strdup(yytext);return VOID;}
 
 "break"			return BREAK;
 "case"			return CASE;
