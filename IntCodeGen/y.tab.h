@@ -222,13 +222,13 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 88 "parser.y" /* yacc.c:1909  */
+#line 39 "parser.y" /* yacc.c:1909  */
 
 	int ival;
 	char *sval;
 	float fval;
 	char *type;
-	struct Attr *attr;
+        struct Attr *attr;
 
 #line 234 "y.tab.h" /* yacc.c:1909  */
 };

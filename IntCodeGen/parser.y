@@ -82,6 +82,7 @@ char* newLabel(){
 %type <attr>var_inits var_init var_init_e
 %type <attr>class_body_decls class_body_decl class_body field_decl method_decl class_mem_decl method_body
 %type <attr>method_invo
+%type <attr> switch_block switch_block_st_grp 
 %%
 
 compilation_unit	: type_declarations_e 							
@@ -328,7 +329,7 @@ if_then_st	: IF PAREN_S expr PAREN_E statement 		        { char end[5];
 		;
 
 if_then_else_st	: IF PAREN_S expr PAREN_E st_no_short_if ELSE statement { char end[5],else_beg[5];
-									  strcpy(end,newLabel()); strcpy(else_beg,newLabel());
+									  strcpy(end,newLabel()); strcpy(else_beg,newLabel());		
 									  $$=(Attr *)malloc(sizeof(Attr));	
                       						          $$->code = append($$->code , $3->code);
 									  sprintf(t,"ifgoto, eq,%s,0,%s",$3->place,else_beg);
@@ -361,32 +362,49 @@ if_then_else_no_short_if_st	: IF PAREN_S expr PAREN_E st_no_short_if ELSE st_no_
        								          $$->code = append($$->code,newList(t)); }	
 		;
 
-switch_st	: SWITCH PAREN_S expr PAREN_E switch_block 	
+switch_st	: SWITCH PAREN_S expr PAREN_E switch_block   {  char end[5];
+							 	strcpy(end,newLabel());
+								$$=$5;
+								patchBreak($5->code,end);
+								sprintf(t,"label,%s",end);
+								$$->code = append($$->code,newList(t));
+								patchSwitch($$->code,$3->place);
+								}
 		;
 
-switch_block	: BLOCK_S switch_block_st_gr_e BLOCK_E 	
+switch_block	: BLOCK_S switch_block_st_gr_e BLOCK_E 	 {$$=$2;}
 		;
 
 switch_block_st_gr_e	: switch_block_st_grps 		{$$=$1;}	
 			| /* empty */ 			{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}	
 			;
 
-switch_block_st_grps	: switch_block_st_grp 			
-			| switch_block_st_grps switch_block_st_grp 	
+switch_block_st_grps	: switch_block_st_grp 	 	{$$=$1;}		     
+			| switch_block_st_grps switch_block_st_grp  {   $$=$1;
+									$$->code= append($$->code,$2->code);} 	
 			;
 
-switch_block_st_grp	: switch_label bl_statements 		
+switch_block_st_grp	: CASE expr COLON bl_statements       { $$=(Attr*)malloc(sizeof(Attr));
+								char nexLabel[5];
+								strcpy(nexLabel,newLabel());
+								sprintf(t,"ifgoto,neq,%s,        ,%s",$2->place,nexLabel);
+								$$->code=newList(t);
+								$$->code = append($$->code,$4->code);
+								sprintf(t,"label,%s",nexLabel);
+								$$->code=append($$->code,newList(t));
+								$$->code->swt = 1;	}
+	
+			| DEFAULT COLON bl_statements	  	{ $$=(Attr*)malloc(sizeof(Attr));
+								$$->code = append($$->code,$3->code);	}
 			;
-
-switch_label	: CASE expr COLON 					
-		| DEFAULT COLON 					
-		;
 
 while_st	: WHILE PAREN_S expr PAREN_E statement 			{ char begin[5],end[5];
 									   strcpy(begin,newLabel());
 									   strcpy(end,newLabel());	
                                                                           sprintf(t,"label , %s",begin);
                                                                           $$=(Attr *)malloc(sizeof(Attr));
+									  patchBreak($5->code,end);
+									  patchContinue($5->code,begin);	
        								          $$->code = newList(t);
                       						          $$->code = append($$->code , $3->code);
 									  sprintf(t,"ifgoto, eq,%s,0,%s",$3->place,end);
@@ -400,7 +418,9 @@ while_st	: WHILE PAREN_S expr PAREN_E statement 			{ char begin[5],end[5];
 
 while_st_no_short_if	: WHILE PAREN_S expr PAREN_E st_no_short_if	{ char begin[5],end[5];
 									   strcpy(begin,newLabel());
-									   strcpy(end,newLabel());	
+									   strcpy(end,newLabel());
+									  patchBreak($5->code,end);
+									  patchContinue($5->code,begin);	
                                                                           sprintf(t,"label , %s",begin);
                                                                           $$=(Attr *)malloc(sizeof(Attr));
        								          $$->code = newList(t);
@@ -416,7 +436,9 @@ while_st_no_short_if	: WHILE PAREN_S expr PAREN_E st_no_short_if	{ char begin[5]
  
 do_st		: DO statement WHILE PAREN_S expr PAREN_E  TRM          { char begin[5],end[5];
 									   strcpy(begin,newLabel());
-									   strcpy(end,newLabel());	
+									   strcpy(end,newLabel());
+									  patchBreak($2->code,end);
+									  patchContinue($2->code,begin);		
                                                                           sprintf(t,"label , %s",begin);
                                                                           $$=(Attr *)malloc(sizeof(Attr));
        								          $$->code = newList(t);
@@ -430,9 +452,12 @@ do_st		: DO statement WHILE PAREN_S expr PAREN_E  TRM          { char begin[5],e
        								          $$->code = append($$->code,newList(t));  }		
 		;
 
-for_st		: FOR PAREN_S for_init_e TRM expr_e TRM for_update_e PAREN_E statement	       { char begin[5],end[5];
+for_st		: FOR PAREN_S for_init_e TRM expr_e TRM for_update_e PAREN_E statement	       { char begin[5],end[5],cont[5];
 									  			strcpy(begin,newLabel());
 									  			strcpy(end,newLabel());
+												strcpy(cont,newLabel());
+												patchBreak($9->code,end);
+									                        patchContinue($9->code,cont);	
 												$$=(Attr *)malloc(sizeof(Attr));
 												$$->code = append($$->code,$3->code);
 												sprintf(t,"label , %s",begin);	
@@ -441,14 +466,37 @@ for_st		: FOR PAREN_S for_init_e TRM expr_e TRM for_update_e PAREN_E statement	 
 												sprintf(t,"ifgoto, eq,%s,0,%s",$5->place,end);
 									  			$$->code = append($$->code ,newList(t));
        								          			$$->code = append($$->code , $9->code);
+												sprintf(t,"label , %s",cont);	
+                                                                          			$$->code = append($$->code,newList(t));
                       						          			$$->code = append($$->code,$7->code);
 									  			sprintf(t,"goto , %s",begin);
-       								          		       $$->code = append($$->code,newList(t));
-									  		       sprintf(t,"label , %s",end);
+       								          		        $$->code = append($$->code,newList(t));
+									  		        sprintf(t,"label , %s",end);
        								          	               $$->code = append($$->code,newList(t));}	 
 		;
 
-for_st_no_short_if	: FOR PAREN_S for_init_e TRM expr_e TRM for_update_e  PAREN_E st_no_short_if	
+for_st_no_short_if	: FOR PAREN_S for_init_e TRM expr_e TRM for_update_e  PAREN_E st_no_short_if
+												{ char begin[5],end[5],cont[5];
+									  			strcpy(begin,newLabel());
+									  			strcpy(end,newLabel());
+												strcpy(cont,newLabel());
+												patchBreak($9->code,end);
+									                        patchContinue($9->code,cont);	
+												$$=(Attr *)malloc(sizeof(Attr));
+												$$->code = append($$->code,$3->code);
+												sprintf(t,"label , %s",begin);	
+                                                                          			$$->code = append($$->code,newList(t));
+                                                                          			$$->code = append($$->code,$5->code);
+												sprintf(t,"ifgoto, eq,%s,0,%s",$5->place,end);
+									  			$$->code = append($$->code ,newList(t));
+       								          			$$->code = append($$->code , $9->code);
+												sprintf(t,"label , %s",cont);	
+                                                                          			$$->code = append($$->code,newList(t));
+                      						          			$$->code = append($$->code,$7->code);
+									  			sprintf(t,"goto , %s",begin);
+       								          		        $$->code = append($$->code,newList(t));
+									  		        sprintf(t,"label , %s",end);
+       								          	               $$->code = append($$->code,newList(t));}	 			
 		;
 
 for_init_e	: for_init	{$$=$1;}
@@ -474,10 +522,16 @@ st_expr_list	: st_expr 	{$$=$1;}
 		| st_expr_list SEP st_expr	{$1->code=append($1->code,$3->code);$$=$1;}
 		;
 
-break_st	: BREAK TRM	
+break_st	: BREAK TRM          {  $$ = (Attr *)malloc(sizeof(Attr));
+				     	sprintf(t,"goto , ");
+					$$->code = newList(t);
+					$$->code->br = 1;}	
 		;
 
-continue_st	: CONT TRM	
+continue_st	: CONT TRM	      {  $$ = (Attr *)malloc(sizeof(Attr));
+				     	sprintf(t,"goto , ");
+					$$->code = newList(t);
+					$$->code->cont = 1;}	
 		;
 
 return_st	: RETURN expr_e TRM	{$$=$2;

@@ -28,6 +28,9 @@ list3AC* append(list3AC* head1, list3AC* head2){
 list3AC* newList(char *str){
 	list3AC* head=(list3AC *)malloc(sizeof(list3AC));
 	sprintf(head->instr,"%s",str);
+        head->cont = 0;
+        head->br = 0;
+	head->swt=0;
 	head->next=NULL;
 	return head;
 }
@@ -39,5 +42,47 @@ void printList(list3AC *list1){
 		printf("%s\n",list->instr);
 		list=list->next;
 	}
-}	
+}
 
+//back patches jump target on break statements
+void patchBreak(list3AC *list1, char* z)
+{
+	list3AC *list = list1;
+	while(list){
+		if(list->br)
+			{ strcat(list->instr, z);
+                          list->br=0;}
+		list=list->next;
+}       
+} 	
+
+//back patches jump target on continue statements
+void patchContinue(list3AC *list1, char* z)
+{
+	list3AC *list = list1;
+	while(list){
+		if(list->cont)
+			{ strcat(list->instr, z);
+                          list->cont=0;}
+		list=list->next;
+}      
+ 
+} 	
+
+//back patches expr of switch into cases
+void patchSwitch(list3AC* list1, char* z){
+	list3AC *list = list1;
+        char str[50];
+	while(list){
+		if(list->swt){
+			strncpy(str,list->instr,16);
+			str[16]='\0';
+			strcat(str,z);
+			strcat(str,list->instr+16);
+			strcpy(list->instr,str);
+			list->swt=0;
+}
+		list=list->next;
+
+}
+}

@@ -1,14 +1,24 @@
 class $test{
-	int a,b=0;
-	int hello(int c){
-		int a=0;
-		c=a++ + b++;
-		d=--c + ++b;
-		return ;
+  void main()
+{
+    int a,b,c,d,e;
+ 
+    a=a+b;
+    switch(a)
+{
+  case 2 : a= a+b;
+	   break;			
+  case 3 : a=a+c;
+           break;
+  case 4 : a=a+d;
+           break;
+ default : a=a+e;  
 }
-void main(int j,float a2){
-		j=hello();
-		for(j=0;j<i;j++) 
-			;   
+ for(i=0;i<5;i++){
+  b=2;
+  c=8;
+  break;
+  d=8;
 }
+e=9;
 }

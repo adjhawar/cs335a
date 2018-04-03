@@ -4,6 +4,7 @@ extern int maxsize;
 
 typedef struct list3AC{
 	char instr[100];
+        int cont,br,swt;
 	struct list3AC *next;
 }list3AC;
 
@@ -43,3 +44,6 @@ SymtabEntry* look_up(Symtab *table, char *lex);
 SymtabEntry* look_upTable(Symtab *table, char *lex);
 SymtabEntry* Insert(Symtab *table, char* lex, char *type);
 void printSymtab(Symtab *table);
+void patchBreak(list3AC* list, char* z);
+void patchContinue(list3AC* list, char* z);
+void patchSwitch(list3AC* list, char* z);
