@@ -126,7 +126,7 @@ char* newLabel(){
 %type <attr>switch_block_st_gr_e switch_block_st_grps for_init_e for_init st_expr_list loc_var_dec for_update_e for_update loc_var_dec_st
 %type <attr>var_inits var_init var_init_e
 %type <attr>class_body_decls class_body_decl class_body field_decl method_decl class_mem_decl method_body
-
+%type <attr>method_invo
 %%
 
 compilation_unit	: type_declarations_e 							
@@ -350,7 +350,9 @@ st_expr		: assgn 			{$$=$1;}
 		| postinc_expr 			{$$=$1;}						
 		| predec_expr 			{$$=$1;}						
 		| postdec_expr 			{$$=$1;}						
-		| method_invo 									
+		| method_invo 			{$$=$1;
+					sprintf(t,"call, %s",$1->place);
+					$$->code=append($1->code,newList(t));}							
 		| object_expr 									
 		;
 
@@ -799,7 +801,7 @@ postfix_expr	: primary		{$$=$1;}
 		| postdec_expr		{$$=$1;}
 		;
 
-method_invo	: name PAREN_S arg_list_e PAREN_E 		
+method_invo	: name PAREN_S arg_list_e PAREN_E 			{$$=$1;}
 		| primary OP_DOT identifier PAREN_S arg_list_e PAREN_E		
 		| SUPER OP_DOT identifier PAREN_S arg_list_e PAREN_E		
 		;
@@ -817,7 +819,10 @@ primary_no_new_array	: literal			{$$=$1;}
 			| PAREN_S expr PAREN_E		{$$=$2;}	
 			| object_expr		
 			| field_access		
-			| method_invo		
+			| method_invo			{sprintf(t,"=, %s, call, %s",tempVar(),$1->place);
+						$$=$1;
+						strcpy($$->place,TEMP);
+						$$->code=newList(t);}	
 			| array_access		
 			;
 
