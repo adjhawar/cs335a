@@ -4,20 +4,23 @@
 #include "list.h"
 
 //Data structure to hold symbol table
-SymtabEntry* look_up(char *lex){
-	SymtabEntry* temp = head;
+SymtabEntry* look_up(Symtab *table, char *lex){
+	SymtabEntry* temp = table->entry;
 	if(strcmp(lex, "0")==0 || strcmp(lex, "0\n")==0 || atoi(lex)) 
 		return NULL;
 	while(temp!=NULL && strcmp(temp->lexeme,lex))
-	{
 		temp=temp->next;
-	}
-	return temp;
+	if(temp)
+		return temp;
+	else if (table->prev)
+		return look_up(table->prev,lex);
+	else
+		return NULL;
 }
 
-SymtabEntry* Insert(char* lex, char *type)
+SymtabEntry* Insert(Symtab *table, char* lex, char *type)
 {
-	SymtabEntry *tem = look_up(lex);
+	SymtabEntry *tem = look_up(table,lex);
 	if(tem){
 		return tem;
 	}

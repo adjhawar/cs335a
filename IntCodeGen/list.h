@@ -20,12 +20,19 @@ typedef struct Add_des{
 
 typedef struct SymtabEntry{
 	char lexeme[50];
-	char type[10];
+	char type[15];
+	struct SymtabEntry *next;
 	Add_des add_des;
 	int nextuse;
 	bool liveness;
-	struct SymtabEntry *next;
 }SymtabEntry;
+
+typedef struct Symtab{
+	SymtabEntry *entry;
+	char name[10];
+	struct Symtab *prev;
+	struct Symtab *next[10];	
+}Symtab;
 
 struct Stack{
 	int size;
@@ -42,5 +49,5 @@ list3AC* getTail(list3AC *list);
 list3AC* append(list3AC* head1, list3AC* head2);
 list3AC* newList(char *str);
 void printList(list3AC *list);
-SymtabEntry* look_up(char *lex);
-SymtabEntry* Insert(char* lex, char *type);
+SymtabEntry* look_up(Symtab *table, char *lex);
+SymtabEntry* Insert(Symtab *table, char* lex, char *type);
