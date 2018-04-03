@@ -146,6 +146,7 @@ formal_para_list	: formal_para
 formal_para		: type var_decl_id			{$$=(Attr *)malloc(sizeof(Attr));
 						 strcpy($$->place,$2);
 						 strcpy($$->type,$1);
+						 p=Insert(table,$2,$1);
 						 $$->code=NULL;}
 			;
 
