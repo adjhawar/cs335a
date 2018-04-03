@@ -83,6 +83,7 @@ char* newLabel(){
 %type <attr>class_body_decls class_body_decl class_body field_decl method_decl class_mem_decl method_body
 %type <attr>method_invo
 %type <attr> switch_block switch_block_st_grp 
+%type <attr> dim_expr
 %%
 
 compilation_unit	: type_declarations_e 							
@@ -830,7 +831,7 @@ field_access	: primary OP_DOT identifier
 		;
 
 primary		: primary_no_new_array		{$$=$1;}	
-		| array_creat_expr		
+		| array_creat_expr		{$$ = $1;}
 		;
 
 primary_no_new_array	: literal			{$$=$1;}
@@ -842,7 +843,7 @@ primary_no_new_array	: literal			{$$=$1;}
 						$$=$1;
 						strcpy($$->place,TEMP);
 						$$->code=newList(t);}	
-			| array_access		
+			| array_access		{$$ = $1;}
 			;
 
 object_expr	: NEW class_type PAREN_S arg_list_e PAREN_E		
@@ -856,15 +857,19 @@ argument_list	: expr
 		| argument_list SEP expr	
 		;
 
-array_creat_expr	: NEW primitive_type dim_expr		
-			| NEW class_type dim_expr		
+array_creat_expr	: NEW primitive_type dim_expr		{$$ = $3;
+						sprintf(t, "array, %s[%s]", $<attr>0->place,$3->place);
+						$$->code = append($$->code, newList(t));}
+			| NEW class_type dim_expr	{$$ = $3;}	
 			;
 
-dim_expr	: ARRAY_S expr ARRAY_E		
-		| ARRAY_S ARRAY_E		
-		;
+dim_expr	: ARRAY_S expr ARRAY_E		{$$ = $2;}
+		| ARRAY_S ARRAY_E		{$$ = (Attr *)malloc(sizeof(Attr));
+		;			strcpy($$->place, "0");$$->code= NULL;}
 
-array_access	: name ARRAY_S expr ARRAY_E				
+array_access	: name ARRAY_S expr ARRAY_E	{$$ = $1;
+					sprintf(t, "%s[%s]",$1->place, $3->place);
+					strcpy($$->place, t);}			
 		| primary_no_new_array ARRAY_S expr ARRAY_E		
 		;
 
