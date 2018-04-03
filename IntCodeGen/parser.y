@@ -230,14 +230,15 @@ var_decl_id		: ID 					{$$=$1;}
 			| var_decl_id ARRAY_S ARRAY_E 		{$$=$1;}					
 			;
 
-method_decl		: method_header method_body 	{$$=$2;}
+method_decl		: method_header method_body 	{$$=$2;$$->code=append($1->code,$2->code);}
 			;	
 
 method_header		: type method_declarator 	{$$=(Attr *)malloc(sizeof(Attr));
 								strcpy($$->place,$2);
 								strcpy($$->type,$1);
 				 				strcat($$->type,"_func");
-								$$->code=NULL;
+								sprintf(t,"label,%s",$2);
+								$$->code=newList(t);
 				  				p=Insert(mainTable,$2,$$->type);}
 			;
 
@@ -501,7 +502,7 @@ for_init	: st_expr_list	{$$=$1;}
 		;
 
 expr_e		: expr		{$$=$1;}
-		| /* empty */	{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}
+		| /* empty */	{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;strcpy($$->place,"");}
 		;
 
 for_update_e	: for_update	{$$=$1;}
@@ -521,7 +522,12 @@ break_st	: BREAK TRM
 continue_st	: CONT TRM	
 		;
 
-return_st	: RETURN expr_e TRM	
+return_st	: RETURN expr_e TRM	{$$=$2;
+					if(strcmp($2->place,""))
+					 	sprintf(t,"ret,%s",$2->place);
+					else
+						strcpy(t,"ret");
+					 $$->code=append($2->code,newList(t));}
 		;
 
 expr		: cond_expr	{$$=$1;}
