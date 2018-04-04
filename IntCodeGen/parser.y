@@ -83,7 +83,7 @@ char* newLabel(){
 %type <attr>class_body_decls class_body_decl class_body field_decl method_decl class_mem_decl method_body
 %type <attr>method_invo
 %type <attr> switch_block switch_block_st_grp 
-%type <attr> dim_expr
+%type <attr> dim_expr array_init dim_exprs
 %%
 
 compilation_unit	: type_declarations_e 							
@@ -176,9 +176,9 @@ var_declarators		: var_declarator 		{$$=$1;
 var_declarator		: var_decl_id 			{$$=(Attr *)malloc(sizeof(Attr));
 								$$->code=NULL;	
 								strcpy($$->place,$1);}			
-			| var_decl_id OP_ASS var_init 	{$$=(Attr *)malloc(sizeof(Attr));
+			| var_decl_id OP_ASS var_init 	{$$=$3;
 								sprintf(t,", =, %s, %s",$1,$3->place);
-								$$->code=append(NULL,newList(t));	
+								$$->code=append($$->code,newList(t));	
 								strcpy($$->place,$1);}					
 			;
 
@@ -220,7 +220,7 @@ var_inits		: var_init 		{$$=$1;}
 			;
 
 var_init		: expr 			{$$=$1;}				
-			| array_init 								
+			| array_init 	{$$=$1;}							
 			;
 
 type		: primitive_type	{$$=$1;} 							
@@ -583,8 +583,10 @@ assgn		: lhs assgn_op expr			{switch(flag1){
 
 lhs		: name		{$$=$1;}
 		| field_access	
-		| array_access	
+		| array_access	{$$=$1;}
 		;
+		
+
 
 assgn_op	: OP_ASS		{flag1=0;}	
 		| OP_MUL_ASS		{flag1=1;}
@@ -909,11 +911,15 @@ argument_list	: expr
 		| argument_list SEP expr	
 		;
 
-array_creat_expr	: NEW primitive_type dim_expr		{$$ = $3;
+array_creat_expr	: NEW primitive_type dim_exprs		{$$ = $3;
 						sprintf(t, "array, %s[%s]", $<attr>0->place,$3->place);
 						$$->code = append($$->code, newList(t));}
 			| NEW class_type dim_expr	{$$ = $3;}	
 			;
+
+dim_exprs  : 	dim_expr				{$$ = $1;}
+		| dim_exprs dim_expr			{printf("%s %s \n", $1->place, $2->place);}
+		;		
 
 dim_expr	: ARRAY_S expr ARRAY_E		{$$ = $2;}
 		| ARRAY_S ARRAY_E		{$$ = (Attr *)malloc(sizeof(Attr));
