@@ -925,7 +925,8 @@ array_creat_expr	: NEW primitive_type dim_expr		{$$ = $3;
 
 dim_expr	: ARRAY_S expr ARRAY_E		{$$ = $2;}
 		| ARRAY_S ARRAY_E		{$$ = (Attr *)malloc(sizeof(Attr));
-		;			strcpy($$->place, "0");$$->code= NULL;}
+					strcpy($$->place, "0");$$->code= NULL;}
+		;
 
 array_access	: name ARRAY_S expr ARRAY_E	{$$ = $1;
 					sprintf(t, "%s[%s]",$1->place, $3->place);
