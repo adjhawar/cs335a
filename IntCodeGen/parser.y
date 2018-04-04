@@ -145,9 +145,9 @@ formal_para_list	: formal_para
 			;
 
 formal_para		: type var_decl_id			{$$=(Attr *)malloc(sizeof(Attr));
-						 strcpy($$->place,$2);
+						 /*strcpy($$->place,$2);
 						 strcpy($$->type,$1);
-						 p=Insert(table,$2,$1);
+						 p=Insert(table,$2,$1);*/
 						 $$->code=NULL;}
 			;
 
@@ -663,25 +663,73 @@ rel_expr	: shift_expr			{$$ = $1;}
 		| rel_expr OP_LES shift_expr	{$$=(Attr *)malloc(sizeof(Attr));
 					strcpy($$->place, tempVar());
 					$$->code=append($1->code,$3->code);
-					sprintf(t,"%s = %s < %s",$$->place,$1->place,$3->place);
+					char end[5],begin[5];
+					strcpy(end,newLabel()); strcpy(begin,newLabel());
+					sprintf(t,",ifgoto, lt , %s, %s,%s ",$1->place,$3->place,begin);
+					$$->code=append($$->code,newList(t));
+					sprintf(t,",=, %s,0",$$->place);
+					$$->code=append($$->code,newList(t));
+					sprintf(t,", goto, %s",end);
+					$$->code=append($$->code,newList(t));
+					sprintf(t,", label , %s",begin);
+					$$->code=append($$->code,newList(t));
+					sprintf(t,",=, %s,1",$$->place);
+					$$->code=append($$->code,newList(t));
+					sprintf(t,", label , %s",end);
 					$$->code=append($$->code,newList(t));}
 							
 		| rel_expr OP_GRE shift_expr	{$$=(Attr *)malloc(sizeof(Attr));
 					strcpy($$->place, tempVar());
 					$$->code=append($1->code,$3->code);
-					sprintf(t,"%s = %s > %s",$$->place,$1->place,$3->place);
+					char end[5],begin[5];
+					strcpy(end,newLabel()); strcpy(begin,newLabel());
+					sprintf(t,",ifgoto, gt , %s, %s,%s ",$1->place,$3->place,begin);
+					$$->code=append($$->code,newList(t));
+					sprintf(t,",=, %s,0",$$->place);
+					$$->code=append($$->code,newList(t));
+					sprintf(t,", goto, %s",end);
+					$$->code=append($$->code,newList(t));
+					sprintf(t,", label , %s",begin);
+					$$->code=append($$->code,newList(t));
+					sprintf(t,",=, %s,1",$$->place);
+					$$->code=append($$->code,newList(t));
+					sprintf(t,", label , %s",end);
 					$$->code=append($$->code,newList(t));}
 								
 		| rel_expr OP_LEQ shift_expr	{$$=(Attr *)malloc(sizeof(Attr));
 					strcpy($$->place, tempVar());
 					$$->code=append($1->code,$3->code);
-					sprintf(t,"%s = %s <= %s",$$->place,$1->place,$3->place);
+					char end[5],begin[5];
+					strcpy(end,newLabel()); strcpy(begin,newLabel());
+					sprintf(t,",ifgoto, leq , %s, %s,%s ",$1->place,$3->place,begin);
+					$$->code=append($$->code,newList(t));
+					sprintf(t,",=, %s,0",$$->place);
+					$$->code=append($$->code,newList(t));
+					sprintf(t,", goto, %s",end);
+					$$->code=append($$->code,newList(t));
+					sprintf(t,", label , %s",begin);
+					$$->code=append($$->code,newList(t));
+					sprintf(t,",=, %s,1",$$->place);
+					$$->code=append($$->code,newList(t));
+					sprintf(t,", label , %s",end);
 					$$->code=append($$->code,newList(t));}
 								
 		| rel_expr OP_GEQ shift_expr	{$$=(Attr *)malloc(sizeof(Attr));
 					strcpy($$->place, tempVar());
 					$$->code=append($1->code,$3->code);
-					sprintf(t,"%s = %s >= %s",$$->place,$1->place,$3->place);
+					char end[5],begin[5];
+					strcpy(end,newLabel()); strcpy(begin,newLabel());
+					sprintf(t,",ifgoto, geq, %s, %s,%s ",$1->place,$3->place,begin);
+					$$->code=append($$->code,newList(t));
+					sprintf(t,",=, %s,0",$$->place);
+					$$->code=append($$->code,newList(t));
+					sprintf(t,", goto, %s",end);
+					$$->code=append($$->code,newList(t));
+					sprintf(t,", label , %s",begin);
+					$$->code=append($$->code,newList(t));
+					sprintf(t,",=, %s,1",$$->place);
+					$$->code=append($$->code,newList(t));
+					sprintf(t,", label , %s",end);
 					$$->code=append($$->code,newList(t));}
 								
 		| rel_expr INSTANCEOF reference_type		
