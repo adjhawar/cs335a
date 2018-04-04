@@ -31,7 +31,7 @@ SymtabEntry* Insert(Symtab *table, char* lex, char *type)
 {
 	SymtabEntry *tem = look_upTable(table,lex);
 	if(tem){
-		return tem;
+		return NULL;
 	}
 	else
 	{
