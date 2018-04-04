@@ -649,13 +649,37 @@ equality_expr	: rel_expr						{$$=$1;}
 		| equality_expr OP_EQ rel_expr	{$$=(Attr *)malloc(sizeof(Attr));
 					strcpy($$->place, tempVar());
 					$$->code=append($1->code,$3->code);
-					sprintf(t,"%s = %s == %s",$$->place,$1->place,$3->place);
+					char end[5],begin[5];
+					strcpy(end,newLabel()); strcpy(begin,newLabel());
+					sprintf(t,", ifgoto, eq , %s , %s , %s ",$1->place,$3->place,begin);
+					$$->code=append($$->code,newList(t));
+					sprintf(t,", = , %s , 0",$$->place);
+					$$->code=append($$->code,newList(t));
+					sprintf(t,", goto, %s",end);
+					$$->code=append($$->code,newList(t));
+					sprintf(t,", label , %s",begin);
+					$$->code=append($$->code,newList(t));
+					sprintf(t,", = , %s, 1",$$->place);
+					$$->code=append($$->code,newList(t));
+					sprintf(t,", label , %s",end);
 					$$->code=append($$->code,newList(t));}
 							
 		| equality_expr OP_NEQ rel_expr	{$$=(Attr *)malloc(sizeof(Attr));
 					strcpy($$->place, tempVar());
 					$$->code=append($1->code,$3->code);
-					sprintf(t,"%s = %s != %s",$$->place,$1->place,$3->place);
+					char end[5],begin[5];
+					strcpy(end,newLabel()); strcpy(begin,newLabel());
+					sprintf(t,", ifgoto, neq , %s , %s , %s ",$1->place,$3->place,begin);
+					$$->code=append($$->code,newList(t));
+					sprintf(t,", = , %s , 0",$$->place);
+					$$->code=append($$->code,newList(t));
+					sprintf(t,", goto, %s",end);
+					$$->code=append($$->code,newList(t));
+					sprintf(t,", label , %s",begin);
+					$$->code=append($$->code,newList(t));
+					sprintf(t,", = , %s, 1",$$->place);
+					$$->code=append($$->code,newList(t));
+					sprintf(t,", label , %s",end);
 					$$->code=append($$->code,newList(t));}		
 		;
 
