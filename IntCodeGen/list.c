@@ -37,9 +37,10 @@ list3AC* newList(char *str){
 
 //prints the list
 void printList(list3AC *list1){
+	static int count=1;
 	list3AC *list=list1;
 	while(list){
-		printf("%s\n",list->instr);
+		printf("%d %s\n",count++,list->instr);
 		list=list->next;
 	}
 }
@@ -75,10 +76,10 @@ void patchSwitch(list3AC* list1, char* z){
         char str[50];
 	while(list){
 		if(list->swt){
-			strncpy(str,list->instr,16);
-			str[16]='\0';
+			strncpy(str,list->instr,20);
+			str[20]='\0';
 			strcat(str,z);
-			strcat(str,list->instr+16);
+			strcat(str,list->instr+20);
 			strcpy(list->instr,str);
 			list->swt=0;
 }
