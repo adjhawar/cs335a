@@ -666,15 +666,15 @@ rel_expr	: shift_expr			{$$ = $1;}
 					$$->code=append($1->code,$3->code);
 					char end[5],begin[5];
 					strcpy(end,newLabel()); strcpy(begin,newLabel());
-					sprintf(t,",ifgoto, lt , %s, %s,%s ",$1->place,$3->place,begin);
+					sprintf(t,", ifgoto, lt , %s , %s , %s ",$1->place,$3->place,begin);
 					$$->code=append($$->code,newList(t));
-					sprintf(t,",=, %s,0",$$->place);
+					sprintf(t,", = , %s , 0",$$->place);
 					$$->code=append($$->code,newList(t));
 					sprintf(t,", goto, %s",end);
 					$$->code=append($$->code,newList(t));
 					sprintf(t,", label , %s",begin);
 					$$->code=append($$->code,newList(t));
-					sprintf(t,",=, %s,1",$$->place);
+					sprintf(t,", = , %s, 1",$$->place);
 					$$->code=append($$->code,newList(t));
 					sprintf(t,", label , %s",end);
 					$$->code=append($$->code,newList(t));}
@@ -684,15 +684,15 @@ rel_expr	: shift_expr			{$$ = $1;}
 					$$->code=append($1->code,$3->code);
 					char end[5],begin[5];
 					strcpy(end,newLabel()); strcpy(begin,newLabel());
-					sprintf(t,",ifgoto, gt , %s, %s,%s ",$1->place,$3->place,begin);
+					sprintf(t,", ifgoto, gt , %s , %s , %s ",$1->place,$3->place,begin);
 					$$->code=append($$->code,newList(t));
-					sprintf(t,",=, %s,0",$$->place);
+					sprintf(t,", = , %s , 0",$$->place);
 					$$->code=append($$->code,newList(t));
 					sprintf(t,", goto, %s",end);
 					$$->code=append($$->code,newList(t));
 					sprintf(t,", label , %s",begin);
 					$$->code=append($$->code,newList(t));
-					sprintf(t,",=, %s,1",$$->place);
+					sprintf(t,", = , %s , 1",$$->place);
 					$$->code=append($$->code,newList(t));
 					sprintf(t,", label , %s",end);
 					$$->code=append($$->code,newList(t));}
@@ -702,15 +702,15 @@ rel_expr	: shift_expr			{$$ = $1;}
 					$$->code=append($1->code,$3->code);
 					char end[5],begin[5];
 					strcpy(end,newLabel()); strcpy(begin,newLabel());
-					sprintf(t,",ifgoto, leq , %s, %s,%s ",$1->place,$3->place,begin);
+					sprintf(t,",ifgoto, leq , %s , %s ,%s ",$1->place,$3->place,begin);
 					$$->code=append($$->code,newList(t));
-					sprintf(t,",=, %s,0",$$->place);
+					sprintf(t,", = , %s , 0",$$->place);
 					$$->code=append($$->code,newList(t));
-					sprintf(t,", goto, %s",end);
+					sprintf(t,", goto , %s",end);
 					$$->code=append($$->code,newList(t));
 					sprintf(t,", label , %s",begin);
 					$$->code=append($$->code,newList(t));
-					sprintf(t,",=, %s,1",$$->place);
+					sprintf(t,", = , %s , 1",$$->place);
 					$$->code=append($$->code,newList(t));
 					sprintf(t,", label , %s",end);
 					$$->code=append($$->code,newList(t));}
@@ -720,15 +720,15 @@ rel_expr	: shift_expr			{$$ = $1;}
 					$$->code=append($1->code,$3->code);
 					char end[5],begin[5];
 					strcpy(end,newLabel()); strcpy(begin,newLabel());
-					sprintf(t,",ifgoto, geq, %s, %s,%s ",$1->place,$3->place,begin);
+					sprintf(t,",ifgoto, geq, %s, %s , %s ",$1->place,$3->place,begin);
 					$$->code=append($$->code,newList(t));
-					sprintf(t,",=, %s,0",$$->place);
+					sprintf(t,", = , %s , 0",$$->place);
 					$$->code=append($$->code,newList(t));
 					sprintf(t,", goto, %s",end);
 					$$->code=append($$->code,newList(t));
 					sprintf(t,", label , %s",begin);
 					$$->code=append($$->code,newList(t));
-					sprintf(t,",=, %s,1",$$->place);
+					sprintf(t,", = , %s , 1",$$->place);
 					$$->code=append($$->code,newList(t));
 					sprintf(t,", label , %s",end);
 					$$->code=append($$->code,newList(t));}
