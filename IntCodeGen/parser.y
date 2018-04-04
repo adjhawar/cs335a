@@ -8,6 +8,7 @@
 
 extern int yylex();
 extern int yyparse();
+extern int yylineno;
 extern FILE *yyin;
 FILE *out;
 void yyerror(const char *s);
@@ -165,12 +166,16 @@ field_decl		: type var_declarators TRM	{$$=$2;}
 
 var_declarators		: var_declarator 		{$$=$1;
 						 strcpy($$->type,$<type>0);
-						 p=Insert(table,$1->place,$$->type);}
+						 p=Insert(table,$1->place,$$->type);
+						 if(p==NULL)
+							fprintf(stderr,"Error: Variable %s redeclared on line %d\n",$1->place,yylineno);}
 
 			| var_declarators SEP var_declarator 	{$$=$1;
 						 strcpy($$->type,$<type>0);
 						 $$->code=append($1->code,$3->code);
-						 p=Insert(table,$3->place,$$->type);}	
+						 p=Insert(table,$3->place,$$->type);
+						 if(p==NULL)
+							fprintf(stderr,"Error: Variable %s redeclared on line %d\n",$3->place,yylineno);}	
 			;
 
 var_declarator		: var_decl_id 			{$$=(Attr *)malloc(sizeof(Attr));
@@ -196,10 +201,13 @@ method_header		: type method_declarator 	{$$=(Attr *)malloc(sizeof(Attr));
 								sprintf(t,", label, %s",$2);
 								$$->code=newList(t);
 				  				p=Insert(table,$2,$$->type);
-								p->func=(Symtab *)malloc(sizeof(Symtab));
-								p->func->prev=table;
-								table=p->func;
-								strcpy(table->name,$2);}
+							if(p==NULL)
+								fprintf(stderr,"Error: Variable %s redeclared on line %d\n",$2,yylineno);
+								else{
+									p->func=(Symtab *)malloc(sizeof(Symtab));
+									p->func->prev=table;
+									table=p->func;
+									strcpy(table->name,$2);}}
 			;
 
 method_declarator	: ID PAREN_S formal_para_list_e PAREN_E 	{$$=$1;}			;
@@ -923,7 +931,8 @@ dim_exprs  : 	dim_expr				{$$ = $1;}
 
 dim_expr	: ARRAY_S expr ARRAY_E		{$$ = $2;}
 		| ARRAY_S ARRAY_E		{$$ = (Attr *)malloc(sizeof(Attr));
-		;			strcpy($$->place, "0");$$->code= NULL;}
+					strcpy($$->place, "0");$$->code= NULL;}
+		;
 
 array_access	: name ARRAY_S expr ARRAY_E	{$$ = $1;
 					sprintf(t, "%s[%s]",$1->place, $3->place);
