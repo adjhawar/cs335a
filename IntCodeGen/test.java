@@ -1,10 +1,11 @@
 class $test{
-	int b;
   void main()
 {
-    int b=5,c=4,d=6,e,i;
-int b;
-    print(b);
-    scan(e);
-e=9;
+    int a,b,c=5;
+	int d=6;
+    a=d+c;
+	b=11;
+    if(b>0 && a)
+	print(a);
+	
 }}
