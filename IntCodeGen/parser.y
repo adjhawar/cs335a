@@ -17,6 +17,7 @@ char LABEL[5];
 char t[100];
 int flag1;
 SymtabEntry *p;
+Arr_dim *h;
 Symtab *mainTable,*table;
 
 char* tempVar(){
@@ -585,13 +586,15 @@ assgn		: lhs assgn_op expr			{switch(flag1){
 						case 11:sprintf(t,", |, %s, %s, %s",$1->place,$1->place,$3->place);
 							break;}
 						$$=$3;
+						$$->code = append($1->code, $3->code);
 						$$->code=append($3->code,newList(t));
 						}	
 		;
 
 lhs		: name		{$$=$1;}
 		| field_access	
-		| array_access	{$$=$1;}
+		| array_access	{$$=$1;sprintf(t, "%s[%s]",$1->place, $1->idx);
+					strcpy($$->place, t);}
 		;
 		
 
@@ -905,7 +908,6 @@ primary_no_new_array	: literal			{$$=$1;}
 						$$=$1;
 						strcpy($$->place,TEMP);
 						$$->code=newList(t);}	
-			| array_access		{$$ = $1;}
 			;
 
 object_expr	: NEW class_type PAREN_S arg_list_e PAREN_E		
@@ -919,25 +921,71 @@ argument_list	: expr
 		| argument_list SEP expr	
 		;
 
-array_creat_expr	: NEW primitive_type dim_exprs		{$$ = $3;
-						sprintf(t, "array, %s[%s]", $<attr>0->place,$3->place);
+array_creat_expr	: NEW primitive_type dim_exprs		{$$ = $3;int r;
+						p = look_up(table,$<attr>0->place);
+						if(p!=NULL){
+							Arr_dim *b = p->arr_dim;
+							r = atoi(b->d);
+							b = b->next;
+							while(b!=NULL){
+								r = r*atoi(b->d);
+								b = b->next;
+								}
+							}
+						sprintf(t, "array, %s[%d]", $<attr>0->place,r);
 						$$->code = append($$->code, newList(t));}
 			| NEW class_type dim_expr	{$$ = $3;}	
 			;
 
 dim_exprs  : 	dim_expr				{$$ = $1;}
-		| dim_exprs dim_expr			{printf("%s %s \n", $1->place, $2->place);}
+		| dim_exprs dim_expr			
 		;		
 
-dim_expr	: ARRAY_S expr ARRAY_E		{$$ = $2;}
-		| ARRAY_S ARRAY_E		{$$ = (Attr *)malloc(sizeof(Attr));
-					strcpy($$->place, "0");$$->code= NULL;}
+dim_expr	: ARRAY_S expr ARRAY_E		{$$ = $2;p = look_up(table,$<attr>-2->place);
+				if(p!=NULL){ Arr_dim *a = (Arr_dim*)malloc(sizeof(Arr_dim));
+					strcpy(a->d, $2->place);
+					Arr_dim *b = p->arr_dim;
+					if(b){
+					while(b->next!=NULL){
+						b = b->next;
+						}
+					b->next = a;
+					}
+					else p->arr_dim = a;}
+				}		
 		;
 
-array_access	: name ARRAY_S expr ARRAY_E	{$$ = $1;
-					sprintf(t, "%s[%s]",$1->place, $3->place);
-					strcpy($$->place, t);}			
-		| primary_no_new_array ARRAY_S expr ARRAY_E		
+array_access	: name ARRAY_S expr ARRAY_E	{$$=(Attr *)malloc(sizeof(Attr));
+					$$->code = append($1->code, $3->code);
+					p = look_up(table,$1->place);
+					if(p){	
+						h = p->arr_dim;
+						if(h && h->next){
+							strcpy($$->idx,tempVar());
+							sprintf(t,", *, %s, %s, %s",$$->idx, h->next->d,$3->place);
+							$$->code=append($$->code,newList(t));
+							h = h->next;
+							}
+						}	
+					}			
+		| array_access ARRAY_S expr ARRAY_E		{
+						$$=(Attr *)malloc(sizeof(Attr));
+						strcpy($$->place, $<attr>-3->place);
+						if(h && h->next){
+							strcpy($$->idx,tempVar());
+							sprintf(t,", *, %s, %s, %s",$$->idx, h->next->d,$3->place);
+							$$->code=append($1->code,newList(t));
+							sprintf(t,", +, %s, %s, %s",$$->idx, $$->idx,$1->idx);
+							$$->code=append($$->code,newList(t));		
+							}
+						else if(h){
+							strcpy($$->idx, $1->idx);
+							sprintf(t,", +, %s, %s, %s",$1->idx, $1->idx,h->d);
+							$$->code=append($1->code,newList(t));
+							
+							}
+						h = h->next;
+						}
 		;
 
 type_name		: CID			{$$=$1;}	

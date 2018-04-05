@@ -1,10 +1,10 @@
 class $test{
-	int b;
-  void main()
-{
-    int b=5,c=4,d=6,e,i;
-int b;
-    print(b);
-    scan(e);
-e=9;
-}}
+	int []b;
+	int a[];
+	void main(){
+		int b[];
+		b = new int[5][6][7][34];
+		a = new int[3][4];
+		b[3][4][5][6] = 9;
+	}
+}

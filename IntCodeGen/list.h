@@ -8,9 +8,16 @@ typedef struct list3AC{
 	struct list3AC *next;
 }list3AC;
 
+typedef struct Arr_dim
+{
+	char d[15];
+	struct Arr_dim *next;
+}Arr_dim;
+
 typedef struct Attr{
 	char place[50];
 	char type[15];
+	char idx[10];
 	list3AC *code;
 }Attr;
 
@@ -22,6 +29,8 @@ typedef struct Add_des{
 typedef struct SymtabEntry{
 	char lexeme[50];
 	char type[15];
+	Arr_dim *arr_dim;
+	bool arr;
 	struct SymtabEntry *next;
 	struct Symtab *func;
 	Add_des add_des;
