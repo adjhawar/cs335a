@@ -4,7 +4,7 @@
 #include "list.h"
 
 //Data structure to hold symbol table
-SymtabEntry* look_up(Symtab *table, char *lex){
+ SymtabEntry* look_up(Symtab *table, char *lex){
 	SymtabEntry* temp = table->head;
 	if(strcmp(lex, "0")==0 || strcmp(lex, "0\n")==0 || atoi(lex)) 
 		return NULL;
@@ -27,11 +27,11 @@ SymtabEntry* look_upTable(Symtab *table, char *lex){
 	return temp;
 }
 
-SymtabEntry* Insert(Symtab *table, char* lex, char *type)
+SymtabEntry* Insert(Symtab *table, char* lex, char *type, bool assign)
 {
 	SymtabEntry *tem = look_upTable(table,lex);
 	if(tem){
-		return tem;
+		return NULL;
 	}
 	else
 	{
@@ -39,6 +39,7 @@ SymtabEntry* Insert(Symtab *table, char* lex, char *type)
 		temp->func=NULL;
 		temp->liveness = false;
 		temp->nextuse = -1;
+		temp->assign=assign;
 		strcpy(temp->lexeme,lex);
 		strcpy(temp->type,type);
 		if(strcmp(lex, "0")==0 || atoi(lex)) 
