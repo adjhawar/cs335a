@@ -297,12 +297,8 @@ st_wo_tsub	: block 	{$$=$1;}
 		| break_st 	{$$=$1;}								
 		| continue_st 	{$$=$1;}								
 		| return_st 	{$$=$1;}								
-		| SCAN PAREN_S identifier PAREN_E	{$$=$3;
-							sprintf(t,", scan, %s",$3->place);
-							$$->code=newList(t);}		 							
-		| PRINT PAREN_S identifier PAREN_E	{$$=$3;
-							sprintf(t,", print, %s",$3->place);
-							$$->code=newList(t);}					
+		| SCAN PAREN_S identifier PAREN_E						
+		| PRINT PAREN_S var_inits PAREN_E						
 		;
 
 empty_st	: TRM 		{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}								
