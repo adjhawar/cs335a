@@ -4,7 +4,7 @@ extern int maxsize;
 
 typedef struct list3AC{
 	char instr[100];
-        int cont,br,swt;
+        int cont,br,swt,swt_len;
 	struct list3AC *next;
 }list3AC;
 
