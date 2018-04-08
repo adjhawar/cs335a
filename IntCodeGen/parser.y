@@ -254,9 +254,9 @@ var_init_e		: var_inits 		{$$=$1;}
 			;
 
 var_inits		: var_init 		{$$=$1;$$->idx[0] = '0';
-			sprintf(t, "=, %s[%d], %s", idr,$$->idx[0]-'0', $1->place);
-				$$->code  = append($1->code, newList(t));
-				}						
+				  sprintf(t, "=, %s[%d], %s", idr,$$->idx[0]-'0', $1->place);
+				  $$->code  = append($1->code, newList(t));
+			  }						
 			| var_inits SEP var_init 	{$$=(Attr *)malloc(sizeof(Attr));
 						$$->code = append($1->code, $3->code);
 						$$->idx[0] = $1->idx[0]+1;
@@ -344,10 +344,13 @@ st_wo_tsub	: block 	{$$=$1;}
 		| break_st 	{$$=$1;}								
 		| continue_st 	{$$=$1;}								
 		| return_st 	{$$=$1;}								
-		| SCAN PAREN_S identifier PAREN_E	{$$=$3;
+		| SCAN PAREN_S identifier PAREN_E TRM	{$$=$3;
 							sprintf(t,", scan, %s",$3->place);
+							p=look_up(table,$3->place);
+							p->assign=true;
+							$3->assign=true;
 							$$->code=newList(t);}		 							
-		| PRINT PAREN_S identifier PAREN_E	{$$=$3;
+		| PRINT PAREN_S identifier PAREN_E TRM	{$$=$3;
 							sprintf(t,", print, %s",$3->place);
 							$$->code=newList(t);}					
 		;
@@ -597,7 +600,6 @@ return_st	: RETURN expr_e TRM	{$$=$2;
 
 expr		: cond_expr	{$$=$1;}
 		| assgn		{$$=$1;}
-
 		;
 
 
