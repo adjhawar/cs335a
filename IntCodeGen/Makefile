@@ -1,12 +1,9 @@
 all : binary
 
 binary :
-	lex lexer.l
-	yacc -d parser.y
-	gcc -o parser y.tab.c lex.yy.c symtab.c list.c
+	mkdir -p bin
+	rsync -r src/ bin
+	cd bin && lex lexer.l && yacc -d parser.y && gcc list.c symtab.c y.tab.c lex.yy.c -o irgen
 
 clean :
-	rm lex.yy.c
-	rm parser
-	rm y.tab.c
-	rm y.tab.h
+	rm -r bin
