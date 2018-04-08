@@ -31,6 +31,7 @@ list3AC* newList(char *str){
         head->cont = 0;
         head->br = 0;
 	head->swt=0;
+	head->swt_len=19;
 	head->next=NULL;
 	return head;
 }
@@ -76,14 +77,13 @@ void patchSwitch(list3AC* list1, char* z){
         char str[50];
 	while(list){
 		if(list->swt){
-			strncpy(str,list->instr,20);
-			str[20]='\0';
+   			strncpy(str,list->instr,list->swt_len);
+			str[list->swt_len]='\0';
 			strcat(str,z);
-			strcat(str,list->instr+20);
+			strcat(str,list->instr+list->swt_len);
 			strcpy(list->instr,str);
 			list->swt=0;
-}
-		list=list->next;
-
-}
+			}				
+		list=list->next;			
+	}
 }

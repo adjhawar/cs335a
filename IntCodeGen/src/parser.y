@@ -227,7 +227,7 @@ method_header		: type method_declarator 	{$$=(Attr *)malloc(sizeof(Attr));
 								strcpy($$->place,$2);
 								strcpy($$->type,$1);
 				 				strcat($$->type,"1");
-								sprintf(t,", label, %s",$2);
+								sprintf(t,", func, %s",$2);
 								$$->code=newList(t);
 				  				p=Insert(table,$2,$$->type,true);
 							if(p==NULL){
@@ -446,12 +446,13 @@ switch_block_st_grps	: switch_block_st_grp 	 	{$$=$1;}
 switch_block_st_grp	: CASE expr COLON bl_statements       { $$=(Attr*)malloc(sizeof(Attr));
 								char nexLabel[5];
 								strcpy(nexLabel,newLabel());
-								sprintf(t,", ifgoto, neq, %s ,        , %s",$2->place,nexLabel);
+								sprintf(t,", ifgoto, neq, %s ,  , %s",$2->place,nexLabel);
 								$$->code=newList(t);
 								$$->code = append($$->code,$4->code);
 								sprintf(t,", label, %s",nexLabel);
 								$$->code=append($$->code,newList(t));
-								$$->code->swt = 1;}
+								$$->code->swt = 1;
+								$$->code->swt_len += strlen($2->place);}
 	
 			| DEFAULT COLON bl_statements	  	{ $$=(Attr*)malloc(sizeof(Attr));
 								$$->code = append($$->code,$3->code);	}
@@ -620,7 +621,7 @@ assgn		: lhs assgn_op expr			{if(!$3->assign){
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$1->place);
 								exit(1);
 						}
-						else{int l = strlen(p->type); printf("$$ %s $$\n", p->type);
+						else{int l = strlen(p->type);
 							if(p->type[l-1]!='2'){
 							switch(flag1){
 								case 0:sprintf(t,", =,1 %s, %s",$1->place,$3->place);
@@ -784,7 +785,19 @@ equality_expr	: rel_expr						{$$=$1;}
 							$$->assign=true;
 					strcpy($$->place, tempVar());
 					$$->code=append($1->code,$3->code);
-					sprintf(t,"%s = %s == %s",$$->place,$1->place,$3->place);
+					char end[5],begin[5];
+					strcpy(end,newLabel()); strcpy(begin,newLabel());
+					sprintf(t,", ifgoto, eq , %s , %s , %s ",$1->place,$3->place,begin);
+					$$->code=append($$->code,newList(t));
+					sprintf(t,", = , %s , 0",$$->place);
+					$$->code=append($$->code,newList(t));
+					sprintf(t,", goto, %s",end);
+					$$->code=append($$->code,newList(t));
+					sprintf(t,", label , %s",begin);
+					$$->code=append($$->code,newList(t));
+					sprintf(t,", = , %s, 1",$$->place);
+					$$->code=append($$->code,newList(t));
+					sprintf(t,", label , %s",end);
 					$$->code=append($$->code,newList(t));}
 							
 		| equality_expr OP_NEQ rel_expr	{$$=(Attr *)malloc(sizeof(Attr));
@@ -799,7 +812,19 @@ equality_expr	: rel_expr						{$$=$1;}
 							$$->assign=true;
 					strcpy($$->place, tempVar());
 					$$->code=append($1->code,$3->code);
-					sprintf(t,"%s = %s != %s",$$->place,$1->place,$3->place);
+					char end[5],begin[5];
+					strcpy(end,newLabel()); strcpy(begin,newLabel());
+					sprintf(t,", ifgoto, neq , %s , %s , %s ",$1->place,$3->place,begin);
+					$$->code=append($$->code,newList(t));
+					sprintf(t,", = , %s , 0",$$->place);
+					$$->code=append($$->code,newList(t));
+					sprintf(t,", goto, %s",end);
+					$$->code=append($$->code,newList(t));
+					sprintf(t,", label , %s",begin);
+					$$->code=append($$->code,newList(t));
+					sprintf(t,", = , %s, 1",$$->place);
+					$$->code=append($$->code,newList(t));
+					sprintf(t,", label , %s",end);
 					$$->code=append($$->code,newList(t));}		
 		;
 
@@ -1322,6 +1347,7 @@ int main(int argc, char** argv){
 	while(!feof(yyin)){
 		yyparse();
 	}
+	printf("Printing the symbol table\n");
 	printSymtab(mainTable);
 	free(p);
 	free(mainTable);
