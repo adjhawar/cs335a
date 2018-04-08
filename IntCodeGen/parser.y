@@ -89,7 +89,7 @@ char* newLabel(){
 %type <attr>if_then_else_no_short_if_st while_st_no_short_if for_st_no_short_if 
 %type <attr>switch_block_st_gr_e switch_block_st_grps for_init_e for_init st_expr_list loc_var_dec for_update_e for_update loc_var_dec_st
 %type <attr>var_inits var_init var_init_e
-%type <attr>class_body_decls class_body_decl class_body field_decl method_decl class_mem_decl method_body
+%type <attr>field_decl method_decl method_body
 %type <attr>method_invo
 %type <attr> switch_block switch_block_st_grp 
 %type <attr> dim_expr array_init dim_exprs
@@ -136,8 +136,8 @@ class_body_decl		: class_mem_decl
 			| const_decl 								
 			;
 
-class_mem_decl		: field_decl 			{$$=$1;printList($1->code);}						
-			| method_decl 			{$$=$1;printList($1->code);}			
+class_mem_decl		: field_decl 			{printList($1->code);}						
+			| method_decl 			{printList($1->code);}			
 			;
 
 const_decl		: const_declarator const_body						
@@ -352,7 +352,7 @@ st_expr		: assgn 			{$$=$1;}
 		| method_invo 			{$$=$1;
 					sprintf(t,", call, %s",$1->place);
 					$$->code=append($1->code,newList(t));}							
-		| object_expr 									
+		| object_expr 		{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}							
 		;
 
 if_then_st	: IF PAREN_S expr PAREN_E statement 		        { char end[5];
@@ -1140,9 +1140,9 @@ primary		: primary_no_new_array		{$$=$1;}
 		;
 
 primary_no_new_array	: literal			{$$=$1;$$->assign=true;}
-			| THIS			
+			| THIS			{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}
 			| PAREN_S expr PAREN_E		{$$=$2;}	
-			| object_expr		
+			| object_expr		{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}
 			| field_access		
 			| method_invo			{sprintf(t,", =, %s, call, %s",tempVar(),$1->place);
 						$$=$1;
