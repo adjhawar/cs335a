@@ -296,7 +296,7 @@ reference_type	: class_type
 class_type	: type_name	{$$=strdup($1);}						
 		;
 
-array_type	: type ARRAY_S ARRAY_E 		{sprintf($1, "%s2",$1);}			
+array_type	: type ARRAY_S ARRAY_E 		{sprintf($1,"%s2",$1);}			
 		;					
 
 block		: BLOCK_S bl_statements_e BLOCK_E 	{$$=$2;}		
@@ -351,8 +351,12 @@ st_wo_tsub	: block 	{$$=$1;}
 							$3->assign=true;
 							$$->code=newList(t);}		 							
 		| PRINT PAREN_S identifier PAREN_E TRM	{$$=$3;
-							sprintf(t,", print, %s",$3->place);
-							$$->code=newList(t);}					
+							if($3->assign){
+								sprintf(t,", print, %s",$3->place);
+								$$->code=newList(t);}
+							else{
+								fprintf(stderr,"Error: Variable %s redeclared on line %d\n",$3->place,yylineno);
+								exit(1);}}				
 		;
 
 empty_st	: TRM 		{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}								
@@ -1180,7 +1184,7 @@ field_access	: primary OP_DOT identifier		{$$=(Attr *)malloc(sizeof(Attr));$$->c
 		;
 
 primary		: primary_no_new_array		{$$=$1;}	
-		| array_creat_expr		{$$ = $1;}
+		| array_creat_expr		{$$=$1;}
 		;
 
 primary_no_new_array	: literal			{$$=$1;$$->assign=true;}
