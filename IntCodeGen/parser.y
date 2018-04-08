@@ -227,7 +227,7 @@ method_header		: type method_declarator 	{$$=(Attr *)malloc(sizeof(Attr));
 								strcpy($$->place,$2);
 								strcpy($$->type,$1);
 				 				strcat($$->type,"1");
-								sprintf(t,", label, %s",$2);
+								sprintf(t,", func, %s",$2);
 								$$->code=newList(t);
 				  				p=Insert(table,$2,$$->type,true);
 							if(p==NULL){
