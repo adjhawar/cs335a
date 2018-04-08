@@ -1,6 +1,8 @@
 class $test{
-	int a[];
-	int main(){
-		int b[] = {1,2,3,4};
+	int[] a;
+	void main(){
+		int b[];
+		b = new int[5][6];
+		return ;
 	}
 }
