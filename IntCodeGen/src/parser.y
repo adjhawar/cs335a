@@ -611,26 +611,32 @@ expr		: cond_expr	{$$=$1;}
 
 assgn		:lhs OP_ASS expr			{sprintf(t,", =, %s, %s",$1->place,$3->place);
 						$$->code = append($1->code, $3->code);
+						p = look_up(table, $1->place);
+						if(p) p->assign = 1;
 						$$->code=append($$->code,newList(t));
 						}
 		|lhs assgn_op expr			{if(!$3->assign){
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$3->place);
-								///*exit(1);*/
+								//exit(1);
 							}
 						char tr[15];
 						int q = 0;
-						while($1->place[q]!='['){
+						while(q<50 && $1->place[q]!='['){
 							tr[q] = $1->place[q];
 							q++;
 							}
+						printf("$$ %s $$\n", tr);
 						p=look_up(table,tr);
+						
 						if(p==NULL){
 							fprintf(stderr,"Error on %d: %s undeclared\n",yylineno,$1->place);
-							///*exit(1);*/
+							//exit(1);
 						}	
-						else if(flag1 && !$1->assign){	
+						
+						else if(flag1 && !p->assign){	
+						
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$1->place);
-								///*exit(1);*/
+								//exit(1);
 						}
 						else{
 							switch(flag1){
@@ -663,7 +669,7 @@ assgn		:lhs OP_ASS expr			{sprintf(t,", =, %s, %s",$1->place,$3->place);
 									
 							$$=$1;
 							$$->code=append($3->code,newList(t));
-						}	}
+						}}	
 		;
 
 lhs		: name		{$$=$1;}
@@ -1365,6 +1371,7 @@ identifier		: ID			{SymtabEntry *tempo=look_up(table,$1);
 			;
 %%
 int main(int argc, char** argv){
+
 	p=(SymtabEntry *)malloc(sizeof(SymtabEntry));
 	mainTable=(Symtab *)malloc(sizeof(Symtab));
 	mainTable->prev=NULL;
