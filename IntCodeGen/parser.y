@@ -17,6 +17,7 @@ char LABEL[5];
 char t[100];
 char idr[15];
 int flag1;
+bool ret;	//to check if function has a return statement or not
 SymtabEntry *p;
 Arr_dim *h;
 Symtab *mainTable,*table;
@@ -209,10 +210,20 @@ var_decl_id		: ID 					{$$=$1;strcpy(idr,$1);}
 							}					
 			;
 
-method_decl		: method_header method_body 	{$$=$2;$$->code=append($1->code,$2->code);table=table->prev;}
+method_decl		: method_header method_body 	{$$=$2;
+							$$->code=append($1->code,$2->code);
+							if(!ret){
+								if(strcmp($1->type,"void1")==0){
+									sprintf(t,", ret");
+									$$->code=append($$->code,newList(t));}
+								else{
+									fprintf(stderr,"Error: Missing return statement in function %s\n",$1->place);
+									exit(1);}} 
+							table=table->prev;}
 			;	
 
 method_header		: type method_declarator 	{$$=(Attr *)malloc(sizeof(Attr));
+								ret=false;
 								strcpy($$->place,$2);
 								strcpy($$->type,$1);
 				 				strcat($$->type,"1");
@@ -576,6 +587,7 @@ continue_st	: CONT TRM	      {  $$ = (Attr *)malloc(sizeof(Attr));
 		;
 
 return_st	: RETURN expr_e TRM	{$$=$2;
+					ret=true;
 					if(strcmp($2->place,""))
 					 	sprintf(t,", ret, %s",$2->place);
 					else
