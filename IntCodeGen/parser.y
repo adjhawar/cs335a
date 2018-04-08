@@ -82,7 +82,7 @@ char* newLabel(){
 %type <attr>assgn lhs expr identifier
 %type <attr>cond_expr name array_access field_access 
 %type <attr>cond_or_expr cond_and_expr incl_or_expr excl_or_expr and_expr equality_expr rel_expr shift_expr add_expr mul_expr
-%type <attr>unary_expr preinc_expr predec_expr unary_expr_not_plus_minus postdec_expr postinc_expr postfix_expr cast_expr
+%type <attr>unary_expr preinc_expr predec_expr unary_expr_not_plus_minus postdec_expr postinc_expr postfix_expr
 %type <attr>primary array_creat_expr primary_no_new_array st_expr expr_st expr_e literal
 %type <attr>block block_statement bl_statements bl_statements_e statement st_no_short_if st_wo_tsub
 %type <attr>if_then_st if_then_else_st for_st while_st empty_st do_st switch_st break_st continue_st return_st
@@ -91,8 +91,8 @@ char* newLabel(){
 %type <attr>var_inits var_init var_init_e
 %type <attr>field_decl method_decl method_body
 %type <attr>method_invo
-%type <attr> switch_block switch_block_st_grp 
-%type <attr> dim_expr array_init dim_exprs
+%type <attr>switch_block switch_block_st_grp 
+%type <attr>dim_expr array_init dim_exprs
 %%
 
 compilation_unit	: type_declarations_e 							
@@ -197,7 +197,6 @@ var_declarator		: var_decl_id 			{$$=(Attr *)malloc(sizeof(Attr));
 			| var_decl_id OP_ASS var_init 	{$$=$3;
 								sprintf(t,", =, %s, %s",$1,$3->place);
 								$$->code=append($$->code,newList(t));	
-								//$$->code=append(NULL,newList(t));
 								$$->assign=true;	
 								strcpy($$->place,$1);}					
 			;
@@ -279,7 +278,7 @@ reference_type	: class_type
 		| array_type 							
 		;
 
-class_type	: type_name							
+class_type	: type_name	{$$=strdup($1);}						
 		;
 
 array_type	: type ARRAY_S ARRAY_E 					
@@ -1087,7 +1086,7 @@ unary_expr_not_plus_minus	: postfix_expr		{$$=$1;}
 							sprintf($2->place,"%s",temp);
 							$$=$2;
 							}	
-				| cast_expr		
+				| cast_expr		{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}
 				;
 
 postdec_expr	: postfix_expr OP_DEC				{char temp[10];
@@ -1127,12 +1126,12 @@ postfix_expr	: primary		{$$=$1;}
 		;
 
 method_invo	: name PAREN_S arg_list_e PAREN_E 			{$$=$1;}
-		| primary OP_DOT identifier PAREN_S arg_list_e PAREN_E		
-		| SUPER OP_DOT identifier PAREN_S arg_list_e PAREN_E		
+		| primary OP_DOT identifier PAREN_S arg_list_e PAREN_E		{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}
+		| SUPER OP_DOT identifier PAREN_S arg_list_e PAREN_E		{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}
 		;
 
-field_access	: primary OP_DOT identifier		
-		| SUPER OP_DOT identifier		
+field_access	: primary OP_DOT identifier		{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}
+		| SUPER OP_DOT identifier		{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}
 		;
 
 primary		: primary_no_new_array		{$$=$1;}	
@@ -1143,7 +1142,7 @@ primary_no_new_array	: literal			{$$=$1;$$->assign=true;}
 			| THIS			{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}
 			| PAREN_S expr PAREN_E		{$$=$2;}	
 			| object_expr		{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}
-			| field_access		
+			| field_access		{$$=$1;}	
 			| method_invo			{sprintf(t,", =, %s, call, %s",tempVar(),$1->place);
 						$$=$1;
 						strcpy($$->place,TEMP);
@@ -1229,7 +1228,7 @@ array_access	: name ARRAY_S expr ARRAY_E	{$$=(Attr *)malloc(sizeof(Attr));
 		;
 
 type_name		: CID			{$$=$1;}	
-			| error ID	
+			| error ID		{yyerrok;}	
 			;
 
 name			: identifier		{$$=$1;}		
