@@ -15,7 +15,9 @@ void yyerror(const char *s);
 char TEMP[7];
 char LABEL[5];
 char t[100];
+char idr[15];
 int flag1;
+bool ret;	//to check if function has a return statement or not
 SymtabEntry *p;
 Arr_dim *h;
 Symtab *mainTable,*table;
@@ -81,17 +83,17 @@ char* newLabel(){
 %type <attr>assgn lhs expr identifier
 %type <attr>cond_expr name array_access field_access 
 %type <attr>cond_or_expr cond_and_expr incl_or_expr excl_or_expr and_expr equality_expr rel_expr shift_expr add_expr mul_expr
-%type <attr>unary_expr preinc_expr predec_expr unary_expr_not_plus_minus postdec_expr postinc_expr postfix_expr cast_expr
+%type <attr>unary_expr preinc_expr predec_expr unary_expr_not_plus_minus postdec_expr postinc_expr postfix_expr
 %type <attr>primary array_creat_expr primary_no_new_array st_expr expr_st expr_e literal
 %type <attr>block block_statement bl_statements bl_statements_e statement st_no_short_if st_wo_tsub
 %type <attr>if_then_st if_then_else_st for_st while_st empty_st do_st switch_st break_st continue_st return_st
 %type <attr>if_then_else_no_short_if_st while_st_no_short_if for_st_no_short_if 
 %type <attr>switch_block_st_gr_e switch_block_st_grps for_init_e for_init st_expr_list loc_var_dec for_update_e for_update loc_var_dec_st
 %type <attr>var_inits var_init var_init_e
-%type <attr>class_body_decls class_body_decl class_body field_decl method_decl class_mem_decl method_body
+%type <attr>field_decl method_decl method_body
 %type <attr>method_invo
-%type <attr> switch_block switch_block_st_grp 
-%type <attr> dim_expr array_init dim_exprs
+%type <attr>switch_block switch_block_st_grp 
+%type <attr>dim_expr array_init dim_exprs
 %%
 
 compilation_unit	: type_declarations_e 							
@@ -135,8 +137,8 @@ class_body_decl		: class_mem_decl
 			| const_decl 								
 			;
 
-class_mem_decl		: field_decl 			{$$=$1;printList($1->code);}						
-			| method_decl 			{$$=$1;printList($1->code);}			
+class_mem_decl		: field_decl 			{printList($1->code);}						
+			| method_decl 			{printList($1->code);}			
 			;
 
 const_decl		: const_declarator const_body						
@@ -194,21 +196,34 @@ var_declarator		: var_decl_id 			{$$=(Attr *)malloc(sizeof(Attr));
 								$$->assign=false;
 								strcpy($$->place,$1);}			
 			| var_decl_id OP_ASS var_init 	{$$=$3;
-								sprintf(t,", =, %s, %s",$1,$3->place);
+								int l =strlen($<type>0);
+								if($<type>0[l-1]!='2'){
+									sprintf(t,", =, %s, %s",$1,$3->place);
 								$$->code=append($$->code,newList(t));	
-								$$->code=append(NULL,newList(t));
-								$$->assign=true;	
+								$$->assign=true;	}
 								strcpy($$->place,$1);}					
 			;
 
-var_decl_id		: ID 					{$$=$1;}
-			| var_decl_id ARRAY_S ARRAY_E 		{$$=$1;}					
+var_decl_id		: ID 					{$$=$1;strcpy(idr,$1);}
+			| var_decl_id ARRAY_S ARRAY_E 		{$$=$1;
+							sprintf($<type>0, "%s2",$<type>0);
+							}					
 			;
 
-method_decl		: method_header method_body 	{$$=$2;$$->code=append($1->code,$2->code);table=table->prev;}
+method_decl		: method_header method_body 	{$$=$2;
+							$$->code=append($1->code,$2->code);
+							if(!ret){
+								if(strcmp($1->type,"void1")==0){
+									sprintf(t,", ret");
+									$$->code=append($$->code,newList(t));}
+								else{
+									fprintf(stderr,"Error: Missing return statement in function %s\n",$1->place);
+									exit(1);}} 
+							table=table->prev;}
 			;	
 
 method_header		: type method_declarator 	{$$=(Attr *)malloc(sizeof(Attr));
+								ret=false;
 								strcpy($$->place,$2);
 								strcpy($$->type,$1);
 				 				strcat($$->type,"1");
@@ -231,20 +246,29 @@ method_body		: block 		{$$=$1;}
 			| TRM 			{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}					
 			;
 
-array_init		: BLOCK_S var_init_e BLOCK_E 						
+array_init		: BLOCK_S var_init_e BLOCK_E 		{$$ = $2;}				
 			;
 
 var_init_e		: var_inits 		{$$=$1;}						
 			| /* empty */		{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}					
 			;
 
-var_inits		: var_init 		{$$=$1;}						
-			| var_inits SEP var_init 					
+var_inits		: var_init 		{$$=$1;$$->idx[0] = '0';
+				  sprintf(t, "=, %s[%d], %s", idr,$$->idx[0]-'0', $1->place);
+				  $$->code  = append($1->code, newList(t));
+			  }						
+			| var_inits SEP var_init 	{$$=(Attr *)malloc(sizeof(Attr));
+						$$->code = append($1->code, $3->code);
+						$$->idx[0] = $1->idx[0]+1;
+						sprintf(t,"=, %s[%d], %s", idr,$$->idx[0]-'0', $3->place);
+						$$->code  = append($$->code, newList(t));
+						}				
 			;
 
 var_init		: expr 			{$$=$1;}				
 			| array_init 	{$$=$1;}							
 			;
+			
 
 type		: primitive_type	{$$=$1;} 							
 		| reference_type 					
@@ -269,10 +293,10 @@ reference_type	: class_type
 		| array_type 							
 		;
 
-class_type	: type_name							
+class_type	: type_name	{$$=strdup($1);}						
 		;
 
-array_type	: type ARRAY_S ARRAY_E 						
+array_type	: type ARRAY_S ARRAY_E 		{sprintf($1, "%s2",$1);}			
 		;					
 
 block		: BLOCK_S bl_statements_e BLOCK_E 	{$$=$2;}		
@@ -320,8 +344,15 @@ st_wo_tsub	: block 	{$$=$1;}
 		| break_st 	{$$=$1;}								
 		| continue_st 	{$$=$1;}								
 		| return_st 	{$$=$1;}								
-		| SCAN PAREN_S identifier PAREN_E						
-		| PRINT PAREN_S var_inits PAREN_E						
+		| SCAN PAREN_S identifier PAREN_E TRM	{$$=$3;
+							sprintf(t,", scan, %s",$3->place);
+							p=look_up(table,$3->place);
+							p->assign=true;
+							$3->assign=true;
+							$$->code=newList(t);}		 							
+		| PRINT PAREN_S identifier PAREN_E TRM	{$$=$3;
+							sprintf(t,", print, %s",$3->place);
+							$$->code=newList(t);}					
 		;
 
 empty_st	: TRM 		{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}								
@@ -338,7 +369,7 @@ st_expr		: assgn 			{$$=$1;}
 		| method_invo 			{$$=$1;
 					sprintf(t,", call, %s",$1->place);
 					$$->code=append($1->code,newList(t));}							
-		| object_expr 									
+		| object_expr 		{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}							
 		;
 
 if_then_st	: IF PAREN_S expr PAREN_E statement 		        { char end[5];
@@ -411,12 +442,13 @@ switch_block_st_grps	: switch_block_st_grp 	 	{$$=$1;}
 switch_block_st_grp	: CASE expr COLON bl_statements       { $$=(Attr*)malloc(sizeof(Attr));
 								char nexLabel[5];
 								strcpy(nexLabel,newLabel());
-								sprintf(t,", ifgoto, neq, %s ,        , %s",$2->place,nexLabel);
+								sprintf(t,", ifgoto, neq, %s ,  , %s",$2->place,nexLabel);
 								$$->code=newList(t);
 								$$->code = append($$->code,$4->code);
 								sprintf(t,", label, %s",nexLabel);
 								$$->code=append($$->code,newList(t));
-								$$->code->swt = 1;}
+								$$->code->swt = 1;
+								$$->code->swt_len += strlen($2->place);}
 	
 			| DEFAULT COLON bl_statements	  	{ $$=(Attr*)malloc(sizeof(Attr));
 								$$->code = append($$->code,$3->code);	}
@@ -559,6 +591,7 @@ continue_st	: CONT TRM	      {  $$ = (Attr *)malloc(sizeof(Attr));
 		;
 
 return_st	: RETURN expr_e TRM	{$$=$2;
+					ret=true;
 					if(strcmp($2->place,""))
 					 	sprintf(t,", ret, %s",$2->place);
 					else
@@ -584,9 +617,10 @@ assgn		: lhs assgn_op expr			{if(!$3->assign){
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$1->place);
 								exit(1);
 						}
-						else{
+						else{int l = strlen(p->type); printf("$$ %s $$\n", p->type);
+							if(p->type[l-1]!='2'){
 							switch(flag1){
-								case 0:sprintf(t,", =, %s, %s",$1->place,$3->place);
+								case 0:sprintf(t,", =,1 %s, %s",$1->place,$3->place);
 								       $1->assign=true;
 								       p->assign=true;
 								       break;
@@ -612,9 +646,10 @@ assgn		: lhs assgn_op expr			{if(!$3->assign){
 									break;
 								case 11:sprintf(t,", |, %s, %s, %s",$1->place,$1->place,$3->place);
 									break;}
+									
 							$$=$1;
 							$$->code=append($3->code,newList(t));
-						}}	
+						}else $$->code = append($1->code, $3->code);}	}
 		;
 
 lhs		: name		{$$=$1;}
@@ -1096,7 +1131,7 @@ unary_expr_not_plus_minus	: postfix_expr		{$$=$1;}
 							sprintf($2->place,"%s",temp);
 							$$=$2;
 							}	
-				| cast_expr		
+				| cast_expr		{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}
 				;
 
 postdec_expr	: postfix_expr OP_DEC				{char temp[10];
@@ -1136,12 +1171,12 @@ postfix_expr	: primary		{$$=$1;}
 		;
 
 method_invo	: name PAREN_S arg_list_e PAREN_E 			{$$=$1;}
-		| primary OP_DOT identifier PAREN_S arg_list_e PAREN_E		
-		| SUPER OP_DOT identifier PAREN_S arg_list_e PAREN_E		
+		| primary OP_DOT identifier PAREN_S arg_list_e PAREN_E		{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}
+		| SUPER OP_DOT identifier PAREN_S arg_list_e PAREN_E		{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}
 		;
 
-field_access	: primary OP_DOT identifier		
-		| SUPER OP_DOT identifier		
+field_access	: primary OP_DOT identifier		{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}
+		| SUPER OP_DOT identifier		{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}
 		;
 
 primary		: primary_no_new_array		{$$=$1;}	
@@ -1149,10 +1184,10 @@ primary		: primary_no_new_array		{$$=$1;}
 		;
 
 primary_no_new_array	: literal			{$$=$1;$$->assign=true;}
-			| THIS			
+			| THIS			{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}
 			| PAREN_S expr PAREN_E		{$$=$2;}	
-			| object_expr		
-			| field_access		
+			| object_expr		{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}
+			| field_access		{$$=$1;}	
 			| method_invo			{sprintf(t,", =, %s, call, %s",tempVar(),$1->place);
 						$$=$1;
 						strcpy($$->place,TEMP);
@@ -1169,8 +1204,8 @@ arg_list_e	: argument_list
 argument_list	: expr				
 		| argument_list SEP expr	
 		;
-
-array_creat_expr	: NEW primitive_type dim_exprs		{$$ = $3;int r;
+		
+array_creat_expr	:NEW primitive_type dim_exprs		{$$ = $3;int r;
 						p = look_up(table,$<attr>0->place);
 						if(p!=NULL){
 							Arr_dim *b = p->arr_dim;
@@ -1181,7 +1216,7 @@ array_creat_expr	: NEW primitive_type dim_exprs		{$$ = $3;int r;
 								b = b->next;
 								}
 							}
-						sprintf(t, "array, %s[%d]", $<attr>0->place,r);
+						sprintf(t, ", array, %s[%d]", $<attr>0->place,r);
 						$$->code = append($$->code, newList(t));}
 			| NEW class_type dim_expr	{$$ = $3;}	
 			;
@@ -1238,7 +1273,7 @@ array_access	: name ARRAY_S expr ARRAY_E	{$$=(Attr *)malloc(sizeof(Attr));
 		;
 
 type_name		: CID			{$$=$1;}	
-			| error ID	
+			| error ID		{yyerrok;}	
 			;
 
 name			: identifier		{$$=$1;}		
