@@ -602,10 +602,10 @@ assgn		: lhs assgn_op expr			{if(!$3->assign){
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$1->place);
 								exit(1);
 						}
-						else{int l = strlen(p->type);
-							if(p->type[l-1]!=2){
+						else{int l = strlen(p->type); printf("$$ %s $$\n", p->type);
+							if(p->type[l-1]!='2'){
 							switch(flag1){
-								case 0:sprintf(t,", =, %s, %s",$1->place,$3->place);
+								case 0:sprintf(t,", =,1 %s, %s",$1->place,$3->place);
 								       $1->assign=true;
 								       p->assign=true;
 								       break;
@@ -631,9 +631,10 @@ assgn		: lhs assgn_op expr			{if(!$3->assign){
 									break;
 								case 11:sprintf(t,", |, %s, %s, %s",$1->place,$1->place,$3->place);
 									break;}
+									
 							$$=$1;
 							$$->code=append($3->code,newList(t));
-						}}}	
+						}else $$->code = append($1->code, $3->code);}	}
 		;
 
 lhs		: name		{$$=$1;}
@@ -1169,7 +1170,6 @@ array_creat_expr	:NEW primitive_type dim_exprs		{$$ = $3;int r;
 						p = look_up(table,$<attr>0->place);
 						if(p!=NULL){
 							Arr_dim *b = p->arr_dim;
-							printf("$$ %s $$\n", b->d);
 							r = atoi(b->d);
 							b = b->next;
 							while(b!=NULL){
