@@ -597,27 +597,31 @@ return_st	: RETURN expr_e TRM	{$$=$2;
 
 expr		: cond_expr	{$$=$1;}
 		| assgn		{$$=$1;}
-
 		;
 
 
 assgn		: lhs assgn_op expr			{if(!$3->assign){
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$3->place);
-								exit(1);
+								//exit(1);
 							}
-						p=look_up(table,$1->place);
+						char tr[15];
+						int q = 0;
+						while($1->place[q]!='['){
+							tr[q] = $1->place[q];
+							q++;
+							}
+						p=look_up(table,tr);
 						if(p==NULL){
 							fprintf(stderr,"Error on %d: %s undeclared\n",yylineno,$1->place);
-							exit(1);
+							//exit(1);
 						}	
 						else if(flag1 && !$1->assign){	
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$1->place);
-								exit(1);
+								//exit(1);
 						}
-						else{int l = strlen(p->type); printf("$$ %s $$\n", p->type);
-							if(p->type[l-1]!='2'){
+						else{int l = strlen(p->type);
 							switch(flag1){
-								case 0:sprintf(t,", =,1 %s, %s",$1->place,$3->place);
+								case 0:sprintf(t,", =, %s, %s",$1->place,$3->place);
 								       $1->assign=true;
 								       p->assign=true;
 								       break;
@@ -646,13 +650,16 @@ assgn		: lhs assgn_op expr			{if(!$3->assign){
 									
 							$$=$1;
 							$$->code=append($3->code,newList(t));
-						}else $$->code = append($1->code, $3->code);}	}
+						}	}
 		;
 
 lhs		: name		{$$=$1;}
 		| field_access	
-		| array_access	{$$=$1;sprintf(t, "%s[%s]",$1->place, $1->idx);
-					strcpy($$->place, t);}
+		| array_access	{$$=(Attr *)malloc(sizeof(Attr));sprintf(t, "%s[%s]",$1->place, $1->idx);
+					strcpy($$->place, t);
+					printf("$$ %s $$\n", t);
+					$$->assign = 1;
+					$$->code = append($$->code,$1->code);}
 		;
 		
 
@@ -1178,6 +1185,7 @@ argument_list	: expr
 		| argument_list SEP expr	
 		;
 		
+
 array_creat_expr	:NEW primitive_type dim_exprs		{$$ = $3;int r;
 						p = look_up(table,$<attr>0->place);
 						if(p!=NULL){
@@ -1213,8 +1221,10 @@ dim_expr	: ARRAY_S expr ARRAY_E		{$$ = $2;p = look_up(table,$<attr>-2->place);
 		;
 
 array_access	: name ARRAY_S expr ARRAY_E	{$$=(Attr *)malloc(sizeof(Attr));
+					strcpy($$->place, $1->place);
 					$$->code = append($1->code, $3->code);
 					p = look_up(table,$1->place);
+					printf("$$ %s $$ %s $$\n", $1->place, p->lexeme);
 					if(p){	
 						h = p->arr_dim;
 						if(h && h->next){
