@@ -203,7 +203,9 @@ var_declarator		: var_decl_id 			{$$=(Attr *)malloc(sizeof(Attr));
 			;
 
 var_decl_id		: ID 					{$$=$1;strcpy(idr,$1);}
-			| var_decl_id ARRAY_S ARRAY_E 		{$$=$1;}					
+			| var_decl_id ARRAY_S ARRAY_E 		{$$=$1;
+							sprintf($<type>0, "%s2",$<type>0);
+							}					
 			;
 
 method_decl		: method_header method_body 	{$$=$2;$$->code=append($1->code,$2->code);table=table->prev;}
@@ -282,7 +284,7 @@ reference_type	: class_type
 class_type	: type_name							
 		;
 
-array_type	: type ARRAY_S ARRAY_E 					
+array_type	: type ARRAY_S ARRAY_E 		{sprintf($1, "%s2",$1);}			
 		;					
 
 block		: BLOCK_S bl_statements_e BLOCK_E 	{$$=$2;}		
