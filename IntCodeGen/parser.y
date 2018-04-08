@@ -195,9 +195,11 @@ var_declarator		: var_decl_id 			{$$=(Attr *)malloc(sizeof(Attr));
 								$$->assign=false;
 								strcpy($$->place,$1);}			
 			| var_decl_id OP_ASS var_init 	{$$=$3;
-								sprintf(t,", =, %s, %s",$1,$3->place);
+								int l =strlen($<type>0);
+								if($<type>0[l-1]!='2'){
+									sprintf(t,", =, %s, %s",$1,$3->place);
 								$$->code=append($$->code,newList(t));	
-								$$->assign=true;	
+								$$->assign=true;	}
 								strcpy($$->place,$1);}					
 			;
 
@@ -600,7 +602,8 @@ assgn		: lhs assgn_op expr			{if(!$3->assign){
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$1->place);
 								exit(1);
 						}
-						else{
+						else{int l = strlen(p->type);
+							if(p->type[l-1]!=2){
 							switch(flag1){
 								case 0:sprintf(t,", =, %s, %s",$1->place,$3->place);
 								       $1->assign=true;
@@ -630,7 +633,7 @@ assgn		: lhs assgn_op expr			{if(!$3->assign){
 									break;}
 							$$=$1;
 							$$->code=append($3->code,newList(t));
-						}}	
+						}}}	
 		;
 
 lhs		: name		{$$=$1;}
@@ -1166,6 +1169,7 @@ array_creat_expr	:NEW primitive_type dim_exprs		{$$ = $3;int r;
 						p = look_up(table,$<attr>0->place);
 						if(p!=NULL){
 							Arr_dim *b = p->arr_dim;
+							printf("$$ %s $$\n", b->d);
 							r = atoi(b->d);
 							b = b->next;
 							while(b!=NULL){
@@ -1173,7 +1177,7 @@ array_creat_expr	:NEW primitive_type dim_exprs		{$$ = $3;int r;
 								b = b->next;
 								}
 							}
-						sprintf(t, "array, %s[%d]", $<attr>0->place,r);
+						sprintf(t, ", array, %s[%d]", $<attr>0->place,r);
 						$$->code = append($$->code, newList(t));}
 			| NEW class_type dim_expr	{$$ = $3;}	
 			;
