@@ -1,7 +1,7 @@
 class $test {
         int x = 10;
 	int y = 4;	
-    int a;
+    int a = 0;
     	int comp() {
             int z;
     		if (x > y) 
