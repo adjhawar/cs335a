@@ -347,10 +347,17 @@ st_wo_tsub	: block 	{$$=$1;}
 		| SCAN PAREN_S identifier PAREN_E TRM	{$$=$3;
 							sprintf(t,", scan, %s",$3->place);
 							p=look_up(table,$3->place);
+							if(p==NULL){
+								fprintf(stderr,"Error: Variable %s not declared on line %d\n",$3->place,yylineno);
+								exit(1);}
 							p->assign=true;
 							$3->assign=true;
 							$$->code=newList(t);}		 							
 		| PRINT PAREN_S identifier PAREN_E TRM	{$$=$3;
+							p=look_up(table,$3->place);
+							if(p==NULL){
+								fprintf(stderr,"Error: Variable %s not declared on line %d\n",$3->place,yylineno);
+								exit(1);}
 							if($3->assign){
 								sprintf(t,", print, %s",$3->place);
 								$$->code=newList(t);}
@@ -667,7 +674,7 @@ assgn		:lhs OP_ASS expr			{sprintf(t,", =, %s, %s",$1->place,$3->place);
 		;
 
 lhs		: name		{$$=$1;}
-		| field_access	
+		| field_access	{$$=$1;}
 		| array_access	{$$=$1;/*(Attr *)malloc(sizeof(Attr));*/sprintf(t, "%s[%s]",$1->place, $1->idx);
 					strcpy($$->place, t);
 					/*$$->code = append($$->code,$1->code);*/}
