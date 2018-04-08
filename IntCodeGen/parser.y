@@ -197,7 +197,7 @@ var_declarator		: var_decl_id 			{$$=(Attr *)malloc(sizeof(Attr));
 			| var_decl_id OP_ASS var_init 	{$$=$3;
 								sprintf(t,", =, %s, %s",$1,$3->place);
 								$$->code=append($$->code,newList(t));	
-								$$->code=append(NULL,newList(t));
+								//$$->code=append(NULL,newList(t));
 								$$->assign=true;	
 								strcpy($$->place,$1);}					
 			;
@@ -240,13 +240,13 @@ var_init_e		: var_inits 		{$$=$1;}
 			;
 
 var_inits		: var_init 		{$$=$1;$$->idx[0] = '0';
-			sprintf(t, "=, %s[%d], %s\n", idr,$$->idx[0]-'0', $1->place);
-				$$->code  = append($$->code, newList(t));
+			sprintf(t, "=, %s[%d], %s", idr,$$->idx[0]-'0', $1->place);
+				$$->code  = append($1->code, newList(t));
 				}						
 			| var_inits SEP var_init 	{$$=(Attr *)malloc(sizeof(Attr));
 						$$->code = append($1->code, $3->code);
 						$$->idx[0] = $1->idx[0]+1;
-						sprintf(t,"=, %s[%d], %s\n", idr,$$->idx[0]-'0', $3->place);
+						sprintf(t,"=, %s[%d], %s", idr,$$->idx[0]-'0', $3->place);
 						$$->code  = append($$->code, newList(t));
 						}				
 			;
