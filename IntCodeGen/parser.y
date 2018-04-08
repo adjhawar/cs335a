@@ -15,6 +15,7 @@ void yyerror(const char *s);
 char TEMP[7];
 char LABEL[5];
 char t[100];
+char idr[15];
 int flag1;
 SymtabEntry *p;
 Arr_dim *h;
@@ -201,7 +202,7 @@ var_declarator		: var_decl_id 			{$$=(Attr *)malloc(sizeof(Attr));
 								strcpy($$->place,$1);}					
 			;
 
-var_decl_id		: ID 					{$$=$1;}
+var_decl_id		: ID 					{$$=$1;strcpy(idr,$1);}
 			| var_decl_id ARRAY_S ARRAY_E 		{$$=$1;}					
 			;
 
@@ -231,20 +232,29 @@ method_body		: block 		{$$=$1;}
 			| TRM 			{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}					
 			;
 
-array_init		: BLOCK_S var_init_e BLOCK_E 						
+array_init		: BLOCK_S var_init_e BLOCK_E 		{$$ = $2;}				
 			;
 
 var_init_e		: var_inits 		{$$=$1;}						
 			| /* empty */		{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}					
 			;
 
-var_inits		: var_init 		{$$=$1;}						
-			| var_inits SEP var_init 					
+var_inits		: var_init 		{$$=$1;$$->idx[0] = '0';
+			sprintf(t, "=, %s[%d], %s\n", idr,$$->idx[0]-'0', $1->place);
+				$$->code  = append($$->code, newList(t));
+				}						
+			| var_inits SEP var_init 	{$$=(Attr *)malloc(sizeof(Attr));
+						$$->code = append($1->code, $3->code);
+						$$->idx[0] = $1->idx[0]+1;
+						sprintf(t,"=, %s[%d], %s\n", idr,$$->idx[0]-'0', $3->place);
+						$$->code  = append($$->code, newList(t));
+						}				
 			;
 
 var_init		: expr 			{$$=$1;}				
 			| array_init 	{$$=$1;}							
 			;
+			
 
 type		: primitive_type	{$$=$1;} 							
 		| reference_type 					
@@ -272,7 +282,7 @@ reference_type	: class_type
 class_type	: type_name							
 		;
 
-array_type	: type ARRAY_S ARRAY_E 						
+array_type	: type ARRAY_S ARRAY_E 					
 		;					
 
 block		: BLOCK_S bl_statements_e BLOCK_E 	{$$=$2;}		
@@ -572,6 +582,7 @@ return_st	: RETURN expr_e TRM	{$$=$2;
 
 expr		: cond_expr	{$$=$1;}
 		| assgn		{$$=$1;}
+
 		;
 
 
@@ -1149,8 +1160,8 @@ arg_list_e	: argument_list
 argument_list	: expr				
 		| argument_list SEP expr	
 		;
-
-array_creat_expr	: NEW primitive_type dim_exprs		{$$ = $3;int r;
+		
+array_creat_expr	:NEW primitive_type dim_exprs		{$$ = $3;int r;
 						p = look_up(table,$<attr>0->place);
 						if(p!=NULL){
 							Arr_dim *b = p->arr_dim;
