@@ -402,7 +402,7 @@ if_then_else_st	: IF PAREN_S expr PAREN_E st_no_short_if ELSE statement { char e
 									  sprintf(t,", ifgoto, eq, %s, 0, %s",$3->place,else_beg);
 									  $$->code = append($$->code ,newList(t));
 									  $$->code = append($$->code,$5->code);
-									  sprintf(t,", goto, %s",end);
+									  sprintf(t,", Goto, %s",end);
        								          $$->code = append($$->code,newList(t));
 									  sprintf(t,", label, %s",else_beg);
        								          $$->code = append($$->code,newList(t));
@@ -420,7 +420,7 @@ if_then_else_no_short_if_st	: IF PAREN_S expr PAREN_E st_no_short_if ELSE st_no_
 									  sprintf(t,", ifgoto, eq, %s, 0, %s",$3->place,else_beg);
 									  $$->code = append($$->code ,newList(t));
 									  $$->code = append($$->code,$5->code);
-									  sprintf(t,", goto, %s",end);
+									  sprintf(t,", Goto, %s",end);
        								          $$->code = append($$->code,newList(t));
 									  sprintf(t,", label, %s",else_beg);
        								          $$->code = append($$->code,newList(t));
@@ -478,7 +478,7 @@ while_st	: WHILE PAREN_S expr PAREN_E statement 			{ char begin[5],end[5];
 									  sprintf(t,", ifgoto, eq, %s, 0, %s",$3->place,end);
 									  $$->code = append($$->code ,newList(t));
 									  $$->code = append($$->code,$5->code);
-									  sprintf(t,", goto, %s",begin);
+									  sprintf(t,", Goto, %s",begin);
        								          $$->code = append($$->code,newList(t));
 									  sprintf(t,", label, %s",end);
        								          $$->code = append($$->code,newList(t));  }
@@ -496,7 +496,7 @@ while_st_no_short_if	: WHILE PAREN_S expr PAREN_E st_no_short_if	{ char begin[5]
 									  sprintf(t,", ifgoto, eq, %s, 0, %s",$3->place,end);
 									  $$->code = append($$->code ,newList(t));
 									  $$->code = append($$->code,$5->code);
-									  sprintf(t,", goto, %s",begin);
+									  sprintf(t,", Goto, %s",begin);
        								          $$->code = append($$->code,newList(t));
 									  sprintf(t,", label, %s",end);
        								          $$->code = append($$->code,newList(t));  }
@@ -514,7 +514,7 @@ do_st		: DO statement WHILE PAREN_S expr PAREN_E  TRM          { char begin[5],e
                       						          $$->code = append($$->code , $5->code);
 									  sprintf(t,", ifgoto, eq, %s, 0, %s",$5->place,end);
 									  $$->code = append($$->code ,newList(t));
-									  sprintf(t,", goto, %s",begin);
+									  sprintf(t,", Goto, %s",begin);
        								          $$->code = append($$->code,newList(t));
 									  sprintf(t,", label, %s",end);
        								          $$->code = append($$->code,newList(t));  }		
@@ -537,7 +537,7 @@ for_st		: FOR PAREN_S for_init_e TRM expr_e TRM for_update_e PAREN_E statement	 
 												sprintf(t,", label, %s",cont);	
                                                                           			$$->code = append($$->code,newList(t));
                       						          			$$->code = append($$->code,$7->code);
-									  			sprintf(t,", goto, %s",begin);
+									  			sprintf(t,", Goto, %s",begin);
        								          		        $$->code = append($$->code,newList(t));
 									  		        sprintf(t,", label, %s",end);
        								          	                $$->code = append($$->code,newList(t));}	 
@@ -561,7 +561,7 @@ for_st_no_short_if	: FOR PAREN_S for_init_e TRM expr_e TRM for_update_e  PAREN_E
 												sprintf(t,", label, %s",cont);	
                                                                           			$$->code = append($$->code,newList(t));
                       						          			$$->code = append($$->code,$7->code);
-									  			sprintf(t,", goto, %s",begin);
+									  			sprintf(t,", Goto, %s",begin);
        								          		        $$->code = append($$->code,newList(t));
 									  		        sprintf(t,", label, %s",end);
        								          	               $$->code = append($$->code,newList(t));}	 			
@@ -591,13 +591,13 @@ st_expr_list	: st_expr 	{$$=$1;}
 		;
 
 break_st	: BREAK TRM          {  $$ = (Attr *)malloc(sizeof(Attr));
-				     	sprintf(t,", goto, ");
+				     	sprintf(t,", Goto, ");
 					$$->code = newList(t);
 					$$->code->br = 1;}	
 		;
 
 continue_st	: CONT TRM	      {  $$ = (Attr *)malloc(sizeof(Attr));
-				     	sprintf(t,", goto, ");
+				     	sprintf(t,", Goto, ");
 					$$->code = newList(t);
 					$$->code->cont = 1;}	
 		;
@@ -808,7 +808,7 @@ equality_expr	: rel_expr						{$$=$1;}
 					$$->code=append($$->code,newList(t));
 					sprintf(t,", = , %s , 0",$$->place);
 					$$->code=append($$->code,newList(t));
-					sprintf(t,", goto, %s",end);
+					sprintf(t,", Goto, %s",end);
 					$$->code=append($$->code,newList(t));
 					sprintf(t,", label , %s",begin);
 					$$->code=append($$->code,newList(t));
@@ -835,7 +835,7 @@ equality_expr	: rel_expr						{$$=$1;}
 					$$->code=append($$->code,newList(t));
 					sprintf(t,", = , %s , 0",$$->place);
 					$$->code=append($$->code,newList(t));
-					sprintf(t,", goto, %s",end);
+					sprintf(t,", Goto, %s",end);
 					$$->code=append($$->code,newList(t));
 					sprintf(t,", label , %s",begin);
 					$$->code=append($$->code,newList(t));
@@ -865,7 +865,7 @@ rel_expr	: shift_expr			{$$ = $1;}
 					$$->code=append($$->code,newList(t));
 					sprintf(t,", = , %s , 0",$$->place);
 					$$->code=append($$->code,newList(t));
-					sprintf(t,", goto, %s",end);
+					sprintf(t,", Goto, %s",end);
 					$$->code=append($$->code,newList(t));
 					sprintf(t,", label , %s",begin);
 					$$->code=append($$->code,newList(t));
@@ -892,7 +892,7 @@ rel_expr	: shift_expr			{$$ = $1;}
 					$$->code=append($$->code,newList(t));
 					sprintf(t,", = , %s , 0",$$->place);
 					$$->code=append($$->code,newList(t));
-					sprintf(t,", goto, %s",end);
+					sprintf(t,", Goto, %s",end);
 					$$->code=append($$->code,newList(t));
 					sprintf(t,", label , %s",begin);
 					$$->code=append($$->code,newList(t));
@@ -919,7 +919,7 @@ rel_expr	: shift_expr			{$$ = $1;}
 					$$->code=append($$->code,newList(t));
 					sprintf(t,", = , %s , 0",$$->place);
 					$$->code=append($$->code,newList(t));
-					sprintf(t,", goto , %s",end);
+					sprintf(t,", Goto , %s",end);
 					$$->code=append($$->code,newList(t));
 					sprintf(t,", label , %s",begin);
 					$$->code=append($$->code,newList(t));
@@ -946,7 +946,7 @@ rel_expr	: shift_expr			{$$ = $1;}
 					$$->code=append($$->code,newList(t));
 					sprintf(t,", = , %s , 0",$$->place);
 					$$->code=append($$->code,newList(t));
-					sprintf(t,", goto, %s",end);
+					sprintf(t,", Goto, %s",end);
 					$$->code=append($$->code,newList(t));
 					sprintf(t,", label , %s",begin);
 					$$->code=append($$->code,newList(t));
@@ -1160,9 +1160,9 @@ postdec_expr	: postfix_expr OP_DEC				{char temp[10];
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$1->place);
 								/*exit(1);*/
 							}
-							sprintf(temp,"%s",tempVar());
-							sprintf(t,", =, %s, %s",temp,$1->place);
-							$1->code=append($1->code,newList(t));
+							//sprintf(temp,"%s",tempVar());
+							//sprintf(t,", =, %s, %s",temp,$1->place);
+							//$1->code=append($1->code,newList(t));
 							sprintf(t,", -, %s, %s, 1",$1->place,$1->place);
 							$1->code=append($1->code,newList(t));
 							sprintf($1->place,"%s",temp);
@@ -1171,13 +1171,13 @@ postdec_expr	: postfix_expr OP_DEC				{char temp[10];
 		;
 
 postinc_expr	: postfix_expr OP_INC				{char temp[10];
-							sprintf(temp,"%s",tempVar());
+							//sprintf(temp,"%s",tempVar());
 							if(!$1->assign){
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$1->place);
 								/*exit(1);*/
 							}
-							sprintf(t,", =, %s, %s",temp,$1->place);
-							$1->code=append($1->code,newList(t));
+							//sprintf(t,", =, %s, %s",temp,$1->place);
+							//$1->code=append($1->code,newList(t));
 							sprintf(t,", +, %s, %s, 1",$1->place,$1->place);
 							$1->code=append($1->code,newList(t));
 							sprintf($1->place,"%s",temp);
