@@ -1,6 +1,6 @@
 class $test {
         int x = 10;
-	int y = 4;	
+	int a,y = 4;	
     	int comp() {
             int z;
     		if (x > y) 
