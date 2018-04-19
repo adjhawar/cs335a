@@ -1,0 +1,50 @@
+1 , func, comp
+2 , =, x, 10
+3 , =, y, 4
+4 , ifgoto, gt , x , y , L1 
+5 , = , temp0 , 0
+6 , Goto, L0
+7 , label , L1
+8 , = , temp0 , 1
+9 , label , L0
+10 , ifgoto, eq, temp0, 0, L3
+11 , -, temp1, x, y
+12 , ret, temp1
+13 , Goto, L2
+14 , label, L3
+15 , -, temp2, y, x
+16 , ret, temp2
+17 , label, L2
+18 , func, main
+19 , =, i, 0
+20 , =, a, 6
+21 , label, L11
+22 , ifgoto, lt , i , 10 , L5 
+23 , = , temp3 , 0
+24 , Goto, L4
+25 , label , L5
+26 , = , temp3, 1
+27 , label , L4
+28 , ifgoto, eq, temp3, 0, L12
+29 , print, a
+30 , =, j, 0
+31 , label, L8
+32 , ifgoto, lt , j , 10 , L7 
+33 , = , temp4 , 0
+34 , Goto, L6
+35 , label , L7
+36 , = , temp4, 1
+37 , label , L6
+38 , ifgoto, eq, temp4, 0, L9
+39 , print, j
+40 , label, L10
+41 , +, j, j, 1
+42 , Goto, L8
+43 , label, L9
+44 , +, i, i, 1
+45 , Goto, L11
+46 , label, L12
+47 , =, temp5, call, comp
+48 , =, j, temp5
+49 , -, temp6, 0, 1
+50 , ret, temp6

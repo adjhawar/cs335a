@@ -1,0 +1,19 @@
+1, =,  res,0
+2, =,  i, 0
+3,  Goto, 16
+4, =, j,  0
+5,  Goto, 13
+6, =, k, 0
+7,  Goto, 10
+8, +,  res, res,  1
+9, +, k,  k, 1
+10,  ifgoto,leq, k, 9,8
+11, Goto, 12
+12, +, j, j,  1
+13 , ifgoto, leq ,j ,9, 6
+14, Goto, 15
+15, +, i, i, 1
+16, ifgoto , leq ,i,  9, 4
+17, Goto, 18
+18, print, res
+19, ret

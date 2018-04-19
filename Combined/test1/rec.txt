@@ -1,0 +1,13 @@
+1, =, g, 5
+2, call, myfunc
+3, ret
+4, label, myfunc
+5, =, g0, g
+6, ifgoto, eq, g0, 0, 8 
+7, Goto, 9
+8, ret
+9, =, g1, g
+10, print, g
+11, =, g2, g
+12, -, g, g, 1
+13, call, myfunc

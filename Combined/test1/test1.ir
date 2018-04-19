@@ -1,0 +1,16 @@
+1, =, i, 0
+2, =,sum,0
+3, =,avg,0
+4, scan,b
+5, =, a[i], b
+6, +, i,i,1
+7,ifgoto,leq,i,9,4
+8,=,j,0
+9,=,c,a[j]
+10,+,sum,sum,c
+11,+,j,j,1
+12,ifgoto,leq,j,9,9
+13,print,sum
+14,/,avg,sum,10
+15,print,avg
+16,ret

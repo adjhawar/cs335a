@@ -1,0 +1,11 @@
+1, scan, a
+2, scan, b
+3, &, r, a, b
+4, |, y, a, b
+5, >>,q,a,2
+6,print,q
+7, <<,q,a,2
+8, print,q 
+9, print,r
+10, print,y
+11, ret
