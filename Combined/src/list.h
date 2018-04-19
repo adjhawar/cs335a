@@ -19,13 +19,8 @@ typedef struct Attr{
 	char type[15];
 	char idx[10];
 	list3AC *code;
-	bool assign;
+	bool assign;			//checks if an attribute is declared before it is used
 }Attr;
-
-typedef struct Add_des{
-	int reg_no;
-	bool mem;
-}Add_des;
 
 typedef struct SymtabEntry{
 	char lexeme[50];
@@ -33,10 +28,8 @@ typedef struct SymtabEntry{
 	Arr_dim *arr_dim;
 	struct SymtabEntry *next;
 	struct Symtab *func;
-	Add_des add_des;
-	int nextuse;
-	bool liveness;
-	bool assign;
+	bool assign;			//checks if symbol table entry has been declared
+	int offset;
 }SymtabEntry;
 
 typedef struct Symtab{
