@@ -4,7 +4,7 @@
 #include <string.h>
 #include <limits.h>
 #include <ctype.h>
-#include "list.h"
+#include "global.h"
 
 extern int yylex();
 extern int yyparse();
@@ -18,9 +18,13 @@ char t[100];
 char idr[15];
 int flag1;
 bool ret;	//to check if function has a return statement or not
+bool method_flag;	//checks if method declared or not
+int offset;
+int totalOff;
 SymtabEntry *p;
 Arr_dim *h;
-Symtab *mainTable,*table;
+Symtab *mainTable;
+Symtab *table;
 
 /*
 	type is int:	normal variable of int type
@@ -94,6 +98,7 @@ char* newLabel(){
 %type <attr>method_invo arr_assgn
 %type <attr>switch_block switch_block_st_grp 
 %type <attr>dim_expr array_init dim_exprs
+%type <attr>arg_list_e argument_list
 %%
 
 compilation_unit	: type_declarations_e 							
@@ -155,10 +160,11 @@ formal_para_list	: formal_para
 			| formal_para_list SEP formal_para 					
 			;
 
-formal_para		: type var_decl_id			{$$=(Attr *)malloc(sizeof(Attr));
-						 /*strcpy($$->place,$2);
+formal_para		: type ID			{
+						 $$=(Attr *)malloc(sizeof(Attr));
+						 strcpy($$->place,$2);
 						 strcpy($$->type,$1);
-						 p=Insert(table,$2,$1);*/
+						 p=Insert(mainTable,$2,$1,true);
 						 $$->code=NULL;}
 			;
 
@@ -176,6 +182,8 @@ field_decl		: type var_declarators TRM	{$$=$2;}
 var_declarators		: var_declarator 		{$$=$1;
 						 strcpy($$->type,$<type>0);
 						 p=Insert(table,$1->place,$$->type,$1->assign);
+						 totalOff+=offset;
+						 p->offset=totalOff;
 						 if(p==NULL){
 							fprintf(stderr,"Error: Variable %s redeclared on line %d\n",$1->place,yylineno);
 							/*exit(1);*/
@@ -185,6 +193,8 @@ var_declarators		: var_declarator 		{$$=$1;
 						 strcpy($$->type,$<type>0);
 						 $$->code=append($1->code,$3->code);
 						 p=Insert(table,$3->place,$$->type,$3->assign);
+						 totalOff+=offset;
+						 p->offset=totalOff;
 						 if(p==NULL){
 							fprintf(stderr,"Error: Variable %s redeclared on line %d\n",$3->place,yylineno);
 							/*exit(1);*/
@@ -199,18 +209,19 @@ var_declarator		: var_decl_id 			{$$=(Attr *)malloc(sizeof(Attr));
 								int l =strlen($<type>0);
 								if($<type>0[l-1]!='2'){
 									sprintf(t,", =, %s, %s",$1,$3->place);
-								$$->code=append($$->code,newList(t));	
-								$$->assign=true;	}
+									$$->code=append($$->code,newList(t));	
+									$$->assign=true;	}
 								strcpy($$->place,$1);}					
 			;
 
 var_decl_id		: ID 					{$$=$1;strcpy(idr,$1);}
 			| var_decl_id ARRAY_S ARRAY_E 		{$$=$1;
-							sprintf($<type>0, "%s2",$<type>0);
+								sprintf($<type>0, "%s2",$<type>0);
 							}					
 			;
 
 method_decl		: method_header method_body 	{$$=$2;
+							totalOff=0;
 							$$->code=append($1->code,$2->code);
 							if(!ret){
 								if(strcmp($1->type,"void1")==0){
@@ -240,7 +251,8 @@ method_header		: type method_declarator 	{$$=(Attr *)malloc(sizeof(Attr));
 								strcpy(table->name,$2);}}
 			;
 
-method_declarator	: ID PAREN_S formal_para_list_e PAREN_E 	{$$=$1;}			;
+method_declarator	: ID PAREN_S formal_para_list_e PAREN_E 	{$$=$1;}
+			;
 
 method_body		: block 		{$$=$1;}						
 			| TRM 			{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}					
@@ -265,7 +277,7 @@ var_inits		: var_init 		{$$=$1;$$->idx[0] = '0';
 						}				
 			;
 
-var_init		: expr 			{$$=$1;}				
+var_init		: expr 		{$$=$1;}				
 			| array_init 	{$$=$1;}							
 			;
 			
@@ -285,8 +297,8 @@ numeric_type	: integer_type 	{$$=$1;}
 		;
 
 integer_type	: BYTE 	{$$=$1;}		
-		| CHAR 	{$$=$1;}					
-		| INT 	{$$=$1;}					
+		| CHAR 	{$$=$1;offset=1;}					
+		| INT 	{$$=$1;offset=4;}					
 		;
 
 reference_type	: class_type 							
@@ -625,10 +637,7 @@ assgn		:lhs OP_ASS expr			{sprintf(t,", =, %s, %s",$1->place,$3->place);
 						if(p) p->assign = 1;
 						$$->code=append($$->code,newList(t));
 						}
-		|lhs assgn_op expr			{if(!$3->assign){
-								/*fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$3->place);*/
-								//exit(1);
-							}
+		|lhs assgn_op expr			{
 						char tr[50];
 						int q = 0;
 						while(q<50 && $1->place[q]!='['){
@@ -641,18 +650,7 @@ assgn		:lhs OP_ASS expr			{sprintf(t,", =, %s, %s",$1->place,$3->place);
 							fprintf(stderr,"Error on %d: %s undeclared\n",yylineno,$1->place);
 							//exit(1);
 						}	
-						
-						else if(flag1 && !p->assign){	
-						
-								/*fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$1->place);*/
-								//exit(1);
-						}
-						else{
-							switch(flag1){
-								case 0:sprintf(t,", =, %s, %s",$1->place,$3->place);
-								       $1->assign=true;
-								       p->assign=true;
-								       break;
+						switch(flag1){
 								case 1:sprintf(t,", *, %s, %s, %s",$1->place,$1->place,$3->place);
 								       break;
 								case 2:sprintf(t,", /, %s, %s, %s",$1->place,$1->place,$3->place);
@@ -674,23 +672,23 @@ assgn		:lhs OP_ASS expr			{sprintf(t,", =, %s, %s",$1->place,$3->place);
 								case 10:sprintf(t,", ^, %s, %s, %s",$1->place,$1->place,$3->place);
 									break;
 								case 11:sprintf(t,", |, %s, %s, %s",$1->place,$1->place,$3->place);
-									break;}
-									
+									break;}		
 							$$=$1;
 							$$->code=append($3->code,newList(t));
-						}}	
+						}	
 		;
 
 lhs		: name		{$$=$1;}
 		| field_access	{$$=$1;}
-		| array_access	{$$=$1;/*(Attr *)malloc(sizeof(Attr));*/sprintf(t, "%s[%s]",$1->place, $1->idx);
+		| array_access	{$$=$1;
+				 sprintf(t, "%s[%s]",$1->place, $1->idx);
 					strcpy($$->place, t);
 					/*$$->code = append($$->code,$1->code);*/}
 		;
 		
 
 
-assgn_op	:  OP_MUL_ASS		{flag1=1;}
+assgn_op	: OP_MUL_ASS		{flag1=1;}
 		| OP_DIV_ASS		{flag1=2;}
 		| OP_MOD_ASS		{flag1=3;}
 		| OP_ADD_ASS		{flag1=4;}
@@ -709,15 +707,6 @@ cond_expr	: cond_or_expr					{$$=$1;}
 
 cond_or_expr	: cond_and_expr					{$$=$1;}		
 		| cond_or_expr OP_CON_OR cond_and_expr		{$$=(Attr *)malloc(sizeof(Attr));
-							if(!$1->assign){
-								/*fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$1->place);*/
-								/*exit(1);*/
-							}
-							if(!$3->assign){
-								/*fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$3->place);*/
-								/*exit(1);*/
-							}
-							$$->assign=true;
 							strcpy($$->place,tempVar());
 							$$->code=append($1->code,$3->code);
 							sprintf(t,", ||, %s, %s, %s",$$->place,$1->place,$3->place);
@@ -727,15 +716,6 @@ cond_or_expr	: cond_and_expr					{$$=$1;}
 
 cond_and_expr	: incl_or_expr						{$$=$1;}
 		| cond_and_expr OP_CON_AND incl_or_expr		{$$=(Attr *)malloc(sizeof(Attr));
-							if(!$1->assign){
-								/*fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$1->place);*/
-								/*exit(1);*/
-							}
-							if(!$3->assign){
-								/*fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$3->place);*/
-								/*exit(1);*/
-							}
-							$$->assign=true;
 							strcpy($$->place,tempVar());
 							$$->code=append($1->code,$3->code);
 							sprintf(t,", &&, %s, %s, %s",$$->place,$1->place,$3->place);
@@ -745,15 +725,7 @@ cond_and_expr	: incl_or_expr						{$$=$1;}
 
 incl_or_expr	: excl_or_expr	{$$=$1;}
 		| incl_or_expr OP_OR excl_or_expr		{$$=(Attr *)malloc(sizeof(Attr));
-							if(!$1->assign){
-								/*fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$1->place);*/
-								/*exit(1);*/
-							}
-							if(!$3->assign){
-								/*fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$3->place);*/
-								/*exit(1);*/
-							}
-							$$->assign=true;
+							
 							strcpy($$->place,tempVar());
 							$$->code=append($1->code,$3->code);
 							sprintf(t,", |, %s, %s, %s",$$->place,$1->place,$3->place);
@@ -763,15 +735,7 @@ incl_or_expr	: excl_or_expr	{$$=$1;}
 
 excl_or_expr	: and_expr			{$$=$1;}			
 		| excl_or_expr OP_XOR and_expr			{$$=(Attr *)malloc(sizeof(Attr));
-							if(!$1->assign){
-								/*fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$1->place);*/
-								/*exit(1);*/
-							}
-							if(!$3->assign){
-								/*fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$3->place);*/
-								/*exit(1);*/
-							}
-							$$->assign=true;
+							
 							strcpy($$->place,tempVar());
 							$$->code=append($1->code,$3->code);
 							sprintf(t,", ^, %s, %s, %s",$$->place,$1->place,$3->place);
@@ -781,15 +745,7 @@ excl_or_expr	: and_expr			{$$=$1;}
 
 and_expr 	: equality_expr					{$$=$1;}	
 		| and_expr OP_AND equality_expr			{$$=(Attr *)malloc(sizeof(Attr));
-							if(!$1->assign){
-								/*fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$1->place);*/
-								/*exit(1);*/
-							}
-							if(!$3->assign){
-								/*fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$3->place);*/
-								/*exit(1);*/
-							}
-							$$->assign=true;
+							
 							strcpy($$->place,tempVar());
 							$$->code=append($1->code,$3->code);
 							sprintf(t,", &, %s, %s, %s",$$->place,$1->place,$3->place);
@@ -799,15 +755,7 @@ and_expr 	: equality_expr					{$$=$1;}
 
 equality_expr	: rel_expr						{$$=$1;}
 		| equality_expr OP_EQ rel_expr	{$$=(Attr *)malloc(sizeof(Attr));
-							if(!$1->assign){
-								/*fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$1->place);*/
-								/*exit(1);*/
-							}
-							if(!$3->assign){
-								/*fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$3->place);*/
-								/*exit(1);*/
-							}
-							$$->assign=true;
+							
 					strcpy($$->place, tempVar());
 					$$->code=append($1->code,$3->code);
 					char end[5],begin[5];
@@ -826,15 +774,7 @@ equality_expr	: rel_expr						{$$=$1;}
 					$$->code=append($$->code,newList(t));}
 							
 		| equality_expr OP_NEQ rel_expr	{$$=(Attr *)malloc(sizeof(Attr));
-							if(!$1->assign){
-								/*fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$1->place);*/
-								/*exit(1);*/
-							}
-							if(!$3->assign){
-								/*fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$3->place);*/
-								/*exit(1);*/
-							}
-							$$->assign=true;
+							
 					strcpy($$->place, tempVar());
 					$$->code=append($1->code,$3->code);
 					char end[5],begin[5];
@@ -856,15 +796,7 @@ equality_expr	: rel_expr						{$$=$1;}
 
 rel_expr	: shift_expr			{$$ = $1;}
 		| rel_expr OP_LES shift_expr	{$$=(Attr *)malloc(sizeof(Attr));
-							if(!$1->assign){
-								/*fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$1->place);*/
-								/*exit(1);*/
-							}
-							if(!$3->assign){
-								/*fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$3->place);*/
-								/*exit(1);*/
-							}
-							$$->assign=true;
+							
 					strcpy($$->place, tempVar());
 					$$->code=append($1->code,$3->code);
 					char end[5],begin[5];
@@ -883,15 +815,7 @@ rel_expr	: shift_expr			{$$ = $1;}
 					$$->code=append($$->code,newList(t));}
 							
 		| rel_expr OP_GRE shift_expr	{$$=(Attr *)malloc(sizeof(Attr));
-							if(!$1->assign){
-								/*fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$1->place);*/
-								/*exit(1);*/
-							}
-							if(!$3->assign){
-								/*fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$3->place);*/
-								/*exit(1);*/
-							}
-							$$->assign=true;
+							
 					strcpy($$->place, tempVar());
 					$$->code=append($1->code,$3->code);
 					char end[5],begin[5];
@@ -910,15 +834,7 @@ rel_expr	: shift_expr			{$$ = $1;}
 					$$->code=append($$->code,newList(t));}
 								
 		| rel_expr OP_LEQ shift_expr	{$$=(Attr *)malloc(sizeof(Attr));
-							if(!$1->assign){
-								/*fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$1->place);*/
-								/*exit(1);*/
-							}
-							if(!$3->assign){
-								/*fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$3->place);*/
-								/*exit(1);*/
-							}
-							$$->assign=true;
+		
 					strcpy($$->place, tempVar());
 					$$->code=append($1->code,$3->code);
 					char end[5],begin[5];
@@ -937,15 +853,7 @@ rel_expr	: shift_expr			{$$ = $1;}
 					$$->code=append($$->code,newList(t));}
 								
 		| rel_expr OP_GEQ shift_expr	{$$=(Attr *)malloc(sizeof(Attr));
-							if(!$1->assign){
-								/*fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$1->place);*/
-								/*exit(1);*/
-							}
-							if(!$3->assign){
-								/*fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$3->place);*/
-								/*exit(1);*/
-							}
-							$$->assign=true;
+							
 					strcpy($$->place, tempVar());
 					$$->code=append($1->code,$3->code);
 					char end[5],begin[5];
@@ -969,45 +877,21 @@ rel_expr	: shift_expr			{$$ = $1;}
 
 shift_expr	: add_expr				{$$=$1;}
 		| shift_expr OP_LSH add_expr			{$$=(Attr *)malloc(sizeof(Attr));
-							if(!$1->assign){
-								/*fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$1->place);*/
-								/*exit(1);*/
-							}
-							if(!$3->assign){
-								/*fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$3->place);*/
-								/*exit(1);*/
-							}
-							$$->assign=true;
+							
 							strcpy($$->place,tempVar());
 							$$->code=append($1->code,$3->code);
 							sprintf(t,", <<, %s, %s, %s",$$->place,$1->place,$3->place);
 							$$->code=append($$->code,newList(t));
 							}		
 		| shift_expr OP_RSH add_expr			{$$=(Attr *)malloc(sizeof(Attr));
-							if(!$1->assign){
-								/*fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$1->place);*/
-								/*exit(1);*/
-							}
-							if(!$3->assign){
-								/*fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$3->place);*/
-								/*exit(1);*/
-							}
-							$$->assign=true;
+							
 							strcpy($$->place,tempVar());
 							$$->code=append($1->code,$3->code);
 							sprintf(t,", >>, %s, %s, %s",$$->place,$1->place,$3->place);
 							$$->code=append($$->code,newList(t));
 							}		
 		| shift_expr OP_ZRSH add_expr			{$$=(Attr *)malloc(sizeof(Attr));
-							if(!$1->assign){
-								/*fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$1->place);*/
-								/*exit(1);*/
-							}
-							if(!$3->assign){
-								/*fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$3->place);*/
-								/*exit(1);*/
-							}
-							$$->assign=true;
+							
 							strcpy($$->place,tempVar());
 							$$->code=append($1->code,$3->code);
 							sprintf(t,", >>>, %s, %s, %s",$$->place,$1->place,$3->place);
@@ -1018,30 +902,14 @@ shift_expr	: add_expr				{$$=$1;}
 
 add_expr	: mul_expr				{$$=$1;}
 		| add_expr OP_ADD mul_expr			{$$=(Attr *)malloc(sizeof(Attr));
-							if(!$1->assign){
-								/*fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$1->place);*/
-								/*exit(1);*/
-							}
-							if(!$3->assign){
-								/*fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$3->place);*/
-								/*exit(1);*/
-							}
-							$$->assign=true;
+							
 							strcpy($$->place,tempVar());
 							$$->code=append($1->code,$3->code);
 							sprintf(t,", +, %s, %s, %s",$$->place,$1->place,$3->place);
 							$$->code=append($$->code,newList(t));
 							}
 		| add_expr OP_SUB mul_expr			{$$=(Attr *)malloc(sizeof(Attr));
-							if(!$1->assign){
-								/*fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$1->place);*/
-								/*exit(1);*/
-							}
-							if(!$3->assign){
-								/*fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$3->place);*/
-								/*exit(1);*/
-							}
-							$$->assign=true;
+							
 							strcpy($$->place,tempVar());
 							$$->code=append($1->code,$3->code);
 							sprintf(t,", -, %s, %s, %s",$$->place,$1->place,$3->place);
@@ -1051,45 +919,20 @@ add_expr	: mul_expr				{$$=$1;}
 
 mul_expr	: unary_expr				{$$=$1;}
 		| mul_expr OP_MUL unary_expr			{$$=(Attr *)malloc(sizeof(Attr));
-							if(!$1->assign){
-								/*fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$1->place);*/
-								/*exit(1);*/
-							}
-							if(!$3->assign){
-								/*fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$3->place);*/
-								/*exit(1);*/
-							}
-							$$->assign=true;
+							
 							strcpy($$->place,tempVar());
 							$$->code=append($1->code,$3->code);
 							sprintf(t,", *, %s, %s, %s",$$->place,$1->place,$3->place);
 							$$->code=append($$->code,newList(t));
 							}
 		| mul_expr OP_DIV unary_expr			{$$=(Attr *)malloc(sizeof(Attr));
-							if(!$1->assign){
-								/*fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$1->place);*/
-								/*exit(1);*/
-							}
-							if(!$3->assign){
-								/*fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$3->place);*/
-								/*exit(1);*/
-							}
-							$$->assign=true;
 							strcpy($$->place,tempVar());
 							$$->code=append($1->code,$3->code);
 							sprintf(t,", /, %s, %s, %s",$$->place,$1->place,$3->place);
 							$$->code=append($$->code,newList(t));
 							}
 		| mul_expr OP_MOD unary_expr			{$$=(Attr *)malloc(sizeof(Attr));
-							if(!$1->assign){
-								/*fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$1->place);*/
-								/*exit(1);*/
-							}
-							if(!$3->assign){
-								/*fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$3->place);*/
-								/*exit(1);*/
-							}
-							$$->assign=true;
+							
 							strcpy($$->place,tempVar());
 							$$->code=append($1->code,$3->code);
 							sprintf(t,", %%, %s, %s, %s",$$->place,$1->place,$3->place);
@@ -1104,10 +947,7 @@ cast_expr	: PAREN_S primitive_type PAREN_E unary_expr
 unary_expr	: preinc_expr			{$$=$1;}
 		| predec_expr			{$$=$1;}
 		| OP_ADD unary_expr				{char temp[10];
-							if(!$2->assign){
-								/*fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$2->place);
-								/*exit(1);*/
-							}
+							
 							strcpy(temp,tempVar());
 							sprintf(t,", =, %s, %s",temp,$2->place);
 							$2->code=append($2->code,newList(t));
@@ -1115,10 +955,7 @@ unary_expr	: preinc_expr			{$$=$1;}
 							$$=$2;
 							}
 		| OP_SUB unary_expr				{char temp[10];
-							if(!$2->assign){
-								/*fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$2->place);
-								/*exit(1);*/
-							}
+							
 							strcpy(temp,tempVar());
 							sprintf(t,", -, %s, 0, %s",temp,$2->place);
 							$2->code=append($2->code,newList(t));
@@ -1129,20 +966,14 @@ unary_expr	: preinc_expr			{$$=$1;}
 		;
 
 preinc_expr	: OP_INC unary_expr				{sprintf(t,", +, %s, %s, 1",$2->place,$2->place);
-							if(!$2->assign){
-								/*fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$2->place);
-								/*exit(1);*/
-							}
+							
 							$2->code=append($2->code,newList(t));
 							$$=$2;
 							}	
 		;
 
 predec_expr	: OP_DEC unary_expr				{sprintf(t,", -, %s, %s, 1",$2->place,$2->place);
-							if(!$2->assign){
-								/*fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$2->place);
-								/*exit(1);*/
-							}
+							
 							$2->code=append($2->code,newList(t));
 							$$=$2;
 							}	
@@ -1150,10 +981,7 @@ predec_expr	: OP_DEC unary_expr				{sprintf(t,", -, %s, %s, 1",$2->place,$2->pla
 
 unary_expr_not_plus_minus	: postfix_expr		{$$=$1;}
 				| OP_NEG unary_expr		{char temp[10];
-							if(!$2->assign){
-								/*fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$2->place);
-								/*exit(1);*/
-							}
+							
 							strcpy(temp,tempVar());
 							sprintf(t,", !, %s, %s",temp,$2->place);
 							$2->code=append($2->code,newList(t));
@@ -1164,13 +992,7 @@ unary_expr_not_plus_minus	: postfix_expr		{$$=$1;}
 				;
 
 postdec_expr	: postfix_expr OP_DEC				{char temp[10];
-							if(!$1->assign){
-								/*fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$1->place);*/
-								/*exit(1);*/
-							}
-							//sprintf(temp,"%s",tempVar());
-							//sprintf(t,", =, %s, %s",temp,$1->place);
-							//$1->code=append($1->code,newList(t));
+							
 							sprintf(t,", -, %s, %s, 1",$1->place,$1->place);
 							$1->code=append($1->code,newList(t));
 							sprintf($1->place,"%s",temp);
@@ -1179,13 +1001,7 @@ postdec_expr	: postfix_expr OP_DEC				{char temp[10];
 		;
 
 postinc_expr	: postfix_expr OP_INC				{char temp[10];
-							//sprintf(temp,"%s",tempVar());
-							if(!$1->assign){
-								/*fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$1->place);*/
-								/*exit(1);*/
-							}
-							//sprintf(t,", =, %s, %s",temp,$1->place);
-							//$1->code=append($1->code,newList(t));
+							
 							sprintf(t,", +, %s, %s, 1",$1->place,$1->place);
 							$1->code=append($1->code,newList(t));
 							sprintf($1->place,"%s",temp);
@@ -1199,7 +1015,7 @@ postfix_expr	: primary		{$$=$1;}
 		| postdec_expr		{$$=$1;}
 		;
 
-method_invo	: name PAREN_S arg_list_e PAREN_E 			{$$=$1;}
+method_invo	: name PAREN_S arg_list_e PAREN_E 			{$$=$1;$$->code=$3->code;}
 		| primary OP_DOT identifier PAREN_S arg_list_e PAREN_E		{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}
 		| SUPER OP_DOT identifier PAREN_S arg_list_e PAREN_E		{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}
 		;
@@ -1228,12 +1044,34 @@ primary_no_new_array	: literal			{$$=$1;$$->assign=true;}
 object_expr	: NEW class_type PAREN_S arg_list_e PAREN_E		
 		;
 
-arg_list_e	: argument_list		
-		| /* empty */		
+arg_list_e	: argument_list				{$$=$1;}
+		| /* empty */				{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}					
 		;
 
-argument_list	: expr				
-		| argument_list SEP expr	
+argument_list	: ID					{p=look_up(table,$1);
+							 if(p){
+								$$=(Attr *)malloc(sizeof(Attr));
+								strcpy($$->place,$1);
+								strcpy($$->type,p->type);
+								sprintf(t,", param, %s",$1);
+								$$->code=newList(t);
+							 }
+							 else{
+								fprintf(stderr,"Error on %d: %s undeclared\n",yylineno,$1);
+							//exit(1);}
+							}}			
+		| argument_list SEP ID			{$$=$1;
+							p=look_up(table,$3);
+							 if(p){
+								strcpy($$->place,$3);
+								strcpy($$->type,p->type);
+								sprintf(t,", param, %s",$3);
+								$$->code=append(newList(t),$1->code);
+							 }
+							 else{
+								fprintf(stderr,"Error on %d: %s undeclared\n",yylineno,$3);
+							//exit(1);}
+							}}			
 		;
 		
 arr_assgn		: lhs OP_ASS array_creat_expr	{$$ = $3;}
@@ -1372,7 +1210,6 @@ identifier		: ID			{SymtabEntry *tempo=look_up(table,$1);
 						$$=(Attr *)malloc(sizeof(Attr));
 						strcpy($$->place,$1);
 						strcpy($$->type,tempo->type);
-						$$->assign=tempo->assign;
 						$$->code=NULL;
 						}
 					else
@@ -1386,6 +1223,7 @@ int main(int argc, char** argv){
 	mainTable->prev=NULL;
 	table=mainTable;
 	FILE *fptr = fopen(argv[1], "r");
+	method_flag=false;
 	if(argc==2 && fptr!=NULL){
 		yyin = fptr;
 	}
@@ -1396,6 +1234,7 @@ int main(int argc, char** argv){
 	while(!feof(yyin)){
 		yyparse();
 	}
+	printSymtab(mainTable);
 	free(p);
 	free(mainTable);
 	fclose(fptr);

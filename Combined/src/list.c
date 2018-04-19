@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h>
-#include "list.h"
+#include "global.h"
 #include "y.tab.h"
 
 //returns the tail of the list
