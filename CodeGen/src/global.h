@@ -1,7 +1,7 @@
 #include <stdbool.h>
 //global variables
 
-enum InstrType{ Assignment , Pointer , Ind_Ass_1 , Ind_Ass_2 , ifgoto , Goto , ret , call , label , print , scan};
+enum InstrType{ Assignment , Pointer , Ind_Ass_1 , Ind_Ass_2 , ifgoto , Goto , ret , call , label , print , scan , func};
 enum TACkeywords{add , sub , mul , divi , mod , gt , lt , ge , le , ne , eq , assgn ,  and, or , neg , rsh , lsh ,assgn_call};
 
 extern int nline;
@@ -41,7 +41,7 @@ typedef struct Instruction3AC{
 	SymtabEntry *out;
 	bool out_liveness;
 	int out_nextuse;
-	int target; // jump target
+	char target[20]; // jump target
 	enum TACkeywords op;
 	bool label;
 	int l;	//stores the index of the array

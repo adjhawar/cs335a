@@ -3,10 +3,11 @@
 3, call, fac
 4, print, b
 5, ret
-6, label, fac
-7, ifgoto, eq, n, 1, 11
+6, func, fac
+7, ifgoto, eq, n, 1, end
 8, *, b, b, n
 9, -, n, n, 1
 10, call, fac
-11, ret
+11,label, end
+12, ret
 

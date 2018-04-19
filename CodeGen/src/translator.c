@@ -175,13 +175,13 @@ int main(int argc,char* argv[]){
 						ir[nline].op=gt;
 					ir[nline].in1 = Insert(strs[3]);
 					ir[nline].in2 = Insert(strs[4]);
-					ir[nline].target = atoi(strs[5]);
-					ir[atoi(strs[5])-1].label=true;
+					strcpy(ir[nline].target,strs[5]);
+					//ir[atoi(strs[5])-1].label=true;
 				}
 				else if(strcmp(key,"Goto")==0){
 					ir[nline].typ = Goto;
-					ir[nline].target = atoi(strs[2]);
-					ir[atoi(strs[2])-1].label=true;
+					strcpy(ir[nline].target,strs[2]);
+					//ir[atoi(strs[2])-1].label=true;
 				}
 				else if(strcmp(key,"ret")==0){
 					ir[nline].typ = ret;
@@ -192,14 +192,18 @@ int main(int argc,char* argv[]){
 				}
 				else if(strcmp(key,"call")==0){
 					ir[nline].typ = call;
-					ir[nline].in1 = Insert(strs[2]);
+					strcpy(ir[nline].target,strs[2]);
 					ir[nline].label = true;
-					strcpy(ir[nline].in1->type,"label");
+					//strcpy(ir[nline].in1->type,"label");
 				}
 				else if(strcmp(key,"label")==0){
 					ir[nline].label=true;
 					ir[nline].typ = label;
-					ir[nline].in1 = Insert(strs[2]);
+					strcpy(ir[nline].target,strs[2]);
+				}
+				else if(strcmp(key,"func")==0){
+					ir[nline].typ = func;
+					strcpy(ir[nline].target,strs[2]);
 				}
 				else if(strcmp(key,"print")==0){
 					ir[nline].typ = print;

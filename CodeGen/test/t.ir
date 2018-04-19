@@ -1,0 +1,21 @@
+1 , =, b, 1
+2 , =, xyz,0
+3 , scan, n
+4 , call, fac
+5 , print, b
+6 , ret
+7 , func, fac
+8 , =, temp0, n
+9 , -, n, n, 1
+10 , *, temp1, b, temp0
+11 , =,b, temp1
+12 , ifgoto, neq , n , 1 , L1 
+13 , = , temp2 , 0
+14 , Goto, L0
+15 , label , L1
+16 , = , temp2, 1
+17 , label , L0
+18 , ifgoto, eq, temp2, 0, L2
+19 , call, fac
+20 , label, L2
+21 , ret

@@ -9,12 +9,12 @@ int R_x,R_y,R_z;
 void getReg(int i)
 {
 	int r;
-	if(ir[i].typ==label)
-	{	printf(".globl %s\n",ir[i].in1->lexeme);
-		printf("%s:\t",ir[i].in1->lexeme);
+	if(ir[i].typ==func)
+	{	printf(".globl %s\n",ir[i].target);
+		printf("%s:\t",ir[i].target);
 	}
-	else if(ir[i].label==true)
-		printf("L%d:\t",i+1);
+	else if(ir[i].typ==label)
+		printf("%s:\t",ir[i].target);
 	if(ir[i].typ==Ind_Ass_1){
 		if(ir[i].out->add_des.reg_no==-1){
 			r=empty_reg(i);
@@ -364,9 +364,9 @@ void getReg(int i)
 		}
 	}
 	else if(ir[i].typ==call)
-		printf("\t call %s\n",ir[i].in1->lexeme);
+		printf("\t call %s\n",ir[i].target);
 	else if(ir[i].typ==Goto)
-		printf("\t jmp L%d\n",ir[i].target);
+		printf("\t jmp %s\n",ir[i].target);
 	else if(ir[i].typ==ifgoto){
 		//implement the cmp call
 		if(ir[i].in1->add_des.reg_no==-1)
@@ -383,17 +383,17 @@ void getReg(int i)
 		else
 			printf("\t cmpq %s,%s\n",registers[ir[i].in2->add_des.reg_no],registers[ir[i].in1->add_des.reg_no]);
 		if(ir[i].op==eq)
-			printf("\t je L%d\n",ir[i].target);
+			printf("\t je %s\n",ir[i].target);
 		else if(ir[i].op==ne)
-			printf("\t jne L%d\n",ir[i].target);
+			printf("\t jne %s\n",ir[i].target);
 		else if(ir[i].op==ge)
-			printf("\t jge L%d\n",ir[i].target);
+			printf("\t jge %s\n",ir[i].target);
 		else if(ir[i].op==le)
-			printf("\t jle L%d\n",ir[i].target);
+			printf("\t jle %s\n",ir[i].target);
 		else if(ir[i].op==gt)
-			printf("\t jg L%d\n",ir[i].target);
+			printf("\t jg %s\n",ir[i].target);
 		else if(ir[i].op==lt)
-			printf("\t jl L%d\n",ir[i].target);
+			printf("\t jl %s\n",ir[i].target);
 	}
 	else if(ir[i].typ==ret){
 		printf("\t ret\n");

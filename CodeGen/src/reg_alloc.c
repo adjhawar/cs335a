@@ -60,7 +60,7 @@ void reg_alloc(){
 			leaders[i] = 1;
 		else if (i+1<nline && (ir[i].typ == Goto || ir[i].typ == ifgoto)){
 			leaders[i+1] = 1;
-			leaders[ir[i].target-1] = 1;
+			//leaders[ir[i].target-1] = 1;
 		}
 		else if(i+1 < nline && (ir[i].typ == call || ir[i].typ == ret)){
 			leaders[i+1] = 1;
@@ -71,7 +71,7 @@ void reg_alloc(){
 		while(j>=0 && leaders != NULL && leaders[j]!=1){
 			j--;
 		}
-		update(i,j);
+		//update(i,j);
 		i = j-1;
 		j--;
 	}
