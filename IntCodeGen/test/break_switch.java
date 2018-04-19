@@ -14,11 +14,11 @@ class $test {
     		switch(z){
 			case 2 : z+=2 ;
 				 break; 
-			case 3 : z+=3;
-			case 5 : z+=4;
+			case 3 : z=3;
+			case 5 : z=4;
 				 break;
-			case 7 : z+=7;
-			default :;
+			case 7 : z=7;
+			default : print(z);
 			 }
 		return z;
 		}

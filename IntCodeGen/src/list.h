@@ -18,8 +18,8 @@ typedef struct Attr{
 	char place[50];
 	char type[15];
 	char idx[10];
-	bool assign;
 	list3AC *code;
+	bool assign;
 }Attr;
 
 typedef struct Add_des{
@@ -31,7 +31,6 @@ typedef struct SymtabEntry{
 	char lexeme[50];
 	char type[15];
 	Arr_dim *arr_dim;
-	bool arr;
 	struct SymtabEntry *next;
 	struct Symtab *func;
 	Add_des add_des;

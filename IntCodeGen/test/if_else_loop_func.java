@@ -1,6 +1,7 @@
 class $test {
         int x = 10;
-	int a,y = 4;	
+	int y = 4;	
+    int a = 0;
     	int comp() {
             int z;
     		if (x > y) 
@@ -11,6 +12,7 @@ class $test {
         int main() {
             int i=0;
 	    while(i<10){
+            i+=2;
 		print(a);
 		i++;
 	    }
