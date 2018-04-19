@@ -36,6 +36,8 @@ SymtabEntry* Insert(Symtab *table, char* lex, char *type, bool assign)
 	else
 	{
 		SymtabEntry *temp =(SymtabEntry *)malloc(sizeof(SymtabEntry));
+		temp->liveness = false;
+		temp->nextuse = -1;
 		temp->func=NULL;
 		temp->assign=assign;
 		strcpy(temp->lexeme,lex);
@@ -44,6 +46,8 @@ SymtabEntry* Insert(Symtab *table, char* lex, char *type, bool assign)
 			strcpy(temp->type,"const");
 		temp->next=NULL;
 		temp->offset=0;
+		temp->add_des.reg_no = -1;
+		temp->add_des.mem=false;
 		if(table->head==NULL)
 		{
 			table->head = temp;

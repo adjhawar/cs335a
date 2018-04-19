@@ -22,6 +22,7 @@ SymtabEntry *p;
 Arr_dim *h;
 Symtab *mainTable,*table;
 int offset,totalOff;
+list3AC *finalList;
 
 /*
 	type is int:	normal variable of int type
@@ -43,6 +44,10 @@ char* newLabel(){
 	return LABEL;
 }
 
+void typeError(int line){
+	printf("Type error on line %d\n",line);
+	exit(1);
+}
 %}
 
 %locations
@@ -127,7 +132,7 @@ supers			: EXTENDS class_type
 class_body		: BLOCK_S class_body_decl_e BLOCK_E 					
 			;
 
-class_body_decl_e	: class_body_decls 			{printList($1->code);}	
+class_body_decl_e	: class_body_decls 			{finalList=$1->code;}	
 			| /* empty */ 								
 			;
 
@@ -1137,6 +1142,8 @@ preinc_expr	: OP_INC unary_expr				{sprintf(t,", +, %s, %s, 1",$2->place,$2->pla
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$2->place);
 								exit(1);
 							}
+							if(strcmp($2->type,"int") || strcmp($2->type,"int2"))
+								typeError(yylineno);
 							$2->code=append($2->code,newList(t));
 							$$=$2;
 							}	
@@ -1147,6 +1154,8 @@ predec_expr	: OP_DEC unary_expr				{sprintf(t,", -, %s, %s, 1",$2->place,$2->pla
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$2->place);
 								exit(1);
 							}
+							if(strcmp($2->type,"int") || strcmp($2->type,"int2"))
+								typeError(yylineno);
 							$2->code=append($2->code,newList(t));
 							$$=$2;
 							}	
@@ -1172,6 +1181,8 @@ postdec_expr	: postfix_expr OP_DEC				{char temp[10];
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$1->place);
 								exit(1);
 							}
+							if(strcmp($1->type,"int") || strcmp($1->type,"int2"))
+								typeError(yylineno);
 							sprintf(t,", -, %s, %s, 1",$1->place,$1->place);
 							$1->code=append($1->code,newList(t));
 							sprintf($1->place,"%s",temp);
@@ -1184,6 +1195,8 @@ postinc_expr	: postfix_expr OP_INC				{char temp[10];
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$1->place);
 								exit(1);
 							}
+							if(strcmp($1->type,"int") || strcmp($1->type,"int2"))
+								typeError(yylineno);
 							sprintf(t,", +, %s, %s, 1",$1->place,$1->place);
 							$1->code=append($1->code,newList(t));
 							sprintf($1->place,"%s",temp);
@@ -1212,7 +1225,11 @@ primary		: primary_no_new_array		{$$=$1;}
 
 		;
 
-primary_no_new_array	: literal			{$$=$1;$$->assign=true;}
+primary_no_new_array	: literal			{$$=$1;$$->assign=true;
+							sprintf(t,"%s","const");
+							if(!look_up(table,$1->place))
+								Insert(table,$1->place,t,true);
+							}
 			| THIS			{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}
 			| PAREN_S expr PAREN_E		{$$=$2;}	
 			| object_expr		{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}
@@ -1397,9 +1414,8 @@ identifier		: ID			{SymtabEntry *tempo=look_up(table,$1);
 						$$->code=NULL;
 						}
 					else{
-						fprintf(stderr,"Error: Variable %s undeclared or undefined on line %d\n",$1,yylineno);
 						yyerrok;
-						exit(1);}}
+						}}
 			;
 %%
 int main(int argc, char** argv){
@@ -1420,7 +1436,9 @@ int main(int argc, char** argv){
 	while(!feof(yyin)){
 		yyparse();
 	}
-	printSymtab(mainTable);
+	translator(finalList);
+	/*printSymtab(mainTable);
+	printList(finalList);*/
 	free(p);
 	free(mainTable);
 	fclose(fptr);
