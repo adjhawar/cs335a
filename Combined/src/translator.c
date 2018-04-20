@@ -69,7 +69,7 @@ void translator(list3AC *list){
 		rest=(char *)malloc(sizeof(char)*(strlen(list->instr)+3));
 		sprintf(rest,"%d%s",nline+1,list->instr);
 		list=list->next;
-		printf("%s\n",rest);
+		//printf("%s\n",rest);
 		char strs[6][100];
 		int i = 0;
 		while ((token = strtok_r(rest, ", ", &rest))){
@@ -77,7 +77,7 @@ void translator(list3AC *list){
 			i++;
 		}
 		char *key = strs[1];
-		if(strcmp(key,"=")==0 && strchr(strs[2],(int)'[')){
+		if(strcmp(key,"=")==0 && strchr(strs[2],(int)'[')){	//a[0]=x
 			char *temp;			
 			temp= strtok(strs[2], "[");
 			ir[nline].out = look_up(table,temp);
@@ -87,7 +87,7 @@ void translator(list3AC *list){
 			ir[nline].in2 = look_up(table,temp);
 			ir[nline].in1 = look_up(table,strs[3]);
 		}
-		else if(strcmp(key,"=")==0 && strchr(strs[3],(int)'[')){
+		else if(strcmp(key,"=")==0 && strchr(strs[3],(int)'[')){	//x=a[0]
 			char *temp;
 			temp= strtok(strs[3], "[");
 			ir[nline].in1 = look_up(table,temp);
@@ -231,9 +231,9 @@ void translator(list3AC *list){
 		}
 		nline++;
 	}
-	printSymtab(mainTable);
-		/*reg_alloc();
-		
+	//printSymtab(mainTable);
+		reg_alloc();
+	
 		SymtabEntry *temp=mainTable->head;            // setting up data regions for global variables
 		printf(".data\n");
 		int k =0;
@@ -261,6 +261,6 @@ void translator(list3AC *list){
 		}
 
 		free(ir);
-		free(leaders);*/
+		free(leaders);
 	}
 

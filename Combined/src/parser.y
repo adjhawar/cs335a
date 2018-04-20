@@ -1340,13 +1340,13 @@ primary_no_new_array	: literal			{$$=$1;$$->assign=true;
 			| field_access		{$$=$1;}	
 			| method_invo			{
 						sprintf(t,", =, %s, call, %s",tempVar(),$1->place);
-						$$=$1;
+						$$=$1;$$->code=newList(t);
 						strcpy($$->place,TEMP);
 						strcpy(t,"int");
 						p=Insert(table,TEMP,t,true);
 						totalOff+=8;
 						p->offset=totalOff;
-						$$->code=newList(t);}	
+						}	
 			;
 
 object_expr	: NEW class_type PAREN_S arg_list_e PAREN_E		
