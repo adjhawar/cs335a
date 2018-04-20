@@ -121,9 +121,9 @@ int yynerrs;
 						 free(s);
 						 yylval.fval=f;
   						 return FLOAT_LIT;}
-[0][xX][0-9a-fA-F]+				{yylval.ival=atoi(yytext);return INT_LIT_H;}
-[0][0-7]+					{yylval.ival=atoi(yytext);return INT_LIT_O;}
-[0-9]+						{yylval.ival=atoi(yytext);return INT_LIT_D;}
+[+-]?[0][xX][0-9a-fA-F]+				{yylval.ival=atoi(yytext);return INT_LIT_H;}
+[+-]?[0][0-7]+					{yylval.ival=atoi(yytext);return INT_LIT_O;}
+[+-]?[0-9]+						{yylval.ival=atoi(yytext);return INT_LIT_D;}
 
 \n			{yylineno++;}
 [\t\r\f]|" "		;
