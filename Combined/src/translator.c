@@ -8,50 +8,7 @@
 int nline, size;
 SymtabEntry *head,*tail;
 int *leaders;
-/*
-SymtabEntry* look_up(char *lex){
-	SymtabEntry* temp = head;
-	if(strcmp(lex, "0")==0 || strcmp(lex, "0\n")==0 || atoi(lex)) 
-		return NULL;
-	while(temp!=NULL && strcmp(temp->lexeme,lex))
-	{
-		temp=temp->next;
-	}
-	return temp;
-}
 
-SymtabEntry* look_up(table,char* lex)
-{
-	SymtabEntry *tem = look_up(lex);
-	if(tem){
-		return tem;
-	}
-	else
-	{
-		SymtabEntry *temp =(SymtabEntry *)malloc(sizeof(SymtabEntry));
-		
-		strcpy(temp->lexeme,lex);
-		if(strcmp(lex, "0")==0 || atoi(lex)) 
-			strcpy(temp->type,"const");
-		temp->next=NULL;
-		
-		if(head==NULL)
-		{
-			head = temp;
-			tail = temp;
-		}
-		else
-		{
-			tail->next = temp;
-			tail = temp;
-		}
-		return temp;
-	//}
-	
-}
-}
-
-*/
 void translator(list3AC *list){
 	nline=0;
 	size=200;
@@ -237,13 +194,18 @@ void translator(list3AC *list){
 	}
 	//printSymtab(mainTable);
 		reg_alloc();
-	
 		SymtabEntry *temp=mainTable->head;            // setting up data regions for global variables
 		printf(".data\n");
 		int k =0;
-		while(ir[k].typ!=func){
-			printf("%s:	.quad %s\n",ir[k].out->lexeme,ir[k].in1->lexeme);
-			k++;
+		while(temp){
+			if(ir[k].out && strcmp(temp->lexeme,ir[k].out->lexeme)==0){
+				printf("%s:	.quad %s\n",ir[k].out->lexeme,ir[k].in1->lexeme);
+				k++;}
+	                if(strcmp(temp->type,"int")==0)
+				printf("%s:	.quad 0\n",temp->lexeme);
+			else if(strcmp(temp->type,"float")==0)
+				printf("%s:	.quad 0.0\n",temp->lexeme);
+			temp=temp->next;
 		}
 		printf("str:   .string \"%%d \\n\"\n");   // for printf
 		printf("str1:   .string \"%%d\"\n");      // for scanf  
