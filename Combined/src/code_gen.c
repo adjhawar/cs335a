@@ -5,6 +5,7 @@
 
 char registers[14][5] = { "%rax","%rbx","%rcx","%rdx","%rsi","%rdi","%r8","%r9","%r10","%r11","%r12","%r13","%r14","%r15" };
 int R_x,R_y,R_z;
+SymtabEntry *currentTable; 
   
 void getReg(int i)
 {
@@ -13,18 +14,18 @@ void getReg(int i)
 	if(ir[i].typ==func)
 	{	printf(".globl %s\n",ir[i].target);
 		printf("%s:\t",ir[i].target);
-		currentTable = lookup(mainTable, ir[i].target);
-		printf("\n\t pushq, %rbp \n\t movq %rsp, %rbp ");
-		printf("\n\t subq $%d, %rsp",look_up(mainTable, ir[i].target)->offset);
-		printf("\n\t pushq %rbx \n\t pushq %r12 \n\t pushq %r13 \n\t pushq %r14 \n\t pushq %r15");
+		currentTable = look_up(mainTable, ir[i].target);
+		printf("\n\t pushq %%rbp \n\t movq %%rsp, %%rbp ");
+		printf("\n\t subq $%d, %%rsp\n",look_up(mainTable, ir[i].target)->offset);
+		//printf("\n\t pushq %%rbx \n\t pushq %%r12 \n\t pushq %%r13 \n\t pushq %%r14 \n\t pushq %%r15");
 	}
 	else if(ir[i].typ==label)
 		printf("%s:\t",ir[i].target);
 	if(ir[i].typ==Ind_Ass_1){
 		if(ir[i].out->add_des.reg_no==-1){
 			r=empty_reg(i);
-			if(var=look_uptable(currentTable->func, ir[i].out->lexeme)
-				printf("\t movq -%d(%rbp), %s\n",var->offset,registers[r]);
+			if(var=look_upTable(currentTable->func, ir[i].out->lexeme))
+				printf("\t movq -%d(%%rbp), %s\n",var->offset,registers[r]);
 			else
 				printf("\t movq $%s,%s\n",ir[i].out->lexeme,registers[r]);
 			reg_des[r]=ir[i].out;
@@ -115,26 +116,49 @@ void getReg(int i)
 		if(ir[i].op==assgn){
 			if(strcmp(ir[i].in1->type,"const")==0){
 				if(ir[i].out->add_des.reg_no==-1){
-					printf("movq $%d,%s\n",atoi(ir[i].in1->lexeme),ir[i].out->lexeme);}
+					if(var=look_upTable(currentTable->func, ir[i].out->lexeme))
+						printf("\t movq $%d,-%d(%%rbp)\n",atoi(ir[i].in1->lexeme),var->offset);
+					else
+						printf("movq $%d,%s\n",atoi(ir[i].in1->lexeme),ir[i].out->lexeme);
+				}
 				else{
 					ir[i].out->add_des.mem=true;
 					printf("movq $%d,%s\n",atoi(ir[i].in1->lexeme),registers[ir[i].out->add_des.reg_no]);
 				}}
 			else if(ir[i].out->add_des.reg_no!=-1)
 			{
-				if(ir[i].in1->add_des.reg_no==-1)
-					printf("movq %s,%s\n",ir[i].in1->lexeme,registers[ir[i].out->add_des.reg_no]);
+				if(ir[i].in1->add_des.reg_no==-1){
+					if(var=look_upTable(currentTable->func, ir[i].out->lexeme))
+						printf("\t movq -%d(%%rbp),%s\n",var->offset,registers[ir[i].out->add_des.reg_no]);
+					else
+						printf("movq %s,%s\n",ir[i].in1->lexeme,registers[ir[i].out->add_des.reg_no]);
+				}
 				else
 					printf("movq %s,%s\n",registers[ir[i].in1->add_des.reg_no],registers[ir[i].out->add_des.reg_no]);
 			}else{				
 				if(ir[i].in1->add_des.reg_no==-1){
 					r=empty_reg(i);
-					printf("movq %s,%s\n",ir[i].in1->lexeme,registers[r]);
-					printf("movq %s,%s\n",registers[r],ir[i].out->lexeme);
+
+					if(var=look_upTable(currentTable->func, ir[i].in1->lexeme))
+						printf("\t movq -%d(%%rbp),%s\n",var->offset,registers[r]);
+					else
+						printf("movq %s,%s\n",ir[i].in1->lexeme,registers[r]);
+
+					if(var=look_upTable(currentTable->func, ir[i].out->lexeme))
+						printf("\t movq -%d(%%rbp),%s\n",var->offset,registers[r]);
+					else
+						printf("movq %s,%s\n",registers[r],ir[i].out->lexeme);
+
 					ir[i].in1->add_des.reg_no=r;
 					reg_des[r]=ir[i].in1;}	
 				else
-					printf("movq %s,%s\n",registers[ir[i].in1->add_des.reg_no],ir[i].out->lexeme);}}		 
+
+					if(var=look_upTable(currentTable->func, ir[i].out->lexeme))
+						printf("\t movq %s,-%d(%%rbp)\n",registers[ir[i].in1->add_des.reg_no],var->offset);
+					else
+						printf("movq %s,%s\n",registers[ir[i].in1->add_des.reg_no],ir[i].out->lexeme);
+
+				}}		 
 		else if(ir[i].op==add)
 		{
 			if(ir[i].in1->add_des.reg_no==-1)
@@ -143,8 +167,8 @@ void getReg(int i)
 				if(strcmp(ir[i].in1->type,"const")==0)
 					printf("\t movq $%d,%s\n",atoi(ir[i].in1->lexeme),registers[r]);
 				else{
-					if(var=look_uptable(currentTable->func, ir[i].in1->lexeme)
-						printf("\t movq -%d(%rbp), %s\n",var->offset,registers[r]);
+					if(var=look_upTable(currentTable->func, ir[i].in1->lexeme))
+						printf("\t movq -%d(%%rbp), %s\n",var->offset,registers[r]);
 					else
 						printf("\t movq %s,%s\n",ir[i].in1->lexeme,registers[r]);
 				}
@@ -157,13 +181,18 @@ void getReg(int i)
 			}
 			if(strcmp(ir[i].in2->type,"const")==0)
 				printf("\t addq $%d,%s\n",atoi(ir[i].in2->lexeme),registers[r]);
-			else if(ir[i].in2->add_des.reg_no==-1)
-				printf("\t addq %s,%s\n",ir[i].in2->lexeme,registers[r]);
+			else if(ir[i].in2->add_des.reg_no==-1){
+
+				if(var=look_upTable(currentTable->func, ir[i].in2->lexeme))
+					printf("\t addq -%d(%%rbp),%s\n",var->offset,registers[r]);
+				else
+					printf("\t addq %s,%s\n",ir[i].in2->lexeme,registers[r]);
+			}
 			else
 				printf("\t addq %s,%s\n",registers[ir[i].in2->add_des.reg_no],registers[r]);
 			if(ir[i].out->add_des.reg_no==-1){
-					if(var=look_uptable(currentTable->func, ir[i].in1->lexeme)
-						printf("\t movq  %s,-%d(%rbp)\n",registers[r],var->offset);
+					if(var=look_upTable(currentTable->func, ir[i].out->lexeme))
+						printf("\t movq  %s,-%d(%%rbp)\n",registers[r],var->offset);
 					else
 						printf("\t movq %s,%s\n",registers[r],ir[i].out->lexeme);
 				ir[i].out->add_des.reg_no=r;
@@ -411,6 +440,7 @@ void getReg(int i)
 			printf("\t jl %s\n",ir[i].target);
 	}
 	else if(ir[i].typ==Ret){
+		printf("\tmovq %%rbp,%%rsp \n\t popq %%rbp \n");
 		printf("\t ret\n");
 		if(ir[i].in1!=NULL)
 		{
@@ -437,20 +467,32 @@ void getReg(int i)
 	else if(ir[i].typ==print)
 	{
 		if(reg_des[5]){
-			printf("movq %%rdi,%s\n",reg_des[5]->lexeme);
+			if(var=look_upTable(currentTable->func, reg_des[5]->lexeme))
+				printf("\t movq %%rdi,-%d(%%rbp)\n",var->offset);
+			else
+				printf("movq %%rdi,%s\n",reg_des[5]->lexeme);
 			reg_des[5]->add_des.reg_no=-1;
 			reg_des[5]=NULL;
 		}
 		if(reg_des[4]){
-			printf("movq %%rsi,%s\n",reg_des[4]->lexeme);
+			if(var=look_upTable(currentTable->func, reg_des[4]->lexeme))
+				printf("\t movq %%rsi,-%d(%%rbp)\n",var->offset);
+			else
+				printf("movq %%rsi,%s\n",reg_des[4]->lexeme);
 			reg_des[4]->add_des.reg_no=-1;
 			reg_des[4]=NULL;
 		}
 		if(reg_des[0]){
-			printf("movq %%rax,%s\n",reg_des[0]->lexeme);
+			if(var=look_upTable(currentTable->func, reg_des[0]->lexeme))
+				printf("\t movq %%rax,-%d(%%rbp)\n",var->offset);
+			else
+				printf("movq %%rax,%s\n",reg_des[0]->lexeme);
 			reg_des[0]->add_des.reg_no=-1;
 			reg_des[0]=NULL;
 		}
+		if(var=look_upTable(currentTable->func, ir[i].in1->lexeme))
+		printf("movq $str,%%rdi\n movq -%d(%%rbp),%%rsi\n movq $0,%%rax\n",var->offset);
+		else
 		printf("movq $str,%%rdi\n movq %s,%%rsi\n movq $0,%%rax\n",ir[i].in1->lexeme);
 		printf("pushq %%r10 \n pushq %%r11 \n call printf \n popq %%r11 \n popq %%r10 \n");	 
 	}
