@@ -1,6 +1,20 @@
 class $abc{
 		void main(){
-		int a=0;
-		a=a+2;
-		print(a);		
-}}
+		int sum;
+		scan(sum);
+		switch(sum)
+		{
+			case 1 : sum=2;
+				  break;
+			case 2 : sum=4;
+				  break;
+			case 3 : sum=6;
+				  break;
+		}
+		print(sum);
+		}
+		
+					
+	
+
+}
