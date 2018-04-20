@@ -69,7 +69,7 @@ void translator(list3AC *list){
 		rest=(char *)malloc(sizeof(char)*(strlen(list->instr)+3));
 		sprintf(rest,"%d%s",nline+1,list->instr);
 		list=list->next;
-		printf("%s\n",rest);
+		//printf("%s\n",rest);
 		char strs[6][100];
 		int i = 0;
 		while ((token = strtok_r(rest, ", ", &rest))){
@@ -235,7 +235,7 @@ void translator(list3AC *list){
 		}
 		nline++;
 	}
-	printSymtab(mainTable);
+	//printSymtab(mainTable);
 		reg_alloc();
 	
 		SymtabEntry *temp=mainTable->head;            // setting up data regions for global variables
