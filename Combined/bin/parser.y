@@ -15,7 +15,7 @@ void yyerror(const char *s);
 char TEMP[7];
 char LABEL[5];
 char t[100];
-char idr[15],methodType[10];
+char idr[15],methodType[10],temp[15];
 int flag1;
 bool ret;	//to check if function has a return statement or not
 SymtabEntry *p,*currFunc;
@@ -744,6 +744,10 @@ cond_or_expr	: cond_and_expr					{$$=$1;}
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$3->place);
 								exit(1);
 							}
+							if(strcmp("int",$1->type))
+									typeError(yylineno);
+							else if(strcmp("int",$3->type))
+									typeError(yylineno);
 							$$->assign=true;
 							sprintf(t,"%s",tempVar());
 							p=Insert(table,t,$1->type,true);
@@ -766,12 +770,17 @@ cond_and_expr	: incl_or_expr						{$$=$1;}
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$3->place);
 								exit(1);
 							}
+							if(strcmp("int",$1->type))
+									typeError(yylineno);
+							else if(strcmp("int",$3->type))
+									typeError(yylineno);
 							$$->assign=true;
-							sprintf(t,"%s",tempVar());
-							p=Insert(table,t,$1->type,true);
-							strcpy($$->place,t);
+							sprintf(temp,"%s",tempVar());
+							p=Insert(table,temp,$1->type,true);
+							strcpy($$->place,temp);
 							totalOff+=8;
 							p->offset=totalOff;
+							strcpy($$->type,$1->type);
 							$$->code=append($1->code,$3->code);
 							sprintf(t,", &&, %s, %s, %s",$$->place,$1->place,$3->place);
 							$$->code=append($$->code,newList(t));
@@ -788,12 +797,17 @@ incl_or_expr	: excl_or_expr	{$$=$1;}
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$3->place);
 								exit(1);
 							}
+							if(strcmp("int",$1->type))
+									typeError(yylineno);
+							else if(strcmp("int",$3->type))
+									typeError(yylineno);
 							$$->assign=true;
-							sprintf(t,"%s",tempVar());
-							p=Insert(table,t,$1->type,true);
-							strcpy($$->place,t);
+							sprintf(temp,"%s",tempVar());
+							p=Insert(table,temp,$1->type,true);
+							strcpy($$->place,temp);
 							totalOff+=8;
 							p->offset=totalOff;
+							strcpy($$->type,$1->type);
 							$$->code=append($1->code,$3->code);
 							sprintf(t,", |, %s, %s, %s",$$->place,$1->place,$3->place);
 							$$->code=append($$->code,newList(t));
@@ -810,12 +824,17 @@ excl_or_expr	: and_expr			{$$=$1;}
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$3->place);
 								exit(1);
 							}
+							if(strcmp("int",$1->type))
+									typeError(yylineno);
+							else if(strcmp("int",$3->type))
+									typeError(yylineno);
 							$$->assign=true;
-							sprintf(t,"%s",tempVar());
-							p=Insert(table,t,$1->type,true);
-							strcpy($$->place,t);
+							sprintf(temp,"%s",tempVar());
+							p=Insert(table,temp,$1->type,true);
+							strcpy($$->place,temp);
 							totalOff+=8;
 							p->offset=totalOff;
+							strcpy($$->type,$1->type);
 							$$->code=append($1->code,$3->code);
 							sprintf(t,", ^, %s, %s, %s",$$->place,$1->place,$3->place);
 							$$->code=append($$->code,newList(t));
@@ -832,12 +851,17 @@ and_expr 	: equality_expr					{$$=$1;}
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$3->place);
 								exit(1);
 							}
+							if(strcmp("int",$1->type))
+									typeError(yylineno);
+							else if(strcmp("int",$3->type))
+									typeError(yylineno);
 							$$->assign=true;
-							sprintf(t,"%s",tempVar());
-							p=Insert(table,t,$1->type,true);
-							strcpy($$->place,t);
+							sprintf(temp,"%s",tempVar());
+							p=Insert(table,temp,$1->type,true);
+							strcpy($$->place,temp);
 							totalOff+=8;
 							p->offset=totalOff;
+							strcpy($$->type,$1->type);
 							$$->code=append($1->code,$3->code);
 							sprintf(t,", &, %s, %s, %s",$$->place,$1->place,$3->place);
 							$$->code=append($$->code,newList(t));
@@ -854,12 +878,17 @@ equality_expr	: rel_expr						{$$=$1;}
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$3->place);
 								exit(1);
 							}
+					if(strcmp("int",$1->type))
+									typeError(yylineno);
+							else if(strcmp("int",$3->type))
+									typeError(yylineno);
 							$$->assign=true;
-					sprintf(t,"%s",tempVar());
-					p=Insert(table,t,$1->type,true);
-					strcpy($$->place,t);
-					totalOff+=8;
-					p->offset=totalOff;
+							sprintf(temp,"%s",tempVar());
+							p=Insert(table,temp,$1->type,true);
+							strcpy($$->place,temp);
+							totalOff+=8;
+							p->offset=totalOff;
+							strcpy($$->type,$1->type);
 					$$->code=append($1->code,$3->code);
 					char end[5],begin[5];
 					strcpy(end,newLabel()); strcpy(begin,newLabel());
@@ -885,12 +914,17 @@ equality_expr	: rel_expr						{$$=$1;}
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$3->place);
 								exit(1);
 							}
+							if(strcmp("int",$1->type))
+									typeError(yylineno);
+							else if(strcmp("int",$3->type))
+									typeError(yylineno);
 							$$->assign=true;
-					sprintf(t,"%s",tempVar());
-					p=Insert(table,t,$1->type,true);
-					strcpy($$->place,t);
-					totalOff+=8;
-					p->offset=totalOff;
+							sprintf(temp,"%s",tempVar());
+							p=Insert(table,temp,$1->type,true);
+							strcpy($$->place,temp);
+							totalOff+=8;
+							p->offset=totalOff;
+							strcpy($$->type,$1->type);
 					$$->code=append($1->code,$3->code);
 					char end[5],begin[5];
 					strcpy(end,newLabel()); strcpy(begin,newLabel());
@@ -920,11 +954,17 @@ rel_expr	: shift_expr			{$$ = $1;}
 								exit(1);
 							}
 							$$->assign=true;
-					sprintf(t,"%s",tempVar());
-					p=Insert(table,t,$1->type,true);
-					strcpy($$->place,t);
-					totalOff+=8;
-					p->offset=totalOff;
+					if(strcmp("int",$1->type))
+									typeError(yylineno);
+							else if(strcmp("int",$3->type))
+									typeError(yylineno);
+							$$->assign=true;
+							sprintf(temp,"%s",tempVar());
+							p=Insert(table,temp,$1->type,true);
+							strcpy($$->place,temp);
+							totalOff+=8;
+							p->offset=totalOff;
+							strcpy($$->type,$1->type);
 					$$->code=append($1->code,$3->code);
 					char end[5],begin[5];
 					strcpy(end,newLabel()); strcpy(begin,newLabel());
@@ -951,11 +991,17 @@ rel_expr	: shift_expr			{$$ = $1;}
 								exit(1);
 							}
 							$$->assign=true;
-					sprintf(t,"%s",tempVar());
-							p=Insert(table,t,$1->type,true);
-							strcpy($$->place,t);
-					totalOff+=8;
-					p->offset=totalOff;
+					if(strcmp("int",$1->type))
+									typeError(yylineno);
+							else if(strcmp("int",$3->type))
+									typeError(yylineno);
+							$$->assign=true;
+							sprintf(temp,"%s",tempVar());
+							p=Insert(table,temp,$1->type,true);
+							strcpy($$->place,temp);
+							totalOff+=8;
+							p->offset=totalOff;
+							strcpy($$->type,$1->type);
 					$$->code=append($1->code,$3->code);
 					char end[5],begin[5];
 					strcpy(end,newLabel()); strcpy(begin,newLabel());
@@ -982,11 +1028,17 @@ rel_expr	: shift_expr			{$$ = $1;}
 								exit(1);
 							}
 							$$->assign=true;
-					sprintf(t,"%s",tempVar());
-							p=Insert(table,t,$1->type,true);
-							strcpy($$->place,t);
-					totalOff+=8;
-					p->offset=totalOff;
+					if(strcmp("int",$1->type))
+									typeError(yylineno);
+							else if(strcmp("int",$3->type))
+									typeError(yylineno);
+							$$->assign=true;
+							sprintf(temp,"%s",tempVar());
+							p=Insert(table,temp,$1->type,true);
+							strcpy($$->place,temp);
+							totalOff+=8;
+							p->offset=totalOff;
+							strcpy($$->type,$1->type);
 					$$->code=append($1->code,$3->code);
 					char end[5],begin[5];
 					strcpy(end,newLabel()); strcpy(begin,newLabel());
@@ -1013,11 +1065,17 @@ rel_expr	: shift_expr			{$$ = $1;}
 								exit(1);
 							}
 							$$->assign=true;
-					sprintf(t,"%s",tempVar());
-							p=Insert(table,t,$1->type,true);
-							strcpy($$->place,t);
-					totalOff+=8;
-					p->offset=totalOff;
+					if(strcmp("int",$1->type))
+									typeError(yylineno);
+							else if(strcmp("int",$3->type))
+									typeError(yylineno);
+							$$->assign=true;
+							sprintf(temp,"%s",tempVar());
+							p=Insert(table,temp,$1->type,true);
+							strcpy($$->place,temp);
+							totalOff+=8;
+							p->offset=totalOff;
+							strcpy($$->type,$1->type);
 					$$->code=append($1->code,$3->code);
 					char end[5],begin[5];
 					strcpy(end,newLabel()); strcpy(begin,newLabel());
@@ -1049,9 +1107,17 @@ shift_expr	: add_expr				{$$=$1;}
 								exit(1);
 							}
 							$$->assign=true;
-							sprintf(t,"%s",tempVar());
-							p=Insert(table,t,$1->type,true);
-							strcpy($$->place,t);
+							if(strcmp("int",$1->type))
+									typeError(yylineno);
+							else if(strcmp("int",$3->type))
+									typeError(yylineno);
+							$$->assign=true;
+							sprintf(temp,"%s",tempVar());
+							p=Insert(table,temp,$1->type,true);
+							strcpy($$->place,temp);
+							totalOff+=8;
+							p->offset=totalOff;
+							strcpy($$->type,$1->type);
 							$$->code=append($1->code,$3->code);
 							sprintf(t,", <<, %s, %s, %s",$$->place,$1->place,$3->place);
 							$$->code=append($$->code,newList(t));
@@ -1066,11 +1132,17 @@ shift_expr	: add_expr				{$$=$1;}
 								exit(1);
 							}
 							$$->assign=true;
-							sprintf(t,"%s",tempVar());
-							p=Insert(table,t,$1->type,true);
-							strcpy($$->place,t);
+							if(strcmp("int",$1->type))
+									typeError(yylineno);
+							else if(strcmp("int",$3->type))
+									typeError(yylineno);
+							$$->assign=true;
+							sprintf(temp,"%s",tempVar());
+							p=Insert(table,temp,$1->type,true);
+							strcpy($$->place,temp);
 							totalOff+=8;
 							p->offset=totalOff;
+							strcpy($$->type,$1->type);
 							$$->code=append($1->code,$3->code);
 							sprintf(t,", >>, %s, %s, %s",$$->place,$1->place,$3->place);
 							$$->code=append($$->code,newList(t));
@@ -1085,11 +1157,17 @@ shift_expr	: add_expr				{$$=$1;}
 								exit(1);
 							}
 							$$->assign=true;
-							sprintf(t,"%s",tempVar());
-							p=Insert(table,t,$1->type,true);
+							if(strcmp("int",$1->type))
+									typeError(yylineno);
+							else if(strcmp("int",$3->type))
+									typeError(yylineno);
+							$$->assign=true;
+							sprintf(temp,"%s",tempVar());
+							p=Insert(table,temp,$1->type,true);
+							strcpy($$->place,temp);
 							totalOff+=8;
 							p->offset=totalOff;
-							strcpy($$->place,t);
+							strcpy($$->type,$1->type);
 							$$->code=append($1->code,$3->code);
 							sprintf(t,", >>>, %s, %s, %s",$$->place,$1->place,$3->place);
 							$$->code=append($$->code,newList(t));
@@ -1107,12 +1185,16 @@ add_expr	: mul_expr				{$$=$1;}
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$3->place);
 								exit(1);
 							}
+							if(strcmp("int",$1->type))
+								if(strcmp("int",$3->type))
+									typeError(yylineno);
 							$$->assign=true;
-							sprintf(t,"%s",tempVar());
-							p=Insert(table,t,$1->type,true);
+							sprintf(temp,"%s",tempVar());
+							p=Insert(table,temp,$1->type,true);
+							strcpy($$->place,temp);
 							totalOff+=8;
 							p->offset=totalOff;
-							strcpy($$->place,t);
+							strcpy($$->type,$1->type);
 							$$->code=append($1->code,$3->code);
 							sprintf(t,", +, %s, %s, %s",$$->place,$1->place,$3->place);
 							$$->code=append($$->code,newList(t));
@@ -1126,12 +1208,17 @@ add_expr	: mul_expr				{$$=$1;}
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$3->place);
 								exit(1);
 							}
+							if(strcmp("int",$1->type))
+									typeError(yylineno);
+							else if(strcmp("int",$3->type))
+									typeError(yylineno);
 							$$->assign=true;
-							sprintf(t,"%s",tempVar());	
-							p=Insert(table,t,$1->type,true);
+							sprintf(temp,"%s",tempVar());
+							p=Insert(table,temp,$1->type,true);
+							strcpy($$->place,temp);
 							totalOff+=8;
 							p->offset=totalOff;
-							strcpy($$->place,t);
+							strcpy($$->type,$1->type);
 							$$->code=append($1->code,$3->code);
 							sprintf(t,", -, %s, %s, %s",$$->place,$1->place,$3->place);
 							$$->code=append($$->code,newList(t));
@@ -1148,12 +1235,17 @@ mul_expr	: unary_expr				{$$=$1;}
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$3->place);
 								exit(1);
 							}
+							if(strcmp("int",$1->type))
+									typeError(yylineno);
+							else if(strcmp("int",$3->type))
+									typeError(yylineno);
 							$$->assign=true;
-							sprintf(t,"%s",tempVar());
-							p=Insert(table,t,$1->type,true);
+							sprintf(temp,"%s",tempVar());
+							p=Insert(table,temp,$1->type,true);
+							strcpy($$->place,temp);
 							totalOff+=8;
 							p->offset=totalOff;
-							strcpy($$->place,t);
+							strcpy($$->type,$1->type);
 							$$->code=append($1->code,$3->code);
 							sprintf(t,", *, %s, %s, %s",$$->place,$1->place,$3->place);
 							$$->code=append($$->code,newList(t));
@@ -1168,11 +1260,21 @@ mul_expr	: unary_expr				{$$=$1;}
 								exit(1);
 							}
 							$$->assign=true;
-							sprintf(t,"%s",tempVar());
-							p=Insert(table,t,$1->type,true);
+							if(strcmp("int",$1->type))
+									typeError(yylineno);
+							else if(strcmp("int",$3->type))
+									typeError(yylineno);
+							if(atoi($3->place)==0){
+								fprintf(stderr,"Error on %d: Division with 0 as divisor\n",yylineno);
+								exit(1);
+							}
+							$$->assign=true;
+							sprintf(temp,"%s",tempVar());
+							p=Insert(table,temp,$1->type,true);
+							strcpy($$->place,temp);
 							totalOff+=8;
 							p->offset=totalOff;
-							strcpy($$->place,t);
+							strcpy($$->type,$1->type);
 							$$->code=append($1->code,$3->code);
 							sprintf(t,", /, %s, %s, %s",$$->place,$1->place,$3->place);
 							$$->code=append($$->code,newList(t));
@@ -1186,12 +1288,21 @@ mul_expr	: unary_expr				{$$=$1;}
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$3->place);
 								exit(1);
 							}
+							if(strcmp("int",$1->type))
+									typeError(yylineno);
+							else if(strcmp("int",$3->type))
+									typeError(yylineno);
+							if(atoi($3->place)==0){
+								fprintf(stderr,"Error on %d: Modulus with 0 as divisor\n",yylineno);
+								exit(1);
+							}
 							$$->assign=true;
-							sprintf(t,"%s",tempVar());
-							p=Insert(table,t,$1->type,true);
+							sprintf(temp,"%s",tempVar());
+							p=Insert(table,temp,$1->type,true);
+							strcpy($$->place,temp);
 							totalOff+=8;
 							p->offset=totalOff;
-							strcpy($$->place,t);
+							strcpy($$->type,$1->type);
 							$$->code=append($1->code,$3->code);
 							sprintf(t,", %%, %s, %s, %s",$$->place,$1->place,$3->place);
 							$$->code=append($$->code,newList(t));
@@ -1204,37 +1315,41 @@ cast_expr	: PAREN_S primitive_type PAREN_E unary_expr
 
 unary_expr	: preinc_expr			{$$=$1;}
 		| predec_expr			{$$=$1;}
-		| OP_ADD unary_expr				{char temp[10];
+		| OP_ADD unary_expr				{
 							if(!$2->assign){
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$2->place);
 								exit(1);
 							}
-							sprintf(t,"%s",tempVar());
-							p=Insert(table,t,$2->type,true);
+							sprintf(temp,"%s",tempVar());
+							p=Insert(table,temp,$2->type,true);
 							totalOff+=8;
 							p->offset=totalOff;
-							strcpy($$->place,t);
+							strcpy($$->place,temp);
 							sprintf(t,", =, %s, %s",temp,$2->place);
 							$2->code=append($2->code,newList(t));
 							sprintf($2->place,"%s",temp);
 							$$=$2;
 							}
-		| OP_SUB unary_expr				{char temp[10];
+		| OP_SUB unary_expr				{
 							if(!$2->assign){
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$2->place);
 								exit(1);
 							}
-							sprintf(t,"%s",tempVar());
+							sprintf(temp,"%s",tempVar());
 							p=Insert(table,t,$2->type,true);
 							totalOff+=8;
 							p->offset=totalOff;
-							strcpy($$->place,t);
+							strcpy($$->place,temp);
 							sprintf(t,", -, %s, 0, %s",temp,$2->place);
 							$2->code=append($2->code,newList(t));
 							sprintf($2->place,"%s",temp);
 							$$=$2;
 							}
-		| unary_expr_not_plus_minus	{$$=$1;}
+		| unary_expr_not_plus_minus	{$$=$1;
+						if(strcmp($1->type,"int0")==0)
+							strcpy($$->type,"int");
+						else if(strcmp($1->type,"float0")==0)
+							strcpy($$->type,"float");}
 		;
 
 preinc_expr	: OP_INC unary_expr				{sprintf(t,", +, %s, %s, 1",$2->place,$2->place);
@@ -1242,7 +1357,7 @@ preinc_expr	: OP_INC unary_expr				{sprintf(t,", +, %s, %s, 1",$2->place,$2->pla
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$2->place);
 								exit(1);
 							}
-							if(strcmp($2->type,"int") || strcmp($2->type,"int2"))
+							if(strcmp($2->type,"int"))
 								typeError(yylineno);
 							$2->code=append($2->code,newList(t));
 							$$=$2;
@@ -1254,7 +1369,7 @@ predec_expr	: OP_DEC unary_expr				{sprintf(t,", -, %s, %s, 1",$2->place,$2->pla
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$2->place);
 								exit(1);
 							}
-							if(strcmp($2->type,"int") || strcmp($2->type,"int2"))
+							if(strcmp($2->type,"int"))
 								typeError(yylineno);
 							$2->code=append($2->code,newList(t));
 							$$=$2;
@@ -1262,49 +1377,56 @@ predec_expr	: OP_DEC unary_expr				{sprintf(t,", -, %s, %s, 1",$2->place,$2->pla
 		;
 
 unary_expr_not_plus_minus	: postfix_expr		{$$=$1;}
-				| OP_NEG unary_expr		{char temp[10];
+				| OP_NEG unary_expr		{
 							if(!$2->assign){
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$2->place);
 								exit(1);
 							}
-							sprintf(t,"%s",tempVar());
-							p=Insert(table,t,$2->type,true);
+							if(strcmp($2->type,"int"))
+								typeError(yylineno);
+							sprintf(temp,"%s",tempVar());
+							p=Insert(table,temp,$2->type,true);
 							totalOff+=8;
 							p->offset=totalOff;
-							strcpy($$->place,t);
 							sprintf(t,", !, %s, %s",temp,$2->place);
 							$2->code=append($2->code,newList(t));
-							sprintf($2->place,"%s",temp);
+							strcpy($2->place,temp);
 							$$=$2;
 							}	
 				| cast_expr		{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}
 				;
 
-postdec_expr	: postfix_expr OP_DEC				{char temp[10];
+postdec_expr	: postfix_expr OP_DEC				{
 							if(!$1->assign){
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$1->place);
 								exit(1);
 							}
-							if(strcmp($1->type,"int") || strcmp($1->type,"int2"))
+							if(strcmp($1->type,"int"))
 								typeError(yylineno);
+							strcpy(temp,tempVar());
+							sprintf(t,", =, %s, %s",temp,$1->place);
+							$1->code=append($1->code,newList(t));
 							sprintf(t,", -, %s, %s, 1",$1->place,$1->place);
 							$1->code=append($1->code,newList(t));
-							sprintf($1->place,"%s",temp);
 							$$=$1;
+							strcpy($$->place,temp);
 							}	
 		;
 
-postinc_expr	: postfix_expr OP_INC				{char temp[10];
+postinc_expr	: postfix_expr OP_INC				{
 							if(!$1->assign){
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$1->place);
 								exit(1);
 							}
-							if(strcmp($1->type,"int") || strcmp($1->type,"int2"))
+							if(strcmp($1->type,"int"))
 								typeError(yylineno);
+							strcpy(temp,tempVar());
+							sprintf(t,", =, %s, %s",temp,$1->place);
+							$1->code=append($1->code,newList(t));
 							sprintf(t,", +, %s, %s, 1",$1->place,$1->place);
 							$1->code=append($1->code,newList(t));
-							sprintf($1->place,"%s",temp);
 							$$=$1;
+							strcpy($$->place,temp);
 							}							
 		;
 
@@ -1329,7 +1451,7 @@ primary		: primary_no_new_array		{$$=$1;}
 
 		;
 
-primary_no_new_array	: literal			{$$=$1;$$->assign=true;
+primary_no_new_array	: literal			{$$=$1;
 							sprintf(t,"%s","const");
 							if(!look_up(table,$1->place))
 								p=Insert(table,$1->place,t,true);
@@ -1360,7 +1482,7 @@ argument_list	: expr
 		| argument_list SEP expr	
 		;
 		
-arr_assgn		: lhs OP_ASS array_creat_expr	{$$ = $3;
+arr_assgn		: lhs OP_ASS array_creat_expr	{$$ = $1;
 							 p=look_up(table,$1->place);
 							 if(p)
 								p->assign=true;
@@ -1371,6 +1493,7 @@ arr_assgn		: lhs OP_ASS array_creat_expr	{$$ = $3;
 							p->arrLength=length;
 							totalOff+=(length-1)*offset;
 							p->offset=totalOff;
+							p->assign=true;
 							length=1;
 							}
 		;
@@ -1395,7 +1518,7 @@ dim_exprs  : 	dim_expr				{$$ = $1;}
 		| dim_exprs dim_expr		
 		;		
 
-dim_expr	: ARRAY_S expr ARRAY_E		{$$ = $2;p = look_up(table,$<attr>-2->place);
+dim_expr	: ARRAY_S literal ARRAY_E		{$$ = $2;p = look_up(table,$<attr>-2->place);
 					if(!$2->assign){
 						fprintf(stderr,"Error: Index not assigned on line %d\n",yylineno);
 						exit(1);
@@ -1418,14 +1541,16 @@ dim_expr	: ARRAY_S expr ARRAY_E		{$$ = $2;p = look_up(table,$<attr>-2->place);
 				}		
 		;
 
-array_access	: name ARRAY_S expr ARRAY_E	{$$=(Attr *)malloc(sizeof(Attr));
-					strcpy($$->place, $1->place);
+array_access	: name ARRAY_S expr ARRAY_E	{$$=$1;
 					$$->code = append($1->code, $3->code);
 					p = look_up(table,$1->place);
 					if(!$3->assign){
 						fprintf(stderr,"Error: Index not assigned on line %d\n",yylineno);
 						exit(1);
 					}
+					else if(strcmp($3->type,"int"))
+							if(strcmp($3->type,"int0"))
+								typeError(yylineno);
 					if(p){	
 						h = p->arr_dim;
 						if(h && h->next){
@@ -1451,16 +1576,18 @@ array_access	: name ARRAY_S expr ARRAY_E	{$$=(Attr *)malloc(sizeof(Attr));
 					else{
 						fprintf(stderr,"Error: Variable %s not declared on line %d\n",$1->place,yylineno);
 						exit(1);}
-					$$->assign=$1->assign;
+					$$->assign=p->assign;
 					}
 			
 		| array_access ARRAY_S expr ARRAY_E		{
-						$$=(Attr *)malloc(sizeof(Attr));
-						strcpy($$->place, $<attr>-3->place);
+						$$=$1;
 						if(!$3->assign){
 							fprintf(stderr,"Error: Index not assigned on line %d\n",yylineno);
 							exit(1);
 						}
+						else if(strcmp($3->type,"int"))
+							if(strcmp($3->type,"int0"))
+								typeError(yylineno);
 						if(h && h->next){
 							strcpy(t,"int");
 							p=Insert(table,tempVar(),t,true);
@@ -1498,31 +1625,31 @@ name			: identifier		{$$=$1;}
 			;
 
 literal			: int_literal		{$$=(Attr *)malloc(sizeof(Attr));
-					sprintf($$->place,"%d",$1);
+					sprintf($$->place,"%d",$1);$$->assign=true;
 					strcpy($$->type,"int0");
 					$$->code=NULL;}
 			| FLOAT_LIT		{$$=(Attr *)malloc(sizeof(Attr));
-					sprintf($$->place,"%f",$1);
+					sprintf($$->place,"%f",$1);$$->assign=true;
 					strcpy($$->type,"float0");
 					$$->code=NULL;}
 			| CHAR_LIT		{$$=(Attr *)malloc(sizeof(Attr));
-					strcpy($$->place,$1);
+					strcpy($$->place,$1);$$->assign=true;
 					strcpy($$->type,"char0");
 					$$->code=NULL;}
 			| STR_LIT		{$$=(Attr *)malloc(sizeof(Attr));
-					strcpy($$->place,$1);
+					strcpy($$->place,$1);$$->assign=true;
 					strcpy($$->type,"str0");
 					$$->code=NULL;}
 			| T			{$$=(Attr *)malloc(sizeof(Attr));
-					strcpy($$->place,"1");
+					strcpy($$->place,"1");$$->assign=true;
 					strcpy($$->type,"bool0");
 					$$->code=NULL;}	
 			| F			{$$=(Attr *)malloc(sizeof(Attr));
-					strcpy($$->type,"bool0");
+					strcpy($$->type,"bool0");$$->assign=true;
 					$$->code=NULL;
 					strcpy($$->place,"0");}	
 			| N			{$$=(Attr *)malloc(sizeof(Attr));
-					strcpy($$->type,"bool0");
+					strcpy($$->type,"bool0");$$->assign=true;
 					$$->code=NULL;
 					strcpy($$->place,"null");}	
 			;
