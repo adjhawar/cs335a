@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "global.h"
+#include "list.h"
 #include <string.h>
 
 char registers[14][5] = { "%rax","%rbx","%rcx","%rdx","%rsi","%rdi","%r8","%r9","%r10","%r11","%r12","%r13","%r14","%r15" };

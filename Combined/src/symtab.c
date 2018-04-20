@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "global.h"
+#include "list.h"
 
 //Data structure to hold symbol table
-SymtabEntry* look_up(Symtab *table, char *lex){
+ SymtabEntry* look_up(Symtab *table, char *lex){
 	SymtabEntry* temp = table->head;
 	if(strcmp(lex, "0")==0 || strcmp(lex, "0\n")==0 || atoi(lex)) 
 		return NULL;
@@ -36,6 +36,8 @@ SymtabEntry* Insert(Symtab *table, char* lex, char *type, bool assign)
 	else
 	{
 		SymtabEntry *temp =(SymtabEntry *)malloc(sizeof(SymtabEntry));
+		temp->liveness = false;
+		temp->nextuse = -1;
 		temp->func=NULL;
 		temp->assign=assign;
 		strcpy(temp->lexeme,lex);
@@ -43,6 +45,9 @@ SymtabEntry* Insert(Symtab *table, char* lex, char *type, bool assign)
 		if(strcmp(lex, "0")==0 || atoi(lex)) 
 			strcpy(temp->type,"const");
 		temp->next=NULL;
+		temp->offset=0;
+		temp->add_des.reg_no = -1;
+		temp->add_des.mem=false;
 		if(table->head==NULL)
 		{
 			table->head = temp;
@@ -68,3 +73,4 @@ void printSymtab(Symtab *table){
 	}
 	printf("%s ends\n",table->name);
 }
+

@@ -2,18 +2,16 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include "global.h"
-
+#include "list.h"
 int nline,size;
 int *leaders;
-liveTable *head,*tail;
-extern Symtab *mainTable;
+
 // upadate liveness and nextuse of variables for a basic block
 void update(int i, int j){
 	for (int k = i; k>=j ; k--){
-		liveTable *out;
-		liveTable *in1;
-		liveTable *in2;
+		SymtabEntry *out;
+		SymtabEntry *in1;
+		SymtabEntry *in2;
 		if(ir[k].typ != Goto && ir[k].typ !=Ret){
 			if(ir[k].typ==Assignment){
 				out = ir[k].out;
@@ -78,4 +76,5 @@ void reg_alloc(){
 	}
 	//free(leaders);
 }
+
 
