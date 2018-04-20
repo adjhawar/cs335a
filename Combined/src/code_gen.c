@@ -9,16 +9,24 @@ int R_x,R_y,R_z;
 void getReg(int i)
 {
 	int r;
+	SymtabEntry * var;
 	if(ir[i].typ==func)
 	{	printf(".globl %s\n",ir[i].target);
 		printf("%s:\t",ir[i].target);
+		currentTable = lookup(mainTable, ir[i].target);
+		printf("\n\t pushq, %rbp \n\t movq %rsp, %rbp ");
+		printf("\n\t subq $%d, %rsp",look_up(mainTable, ir[i].target)->offset);
+		printf("\n\t pushq %rbx \n\t pushq %r12 \n\t pushq %r13 \n\t pushq %r14 \n\t pushq %r15");
 	}
 	else if(ir[i].typ==label)
 		printf("%s:\t",ir[i].target);
 	if(ir[i].typ==Ind_Ass_1){
 		if(ir[i].out->add_des.reg_no==-1){
 			r=empty_reg(i);
-			printf("\t movq $%s,%s\n",ir[i].out->lexeme,registers[r]);
+			if(var=look_uptable(currentTable->func, ir[i].out->lexeme)
+				printf("\t movq -%d(%rbp), %s\n",var->offset,registers[r]);
+			else
+				printf("\t movq $%s,%s\n",ir[i].out->lexeme,registers[r]);
 			reg_des[r]=ir[i].out;
 			ir[i].out->add_des.reg_no=r;}
 		if(strcmp(ir[i].in2->type,"const")==0){
@@ -134,8 +142,12 @@ void getReg(int i)
 				r=empty_reg(i) ; //this function returns a empty registers
 				if(strcmp(ir[i].in1->type,"const")==0)
 					printf("\t movq $%d,%s\n",atoi(ir[i].in1->lexeme),registers[r]);
-				else
-					printf("\t movq %s,%s\n",ir[i].in1->lexeme,registers[r]);
+				else{
+					if(var=look_uptable(currentTable->func, ir[i].in1->lexeme)
+						printf("\t movq -%d(%rbp), %s\n",var->offset,registers[r]);
+					else
+						printf("\t movq %s,%s\n",ir[i].in1->lexeme,registers[r]);
+				}
 			} //make for every operator
 			else{
 				r=ir[i].in1->add_des.reg_no;
@@ -150,7 +162,10 @@ void getReg(int i)
 			else
 				printf("\t addq %s,%s\n",registers[ir[i].in2->add_des.reg_no],registers[r]);
 			if(ir[i].out->add_des.reg_no==-1){
-				printf("\t movq %s,%s\n",registers[r],ir[i].out->lexeme);
+					if(var=look_uptable(currentTable->func, ir[i].in1->lexeme)
+						printf("\t movq  %s,-%d(%rbp)\n",registers[r],var->offset);
+					else
+						printf("\t movq %s,%s\n",registers[r],ir[i].out->lexeme);
 				ir[i].out->add_des.reg_no=r;
 				reg_des[r]=ir[i].out;}
 			else

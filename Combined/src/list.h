@@ -4,6 +4,7 @@ extern int maxsize;
 extern int nline;
 extern int size;
 
+
 enum InstrType{ Assignment , Pointer , Ind_Ass_1 , Ind_Ass_2 , ifgoto , Goto , Ret , call , label , print , scan , func};
 enum TACkeywords{add , sub , mul , divi , mod , gt , lt , ge , le , ne , eq , assgn ,  and, or , neg , rsh , lsh ,assgn_call};
 
@@ -73,6 +74,7 @@ typedef struct Instruction3AC{
 } Instruction3AC;
 
 extern Symtab *mainTable;
+extern SymtabEntry *currentTable;
 SymtabEntry *reg_des[14] ; //array of pointers for register descriptor
 
 char registers[14][5];
