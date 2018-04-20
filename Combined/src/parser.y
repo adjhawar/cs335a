@@ -1418,8 +1418,7 @@ dim_expr	: ARRAY_S expr ARRAY_E		{$$ = $2;p = look_up(table,$<attr>-2->place);
 				}		
 		;
 
-array_access	: name ARRAY_S expr ARRAY_E	{$$=(Attr *)malloc(sizeof(Attr));
-					strcpy($$->place, $1->place);
+array_access	: name ARRAY_S expr ARRAY_E	{$$=$1;
 					$$->code = append($1->code, $3->code);
 					p = look_up(table,$1->place);
 					if(!$3->assign){
@@ -1455,8 +1454,7 @@ array_access	: name ARRAY_S expr ARRAY_E	{$$=(Attr *)malloc(sizeof(Attr));
 					}
 			
 		| array_access ARRAY_S expr ARRAY_E		{
-						$$=(Attr *)malloc(sizeof(Attr));
-						strcpy($$->place, $<attr>-3->place);
+						$$=$1;
 						if(!$3->assign){
 							fprintf(stderr,"Error: Index not assigned on line %d\n",yylineno);
 							exit(1);
