@@ -17,9 +17,14 @@ void getReg(int i)
 		printf("%s:\t",ir[i].target);
 		currentTable = look_up(mainTable, ir[i].target);
 		printf("\n\t pushq %%rbp \n\t movq %%rsp, %%rbp ");
-		printf("\n\t pushq %%rdi \n\t pushq %%rsi \n\t pushq %%rdx");
+		if(look_up(mainTable, ir[i].target)->nargs>0)
+			printf("\n\t pushq %%rdi");
+		if(look_up(mainTable, ir[i].target)->nargs>1)
+			printf("\n\t pushq %%rsi");
+		if(look_up(mainTable, ir[i].target)->nargs>2)
+			printf("\n\t pushq %%rdx");
 		printf("\n\t subq $%d, %%rsp\n",look_up(mainTable, ir[i].target)->offset - look_up(mainTable, ir[i].target)->nargs*8 );
-		//printf("\n\t pushq %%rbx \n\t pushq %%r12 \n\t pushq %%r13 \n\t pushq %%r14 \n\t pushq %%r15");
+		printf("\n\t pushq %%rbx \n\t pushq %%r12 \n\t pushq %%r13 \n\t pushq %%r14 \n\t pushq %%r15 \n");
 	}
 	else if(ir[i].typ==label)
 		printf("%s:\t",ir[i].target);
@@ -613,8 +618,8 @@ void getReg(int i)
 			else
 				printf("movq $%d,%s",atoi(ir[i].in1->lexeme),registers[0]);
 		}
-				
-			printf("\tmovq %%rbp,%%rsp \n\t popq %%rbp \n");
+			printf("   \n\t popq %%r15  \n\t popq %%r14\n\t popq %%r13\n\t popq %%r12\n\t popq %%rbx");	
+			printf("\n\tmovq %%rbp,%%rsp \n\t popq %%rbp \n");
 			printf("\t ret\n");}
 	else if(ir[i].typ==print)
 	{
@@ -667,25 +672,30 @@ void getReg(int i)
 			reg_des[4]->add_des.reg_no=-1;
 		}
 		if(var=look_upTable(currentTable->func, ir[i].in1->lexeme))
-			printf("movq $0, %%rax  \n movq $str1, %%rdi\n movq %%rbp,%%rbx\n subq $%d,%%rbx\n movq %%rbx,%%rsi\n call scanf \n",var->offset);
+			printf("\n movq $0, %%rax  \n movq $str1, %%rdi  \n movq %%rbp,%%rbx \n subq $%d,%%rbx \n movq  %%rbx,%%rsi  \n call scanf \n",var->offset);
 		else
-			printf("movq $0, %%rax  \n movq $str1, %%rdi  \n movq $%s, %%rsi  \n call scanf \n",ir[i].in1->lexeme);
-		
+			printf(" \nmovq $0, %%rax  \n movq $str1, %%rdi  \n movq $%s, %%rsi  \n call scanf \n",ir[i].in1->lexeme);
 	}
 	else if(ir[i].typ == params){
 		switch(parCounter)
 		{
-			case 0 : if(var=look_upTable(currentTable->func, ir[i].in1->lexeme))
+			case 0 : if(strcmp(ir[i].in1->type,"const")==0)
+					printf("\t movq $%d,%%rdi\n",atoi(ir[i].in1->lexeme));
+				else if(var=look_upTable(currentTable->func, ir[i].in1->lexeme))
 					printf("\t movq -%d(%%rbp),%%rdi\n",var->offset);
 				else
 					printf("movq %s,%%rdi\n",ir[i].in1->lexeme);
 				break;
-			case 1 : if(var=look_upTable(currentTable->func, ir[i].in1->lexeme))
+			case 1 : if(strcmp(ir[i].in1->type,"const")==0)
+					printf("\t movq $%d,%%rsi\n",atoi(ir[i].in1->lexeme));
+				else if(var=look_upTable(currentTable->func, ir[i].in1->lexeme))
 					printf("\t movq -%d(%%rbp),%%rsi\n",var->offset);
 				else
 					printf("movq %s,%%rsi\n",ir[i].in1->lexeme);
 				break;
-			case 2 : if(var=look_upTable(currentTable->func, ir[i].in1->lexeme))
+			case 2 : if(strcmp(ir[i].in1->type,"const")==0)
+					printf("\t movq $%d,%%rdx\n",atoi(ir[i].in1->lexeme));
+				else if(var=look_upTable(currentTable->func, ir[i].in1->lexeme))
 					printf("\t movq -%d(%%rbp),%%rdx\n",var->offset);
 				else
 					printf("movq %s,%%rdx\n",ir[i].in1->lexeme);
