@@ -2,8 +2,8 @@ class $abc{
 	int x=11;
 	void main(){
 		int c=5;
-		int a[];
-		a=new int[10][5];
+		float f=5.0;
+		c=a[2]+5;
 		}
 	int hello(){
 		int a[];
