@@ -667,9 +667,9 @@ void getReg(int i)
 			reg_des[4]->add_des.reg_no=-1;
 		}
 		if(var=look_upTable(currentTable->func, ir[i].in1->lexeme))
-			printf("push %%rbp \n movq $0, %%rax  \n movq $str1, %%rdi  \n movq -%d(%%rbp), %%rsi  \n call scanf \n pop %%rbp\n",var->offset);
+			printf("movq $0, %%rax  \n movq $str1, %%rdi\n movq %%rbp,%%rbx\n subq $%d,%%rbx\n movq %%rbx,%%rsi\n call scanf \n",var->offset);
 		else
-			printf("push %%rbp \n movq $0, %%rax  \n movq $str1, %%rdi  \n movq $%s, %%rsi  \n call scanf \n pop %%rbp\n",ir[i].in1->lexeme);
+			printf("movq $0, %%rax  \n movq $str1, %%rdi  \n movq $%s, %%rsi  \n call scanf \n",ir[i].in1->lexeme);
 		
 	}
 	else if(ir[i].typ == params){
