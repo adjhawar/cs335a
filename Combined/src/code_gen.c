@@ -675,17 +675,23 @@ void getReg(int i)
 	else if(ir[i].typ == params){
 		switch(parCounter)
 		{
-			case 0 : if(var=look_upTable(currentTable->func, ir[i].in1->lexeme))
+			case 0 : if(strcmp(ir[i].in1->type,"const")==0)
+					printf("\t movq $%d,%%rdi\n",atoi(ir[i].in1->lexeme));
+				else if(var=look_upTable(currentTable->func, ir[i].in1->lexeme))
 					printf("\t movq -%d(%%rbp),%%rdi\n",var->offset);
 				else
 					printf("movq %s,%%rdi\n",ir[i].in1->lexeme);
 				break;
-			case 1 : if(var=look_upTable(currentTable->func, ir[i].in1->lexeme))
+			case 1 : if(strcmp(ir[i].in1->type,"const")==0)
+					printf("\t movq $%d,%%rsi\n",atoi(ir[i].in1->lexeme));
+				else if(var=look_upTable(currentTable->func, ir[i].in1->lexeme))
 					printf("\t movq -%d(%%rbp),%%rsi\n",var->offset);
 				else
 					printf("movq %s,%%rsi\n",ir[i].in1->lexeme);
 				break;
-			case 2 : if(var=look_upTable(currentTable->func, ir[i].in1->lexeme))
+			case 2 : if(strcmp(ir[i].in1->type,"const")==0)
+					printf("\t movq $%d,%%rdx\n",atoi(ir[i].in1->lexeme));
+				else if(var=look_upTable(currentTable->func, ir[i].in1->lexeme))
 					printf("\t movq -%d(%%rbp),%%rdx\n",var->offset);
 				else
 					printf("movq %s,%%rdx\n",ir[i].in1->lexeme);
