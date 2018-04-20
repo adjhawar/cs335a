@@ -7,4 +7,3 @@ binary :
 
 clean :
 	rm -r bin
-	rm -r bin1
