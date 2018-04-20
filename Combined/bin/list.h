@@ -5,7 +5,7 @@ extern int nline;
 extern int size;
 
 
-enum InstrType{ Assignment , Pointer , Ind_Ass_1 , Ind_Ass_2 , ifgoto , Goto , Ret , call , label , print , scan , func};
+enum InstrType{ Assignment , Pointer , Ind_Ass_1 , Ind_Ass_2 , ifgoto , Goto , Ret , call , label , print , scan , func, params};
 enum TACkeywords{add , sub , mul , divi , mod , gt , lt , ge , le , ne , eq , assgn ,  and, or , neg , rsh , lsh ,assgn_call};
 
 typedef struct list3AC{
@@ -42,6 +42,7 @@ typedef struct SymtabEntry{
 	bool assign;			//checks if symbol table entry has been declared
 	int offset;
 	int arrLength;
+	int nargs;			//counts the number of arguments in a function
 	Add_des add_des;
 	int nextuse;
 	bool liveness;

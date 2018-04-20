@@ -16,13 +16,13 @@ char TEMP[7];
 char LABEL[5];
 char t[100];
 char idr[15],methodType[10],temp[15];
-int flag1;
+int flag1,nargs=0,callArgs=0;
 bool ret;	//to check if function has a return statement or not
 SymtabEntry *p,*currFunc;
 Arr_dim *h;
 Symtab *mainTable,*table;
 int offset,totalOff,length=1;
-list3AC *finalList;
+list3AC *finalList,*argList,*funcArgList;
 
 /*
 	type is int:	normal variable of int type
@@ -101,6 +101,7 @@ void typeError(int line){
 %type <attr>switch_block switch_block_st_grp 
 %type <attr>dim_expr array_init dim_exprs
 %type <attr>class_body_decls class_body_decl class_mem_decl
+%type <attr>arg_list_e argument_list
 %%
 
 compilation_unit	: type_declarations_e 							
@@ -144,7 +145,7 @@ class_body_decl		: class_mem_decl 		{$$=$1;}
 			| const_decl 			{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}					
 			;
 
-class_mem_decl		: field_decl 			{$$=$1;totalOff=0;}						
+class_mem_decl		: field_decl 			{$$=$1;totalOff=0;argList=NULL;nargs=0;}
 			| method_decl 			{totalOff=0;$$=$1;}			
 			;
 
@@ -162,10 +163,10 @@ formal_para_list	: formal_para
 			| formal_para_list SEP formal_para 					
 			;
 
-formal_para		: type var_decl_id			{$$=(Attr *)malloc(sizeof(Attr));
-						 /*strcpy($$->place,$2);
-						 strcpy($$->type,$1);
-						 p=Insert(table,$2,$1);*/
+formal_para		: INT var_decl_id			{$$=(Attr *)malloc(sizeof(Attr));
+						 strcpy(t,$2);
+						 argList=append(argList,newList(t));
+						 nargs++;
 						 $$->code=NULL;}
 			;
 
@@ -254,7 +255,22 @@ method_header		: type method_declarator 	{$$=(Attr *)malloc(sizeof(Attr));
 								p->func=(Symtab *)malloc(sizeof(Symtab));
 								p->func->prev=table;
 								table=p->func;
-								strcpy(table->name,$2);}}
+								strcpy(table->name,$2);
+								p->nargs=nargs;
+								while(argList){
+									p=Insert(table,argList->instr,"int",true);
+									if(p==NULL){
+										fprintf(stderr,"Error: Variable %s redeclared on line %d\n",$2,yylineno);
+								exit(1);
+							}
+									totalOff+=8;
+									p->offset=totalOff;
+									argList=argList->next;
+							}
+								Insert(table,"1","const",true);
+								Insert(table,"0","const",true);}}
+
+								
 			;
 
 method_declarator	: ID PAREN_S formal_para_list_e PAREN_E 	{$$=$1;}			;
@@ -468,7 +484,7 @@ switch_block_st_grps	: switch_block_st_grp 	 	{$$=$1;}
 switch_block_st_grp	: CASE expr COLON bl_statements       { $$=(Attr*)malloc(sizeof(Attr));
 								char nexLabel[5];
 								strcpy(nexLabel,newLabel());
-								sprintf(t,", ifgoto, neq, %s ,  , %s",$2->place,nexLabel);
+								sprintf(t,", ifgoto, neq, %s,  , %s",$2->place,nexLabel);
 								$$->code=newList(t);
 								$$->code = append($$->code,$4->code);
 								sprintf(t,", label, %s",nexLabel);
@@ -643,13 +659,15 @@ expr		: cond_expr	{$$=$1;}
 
 assgn		:lhs OP_ASS expr			{sprintf(t,", =, %s, %s",$1->place,$3->place);
 						$$->code = append($1->code, $3->code);
-						char tr[50];
+						char *tr = malloc(50*sizeof(char));
 						int q = 0;
 						while(q<50 && $1->place[q]!='['){
 							tr[q] = $1->place[q];
 							q++;
 							}
+						//printf("\n tr = %s place= %s\n",tr,$1->place);
 						p=look_up(table,tr);
+						free(tr);
 						if(p)
 							p->assign =true;
 						else{
@@ -663,13 +681,14 @@ assgn		:lhs OP_ASS expr			{sprintf(t,", =, %s, %s",$1->place,$3->place);
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,$3->place);
 								exit(1);
 							}
-						char tr[50];
+						char *tr=malloc(50*sizeof(char));
 						int q = 0;
 						while(q<50 && $1->place[q]!='['){
 							tr[q] = $1->place[q];
 							q++;
 							}
 						p=look_up(table,tr);
+						free(tr);
 						if(p==NULL){
 							fprintf(stderr,"Error on %d: %s undeclared\n",yylineno,$1->place);
 							exit(1);
@@ -892,17 +911,17 @@ equality_expr	: rel_expr						{$$=$1;}
 					$$->code=append($1->code,$3->code);
 					char end[5],begin[5];
 					strcpy(end,newLabel()); strcpy(begin,newLabel());
-					sprintf(t,", ifgoto, eq , %s , %s , %s ",$1->place,$3->place,begin);
+					sprintf(t,", ifgoto, eq, %s, %s, %s",$1->place,$3->place,begin);
 					$$->code=append($$->code,newList(t));
-					sprintf(t,", = , %s , 0",$$->place);
+					sprintf(t,", =, %s, 0",$$->place);
 					$$->code=append($$->code,newList(t));
 					sprintf(t,", Goto, %s",end);
 					$$->code=append($$->code,newList(t));
-					sprintf(t,", label , %s",begin);
+					sprintf(t,", label, %s",begin);
 					$$->code=append($$->code,newList(t));
-					sprintf(t,", = , %s, 1",$$->place);
+					sprintf(t,", =, %s, 1",$$->place);
 					$$->code=append($$->code,newList(t));
-					sprintf(t,", label , %s",end);
+					sprintf(t,", label, %s",end);
 					$$->code=append($$->code,newList(t));}
 							
 		| equality_expr OP_NEQ rel_expr	{$$=(Attr *)malloc(sizeof(Attr));
@@ -928,17 +947,17 @@ equality_expr	: rel_expr						{$$=$1;}
 					$$->code=append($1->code,$3->code);
 					char end[5],begin[5];
 					strcpy(end,newLabel()); strcpy(begin,newLabel());
-					sprintf(t,", ifgoto, neq , %s , %s , %s ",$1->place,$3->place,begin);
+					sprintf(t,", ifgoto, neq, %s, %s, %s",$1->place,$3->place,begin);
 					$$->code=append($$->code,newList(t));
-					sprintf(t,", = , %s , 0",$$->place);
+					sprintf(t,", =, %s, 0",$$->place);
 					$$->code=append($$->code,newList(t));
 					sprintf(t,", Goto, %s",end);
 					$$->code=append($$->code,newList(t));
-					sprintf(t,", label , %s",begin);
+					sprintf(t,", label, %s",begin);
 					$$->code=append($$->code,newList(t));
-					sprintf(t,", = , %s, 1",$$->place);
+					sprintf(t,", =, %s, 1",$$->place);
 					$$->code=append($$->code,newList(t));
-					sprintf(t,", label , %s",end);
+					sprintf(t,", label, %s",end);
 					$$->code=append($$->code,newList(t));}		
 		;
 
@@ -968,17 +987,17 @@ rel_expr	: shift_expr			{$$ = $1;}
 					$$->code=append($1->code,$3->code);
 					char end[5],begin[5];
 					strcpy(end,newLabel()); strcpy(begin,newLabel());
-					sprintf(t,", ifgoto, lt , %s , %s , %s ",$1->place,$3->place,begin);
+					sprintf(t,", ifgoto, lt, %s, %s, %s ",$1->place,$3->place,begin);
 					$$->code=append($$->code,newList(t));
-					sprintf(t,", = , %s , 0",$$->place);
+					sprintf(t,", =, %s, 0",$$->place);
 					$$->code=append($$->code,newList(t));
 					sprintf(t,", Goto, %s",end);
 					$$->code=append($$->code,newList(t));
-					sprintf(t,", label , %s",begin);
+					sprintf(t,", label, %s",begin);
 					$$->code=append($$->code,newList(t));
-					sprintf(t,", = , %s, 1",$$->place);
+					sprintf(t,", =, %s, 1",$$->place);
 					$$->code=append($$->code,newList(t));
-					sprintf(t,", label , %s",end);
+					sprintf(t,", label, %s",end);
 					$$->code=append($$->code,newList(t));}
 							
 		| rel_expr OP_GRE shift_expr	{$$=(Attr *)malloc(sizeof(Attr));
@@ -1005,17 +1024,17 @@ rel_expr	: shift_expr			{$$ = $1;}
 					$$->code=append($1->code,$3->code);
 					char end[5],begin[5];
 					strcpy(end,newLabel()); strcpy(begin,newLabel());
-					sprintf(t,", ifgoto, gt , %s , %s , %s ",$1->place,$3->place,begin);
+					sprintf(t,", ifgoto, gt, %s, %s, %s ",$1->place,$3->place,begin);
 					$$->code=append($$->code,newList(t));
-					sprintf(t,", = , %s , 0",$$->place);
+					sprintf(t,", =, %s, 0",$$->place);
 					$$->code=append($$->code,newList(t));
 					sprintf(t,", Goto, %s",end);
 					$$->code=append($$->code,newList(t));
-					sprintf(t,", label , %s",begin);
+					sprintf(t,", label, %s",begin);
 					$$->code=append($$->code,newList(t));
-					sprintf(t,", = , %s , 1",$$->place);
+					sprintf(t,", =, %s, 1",$$->place);
 					$$->code=append($$->code,newList(t));
-					sprintf(t,", label , %s",end);
+					sprintf(t,", label, %s",end);
 					$$->code=append($$->code,newList(t));}
 								
 		| rel_expr OP_LEQ shift_expr	{$$=(Attr *)malloc(sizeof(Attr));
@@ -1042,17 +1061,17 @@ rel_expr	: shift_expr			{$$ = $1;}
 					$$->code=append($1->code,$3->code);
 					char end[5],begin[5];
 					strcpy(end,newLabel()); strcpy(begin,newLabel());
-					sprintf(t,",ifgoto, leq , %s , %s ,%s ",$1->place,$3->place,begin);
+					sprintf(t,",ifgoto, leq, %s, %s, %s ",$1->place,$3->place,begin);
 					$$->code=append($$->code,newList(t));
-					sprintf(t,", = , %s , 0",$$->place);
+					sprintf(t,", =, %s, 0",$$->place);
 					$$->code=append($$->code,newList(t));
-					sprintf(t,", Goto , %s",end);
+					sprintf(t,", Goto, %s",end);
 					$$->code=append($$->code,newList(t));
-					sprintf(t,", label , %s",begin);
+					sprintf(t,", label, %s",begin);
 					$$->code=append($$->code,newList(t));
-					sprintf(t,", = , %s , 1",$$->place);
+					sprintf(t,", =, %s, 1",$$->place);
 					$$->code=append($$->code,newList(t));
-					sprintf(t,", label , %s",end);
+					sprintf(t,", label, %s",end);
 					$$->code=append($$->code,newList(t));}
 								
 		| rel_expr OP_GEQ shift_expr	{$$=(Attr *)malloc(sizeof(Attr));
@@ -1079,17 +1098,17 @@ rel_expr	: shift_expr			{$$ = $1;}
 					$$->code=append($1->code,$3->code);
 					char end[5],begin[5];
 					strcpy(end,newLabel()); strcpy(begin,newLabel());
-					sprintf(t,",ifgoto, geq, %s, %s , %s ",$1->place,$3->place,begin);
+					sprintf(t,",ifgoto, geq, %s, %s, %s ",$1->place,$3->place,begin);
 					$$->code=append($$->code,newList(t));
-					sprintf(t,", = , %s , 0",$$->place);
+					sprintf(t,", =, %s, 0",$$->place);
 					$$->code=append($$->code,newList(t));
 					sprintf(t,", Goto, %s",end);
 					$$->code=append($$->code,newList(t));
-					sprintf(t,", label , %s",begin);
+					sprintf(t,", label, %s",begin);
 					$$->code=append($$->code,newList(t));
-					sprintf(t,", = , %s , 1",$$->place);
+					sprintf(t,", =, %s, 1",$$->place);
 					$$->code=append($$->code,newList(t));
-					sprintf(t,", label , %s",end);
+					sprintf(t,", label, %s",end);
 					$$->code=append($$->code,newList(t));}
 								
 		| rel_expr INSTANCEOF reference_type		
@@ -1404,6 +1423,9 @@ postdec_expr	: postfix_expr OP_DEC				{
 							if(strcmp($1->type,"int"))
 								typeError(yylineno);
 							strcpy(temp,tempVar());
+							p=Insert(table,temp,$1->type,true);
+							totalOff+=8;
+							p->offset=totalOff;
 							sprintf(t,", =, %s, %s",temp,$1->place);
 							$1->code=append($1->code,newList(t));
 							sprintf(t,", -, %s, %s, 1",$1->place,$1->place);
@@ -1421,6 +1443,9 @@ postinc_expr	: postfix_expr OP_INC				{
 							if(strcmp($1->type,"int"))
 								typeError(yylineno);
 							strcpy(temp,tempVar());
+							p=Insert(table,temp,$1->type,true);
+							totalOff+=8;
+							p->offset=totalOff;
 							sprintf(t,", =, %s, %s",temp,$1->place);
 							$1->code=append($1->code,newList(t));
 							sprintf(t,", +, %s, %s, 1",$1->place,$1->place);
@@ -1436,7 +1461,13 @@ postfix_expr	: primary		{$$=$1;}
 		| postdec_expr		{$$=$1;}
 		;
 
-method_invo	: name PAREN_S arg_list_e PAREN_E 			{$$=$1;}
+method_invo	: name PAREN_S arg_list_e PAREN_E 			{$$=$1;/*p=look_up(mainTable,$1->place);
+									 if(p->nargs!=callArgs){
+										fprintf(stderr,"Error %d: Arguments mismatch",yylineno);
+										exit(1);}*/
+									 callArgs=0;
+									 $$->code=$3->code;
+									}
 		| primary OP_DOT identifier PAREN_S arg_list_e PAREN_E		{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}
 		| SUPER OP_DOT identifier PAREN_S arg_list_e PAREN_E		{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}
 		;
@@ -1463,23 +1494,39 @@ primary_no_new_array	: literal			{$$=$1;
 			| method_invo			{
 						sprintf(t,", =, %s, call, %s",tempVar(),$1->place);
 						$$=$1;
+						$$->code=append($1->code,newList(t));
 						strcpy($$->place,TEMP);
 						strcpy(t,"int");
 						p=Insert(table,TEMP,t,true);
 						totalOff+=8;
 						p->offset=totalOff;
-						$$->code=newList(t);}	
+						}	
 			;
 
 object_expr	: NEW class_type PAREN_S arg_list_e PAREN_E		
 		;
 
-arg_list_e	: argument_list		
-		| /* empty */		
+arg_list_e	: argument_list			{$$=$1;}
+		| /* empty */			{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}
 		;
 
-argument_list	: expr				
-		| argument_list SEP expr	
+argument_list	: expr				{if(strcmp($1->type,"int"))
+							if(strcmp($1->type,"int0"))
+								typeError(yylineno);
+						$$=$1;
+						callArgs++;
+						sprintf(t,", params, %s",$1->place);
+						$$->code=append($1->code,newList(t));
+						}		
+		| argument_list SEP expr	{if(strcmp($3->type,"int"))
+							if(strcmp($3->type,"int0"))
+								typeError(yylineno);
+						$$=$3;
+						callArgs++;
+						sprintf(t,", params, %s",$3->place);
+						$$->code=append($1->code,$3->code);
+						$$->code=append($$->code,newList(t));
+						}
 		;
 		
 arr_assgn		: lhs OP_ASS array_creat_expr	{$$ = $1;
