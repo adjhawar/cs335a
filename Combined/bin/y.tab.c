@@ -80,9 +80,8 @@ void yyerror(const char *s);
 char TEMP[7];
 char LABEL[5];
 char t[100];
-char idr[15],methodType[10];
-char temp[15];
-int flag1,flag0=0;	//flag0 checks if array access was used or not in lhs
+char idr[15],methodType[10],temp[15];
+int flag1;
 bool ret;	//to check if function has a return statement or not
 SymtabEntry *p,*currFunc;
 Arr_dim *h;
@@ -115,7 +114,7 @@ void typeError(int line){
 	exit(1);
 }
 
-#line 119 "y.tab.c" /* yacc.c:339  */
+#line 118 "y.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -327,7 +326,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 56 "parser.y" /* yacc.c:355  */
+#line 55 "parser.y" /* yacc.c:355  */
 
 	int ival;
 	char *sval;
@@ -335,7 +334,7 @@ union YYSTYPE
 	char *type;
         struct Attr *attr;
 
-#line 339 "y.tab.c" /* yacc.c:355  */
+#line 338 "y.tab.c" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -366,7 +365,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 370 "y.tab.c" /* yacc.c:358  */
+#line 369 "y.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -674,31 +673,31 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,   107,   107,   110,   111,   114,   115,   116,   119,   120,
-     123,   126,   127,   130,   133,   136,   137,   140,   141,   144,
-     145,   148,   149,   152,   155,   158,   159,   162,   163,   166,
-     173,   174,   177,   178,   181,   184,   194,   205,   209,   218,
-     219,   224,   237,   261,   263,   264,   267,   270,   271,   274,
-     278,   286,   287,   291,   292,   293,   294,   297,   298,   301,
-     302,   305,   306,   307,   310,   311,   314,   317,   320,   323,
-     324,   327,   328,   332,   333,   336,   339,   342,   343,   344,
-     345,   346,   347,   348,   351,   352,   353,   354,   357,   358,
-     359,   360,   361,   362,   363,   364,   365,   375,   384,   387,
-     390,   391,   392,   393,   394,   395,   398,   399,   402,   413,
-     430,   447,   457,   460,   461,   464,   465,   469,   480,   484,
-     502,   520,   538,   561,   585,   586,   589,   590,   593,   594,
-     597,   598,   601,   604,   605,   608,   614,   620,   640,   641,
-     645,   663,   712,   713,   714,   721,   722,   723,   724,   725,
-     726,   727,   728,   729,   730,   731,   734,   735,   738,   739,
-     764,   765,   790,   791,   816,   817,   842,   843,   868,   869,
-     904,   941,   942,   977,  1012,  1047,  1082,  1086,  1087,  1108,
-    1131,  1158,  1159,  1183,  1208,  1209,  1232,  1258,  1286,  1287,
-    1290,  1291,  1292,  1309,  1326,  1329,  1341,  1353,  1354,  1371,
-    1374,  1394,  1414,  1415,  1416,  1417,  1420,  1421,  1422,  1425,
-    1426,  1429,  1430,  1443,  1450,  1451,  1452,  1453,  1454,  1468,
-    1471,  1472,  1475,  1476,  1479,  1498,  1511,  1514,  1515,  1518,
-    1541,  1576,  1611,  1612,  1615,  1616,  1619,  1623,  1627,  1631,
-    1635,  1639,  1643,  1649,  1650,  1651,  1654
+       0,   106,   106,   109,   110,   113,   114,   115,   118,   119,
+     122,   125,   126,   129,   132,   135,   136,   139,   140,   143,
+     144,   147,   148,   151,   154,   157,   158,   161,   162,   165,
+     172,   173,   176,   177,   180,   183,   193,   204,   208,   217,
+     218,   223,   236,   260,   262,   263,   266,   269,   270,   273,
+     277,   285,   286,   290,   291,   292,   293,   296,   297,   300,
+     301,   304,   305,   306,   309,   310,   313,   316,   319,   322,
+     323,   326,   327,   331,   332,   335,   338,   341,   342,   343,
+     344,   345,   346,   347,   350,   351,   352,   353,   356,   357,
+     358,   359,   360,   361,   362,   363,   364,   374,   383,   386,
+     389,   390,   391,   392,   393,   394,   397,   398,   401,   412,
+     429,   446,   456,   459,   460,   463,   464,   468,   479,   483,
+     501,   519,   537,   560,   584,   585,   588,   589,   592,   593,
+     596,   597,   600,   603,   604,   607,   613,   619,   639,   640,
+     644,   662,   711,   712,   713,   720,   721,   722,   723,   724,
+     725,   726,   727,   728,   729,   730,   733,   734,   737,   738,
+     763,   764,   790,   791,   817,   818,   844,   845,   871,   872,
+     908,   946,   947,   984,  1021,  1058,  1095,  1099,  1100,  1125,
+    1150,  1178,  1179,  1202,  1228,  1229,  1253,  1282,  1312,  1313,
+    1316,  1317,  1318,  1333,  1348,  1355,  1367,  1379,  1380,  1396,
+    1399,  1416,  1433,  1434,  1435,  1436,  1439,  1440,  1441,  1444,
+    1445,  1448,  1449,  1454,  1459,  1460,  1461,  1462,  1463,  1474,
+    1477,  1478,  1481,  1482,  1485,  1501,  1514,  1517,  1518,  1521,
+    1544,  1582,  1619,  1620,  1623,  1624,  1627,  1631,  1635,  1639,
+    1643,  1647,  1651,  1657,  1658,  1659,  1662
 };
 #endif
 
@@ -2138,77 +2137,77 @@ yyreduce:
   switch (yyn)
     {
         case 7:
-#line 116 "parser.y" /* yacc.c:1646  */
+#line 115 "parser.y" /* yacc.c:1646  */
     {yyerrok;}
-#line 2144 "y.tab.c" /* yacc.c:1646  */
+#line 2143 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 10:
-#line 123 "parser.y" /* yacc.c:1646  */
+#line 122 "parser.y" /* yacc.c:1646  */
     {strcpy(table->name,(yyvsp[-2].sval));}
-#line 2150 "y.tab.c" /* yacc.c:1646  */
+#line 2149 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 15:
-#line 136 "parser.y" /* yacc.c:1646  */
+#line 135 "parser.y" /* yacc.c:1646  */
     {finalList=(yyvsp[0].attr)->code;}
-#line 2156 "y.tab.c" /* yacc.c:1646  */
+#line 2155 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 17:
-#line 140 "parser.y" /* yacc.c:1646  */
+#line 139 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 2162 "y.tab.c" /* yacc.c:1646  */
+#line 2161 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 141 "parser.y" /* yacc.c:1646  */
+#line 140 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[-1].attr);(yyval.attr)->code=append((yyvsp[-1].attr)->code,(yyvsp[0].attr)->code);}
-#line 2168 "y.tab.c" /* yacc.c:1646  */
+#line 2167 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 19:
-#line 144 "parser.y" /* yacc.c:1646  */
+#line 143 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 2174 "y.tab.c" /* yacc.c:1646  */
+#line 2173 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 20:
-#line 145 "parser.y" /* yacc.c:1646  */
+#line 144 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(Attr *)malloc(sizeof(Attr));(yyval.attr)->code=NULL;}
-#line 2180 "y.tab.c" /* yacc.c:1646  */
+#line 2179 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 21:
-#line 148 "parser.y" /* yacc.c:1646  */
+#line 147 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);totalOff=0;}
-#line 2186 "y.tab.c" /* yacc.c:1646  */
+#line 2185 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 22:
-#line 149 "parser.y" /* yacc.c:1646  */
+#line 148 "parser.y" /* yacc.c:1646  */
     {totalOff=0;(yyval.attr)=(yyvsp[0].attr);}
-#line 2192 "y.tab.c" /* yacc.c:1646  */
+#line 2191 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 29:
-#line 166 "parser.y" /* yacc.c:1646  */
+#line 165 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(Attr *)malloc(sizeof(Attr));
 						 /*strcpy($$->place,$2);
 						 strcpy($$->type,$1);
 						 p=Insert(table,$2,$1);*/
 						 (yyval.attr)->code=NULL;}
-#line 2202 "y.tab.c" /* yacc.c:1646  */
+#line 2201 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 34:
-#line 181 "parser.y" /* yacc.c:1646  */
+#line 180 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[-1].attr);}
-#line 2208 "y.tab.c" /* yacc.c:1646  */
+#line 2207 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 35:
-#line 184 "parser.y" /* yacc.c:1646  */
+#line 183 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);
 						 strcpy((yyval.attr)->type,(yyvsp[-1].type));
 						 p=Insert(table,(yyvsp[0].attr)->place,(yyval.attr)->type,(yyvsp[0].attr)->assign);
@@ -2218,11 +2217,11 @@ yyreduce:
 							}
 						totalOff+=offset;
 						 p->offset=totalOff;}
-#line 2222 "y.tab.c" /* yacc.c:1646  */
+#line 2221 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 36:
-#line 194 "parser.y" /* yacc.c:1646  */
+#line 193 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[-2].attr);
 						 strcpy((yyval.attr)->type,(yyvsp[-3].type));
 						 (yyval.attr)->code=append((yyvsp[-2].attr)->code,(yyvsp[0].attr)->code);
@@ -2232,20 +2231,20 @@ yyreduce:
 							exit(1);
 							}totalOff+=offset;
 						 p->offset=totalOff;}
-#line 2236 "y.tab.c" /* yacc.c:1646  */
+#line 2235 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 37:
-#line 205 "parser.y" /* yacc.c:1646  */
+#line 204 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(Attr *)malloc(sizeof(Attr));
 								(yyval.attr)->code=NULL;	
 								(yyval.attr)->assign=false;
 								strcpy((yyval.attr)->place,(yyvsp[0].sval));}
-#line 2245 "y.tab.c" /* yacc.c:1646  */
+#line 2244 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 38:
-#line 209 "parser.y" /* yacc.c:1646  */
+#line 208 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);
 								int l =strlen((yyvsp[-3].type));
 								if((yyvsp[-3].type)[l-1]!='2'){
@@ -2253,25 +2252,25 @@ yyreduce:
 								(yyval.attr)->code=append((yyval.attr)->code,newList(t));	
 								(yyval.attr)->assign=true;	}
 								strcpy((yyval.attr)->place,(yyvsp[-2].sval));}
-#line 2257 "y.tab.c" /* yacc.c:1646  */
+#line 2256 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 39:
-#line 218 "parser.y" /* yacc.c:1646  */
+#line 217 "parser.y" /* yacc.c:1646  */
     {(yyval.sval)=(yyvsp[0].sval);strcpy(idr,(yyvsp[0].sval));}
-#line 2263 "y.tab.c" /* yacc.c:1646  */
+#line 2262 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 40:
-#line 219 "parser.y" /* yacc.c:1646  */
+#line 218 "parser.y" /* yacc.c:1646  */
     {(yyval.sval)=(yyvsp[-2].sval);
 							sprintf((yyvsp[-3].type), "%s2",(yyvsp[-3].type));
 							}
-#line 2271 "y.tab.c" /* yacc.c:1646  */
+#line 2270 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 41:
-#line 224 "parser.y" /* yacc.c:1646  */
+#line 223 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);
 							(yyval.attr)->code=append((yyvsp[-1].attr)->code,(yyvsp[0].attr)->code);
 							if(!ret){
@@ -2283,11 +2282,11 @@ yyreduce:
 									exit(1);}}
 							currFunc->offset=totalOff;
 							table=table->prev;}
-#line 2287 "y.tab.c" /* yacc.c:1646  */
+#line 2286 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 42:
-#line 237 "parser.y" /* yacc.c:1646  */
+#line 236 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(Attr *)malloc(sizeof(Attr));
 								ret=false;
 								strcpy((yyval.attr)->place,(yyvsp[0].sval));
@@ -2310,320 +2309,320 @@ yyreduce:
 								p->func->prev=table;
 								table=p->func;
 								strcpy(table->name,(yyvsp[0].sval));}}
-#line 2314 "y.tab.c" /* yacc.c:1646  */
+#line 2313 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 43:
-#line 261 "parser.y" /* yacc.c:1646  */
+#line 260 "parser.y" /* yacc.c:1646  */
     {(yyval.sval)=(yyvsp[-3].sval);}
-#line 2320 "y.tab.c" /* yacc.c:1646  */
+#line 2319 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 44:
-#line 263 "parser.y" /* yacc.c:1646  */
+#line 262 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 2326 "y.tab.c" /* yacc.c:1646  */
+#line 2325 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 45:
-#line 264 "parser.y" /* yacc.c:1646  */
+#line 263 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(Attr *)malloc(sizeof(Attr));(yyval.attr)->code=NULL;}
-#line 2332 "y.tab.c" /* yacc.c:1646  */
+#line 2331 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 46:
-#line 267 "parser.y" /* yacc.c:1646  */
+#line 266 "parser.y" /* yacc.c:1646  */
     {(yyval.attr) = (yyvsp[-1].attr);}
-#line 2338 "y.tab.c" /* yacc.c:1646  */
+#line 2337 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 47:
-#line 270 "parser.y" /* yacc.c:1646  */
+#line 269 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 2344 "y.tab.c" /* yacc.c:1646  */
+#line 2343 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 48:
-#line 271 "parser.y" /* yacc.c:1646  */
+#line 270 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(Attr *)malloc(sizeof(Attr));(yyval.attr)->code=NULL;}
-#line 2350 "y.tab.c" /* yacc.c:1646  */
+#line 2349 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 49:
-#line 274 "parser.y" /* yacc.c:1646  */
+#line 273 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);(yyval.attr)->idx[0] = '0';
 				  sprintf(t, "=, %s[%d], %s", idr,(yyval.attr)->idx[0]-'0', (yyvsp[0].attr)->place);
 				  (yyval.attr)->code  = append((yyvsp[0].attr)->code, newList(t));
 			  }
-#line 2359 "y.tab.c" /* yacc.c:1646  */
+#line 2358 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 50:
-#line 278 "parser.y" /* yacc.c:1646  */
+#line 277 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(Attr *)malloc(sizeof(Attr));
 						(yyval.attr)->code = append((yyvsp[-2].attr)->code, (yyvsp[0].attr)->code);
 						(yyval.attr)->idx[0] = (yyvsp[-2].attr)->idx[0]+1;
 						sprintf(t,"=, %s[%d], %s", idr,(yyval.attr)->idx[0]-'0', (yyvsp[0].attr)->place);
 						(yyval.attr)->code  = append((yyval.attr)->code, newList(t));
 						}
-#line 2370 "y.tab.c" /* yacc.c:1646  */
+#line 2369 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 51:
-#line 286 "parser.y" /* yacc.c:1646  */
+#line 285 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 2376 "y.tab.c" /* yacc.c:1646  */
+#line 2375 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 52:
-#line 287 "parser.y" /* yacc.c:1646  */
+#line 286 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 2382 "y.tab.c" /* yacc.c:1646  */
+#line 2381 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 53:
-#line 291 "parser.y" /* yacc.c:1646  */
+#line 290 "parser.y" /* yacc.c:1646  */
     {(yyval.type)=(yyvsp[0].type);}
-#line 2388 "y.tab.c" /* yacc.c:1646  */
+#line 2387 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 55:
-#line 293 "parser.y" /* yacc.c:1646  */
+#line 292 "parser.y" /* yacc.c:1646  */
     {(yyval.type)=(yyvsp[0].sval);}
-#line 2394 "y.tab.c" /* yacc.c:1646  */
+#line 2393 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 56:
-#line 294 "parser.y" /* yacc.c:1646  */
+#line 293 "parser.y" /* yacc.c:1646  */
     {(yyval.type)=(yyvsp[0].sval);}
-#line 2400 "y.tab.c" /* yacc.c:1646  */
+#line 2399 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 57:
-#line 297 "parser.y" /* yacc.c:1646  */
+#line 296 "parser.y" /* yacc.c:1646  */
     {(yyval.type)=(yyvsp[0].type);}
-#line 2406 "y.tab.c" /* yacc.c:1646  */
+#line 2405 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 58:
-#line 298 "parser.y" /* yacc.c:1646  */
+#line 297 "parser.y" /* yacc.c:1646  */
     {(yyval.type)=(yyvsp[0].sval);}
-#line 2412 "y.tab.c" /* yacc.c:1646  */
+#line 2411 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 59:
-#line 301 "parser.y" /* yacc.c:1646  */
+#line 300 "parser.y" /* yacc.c:1646  */
     {(yyval.type)=(yyvsp[0].type);}
-#line 2418 "y.tab.c" /* yacc.c:1646  */
+#line 2417 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 60:
-#line 302 "parser.y" /* yacc.c:1646  */
+#line 301 "parser.y" /* yacc.c:1646  */
     {(yyval.type)=(yyvsp[0].sval);}
-#line 2424 "y.tab.c" /* yacc.c:1646  */
+#line 2423 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 61:
-#line 305 "parser.y" /* yacc.c:1646  */
+#line 304 "parser.y" /* yacc.c:1646  */
     {(yyval.type)=(yyvsp[0].sval);}
-#line 2430 "y.tab.c" /* yacc.c:1646  */
+#line 2429 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 62:
-#line 306 "parser.y" /* yacc.c:1646  */
+#line 305 "parser.y" /* yacc.c:1646  */
     {(yyval.type)=(yyvsp[0].sval);offset=1;}
-#line 2436 "y.tab.c" /* yacc.c:1646  */
+#line 2435 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 63:
-#line 307 "parser.y" /* yacc.c:1646  */
+#line 306 "parser.y" /* yacc.c:1646  */
     {(yyval.type)=(yyvsp[0].sval);offset=8;}
-#line 2442 "y.tab.c" /* yacc.c:1646  */
+#line 2441 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 66:
-#line 314 "parser.y" /* yacc.c:1646  */
+#line 313 "parser.y" /* yacc.c:1646  */
     {(yyval.type)=strdup((yyvsp[0].sval));}
-#line 2448 "y.tab.c" /* yacc.c:1646  */
+#line 2447 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 67:
-#line 317 "parser.y" /* yacc.c:1646  */
+#line 316 "parser.y" /* yacc.c:1646  */
     {sprintf((yyvsp[-2].type),"%s2",(yyvsp[-2].type));}
-#line 2454 "y.tab.c" /* yacc.c:1646  */
+#line 2453 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 68:
-#line 320 "parser.y" /* yacc.c:1646  */
+#line 319 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[-1].attr);}
-#line 2460 "y.tab.c" /* yacc.c:1646  */
+#line 2459 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 69:
-#line 323 "parser.y" /* yacc.c:1646  */
+#line 322 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 2466 "y.tab.c" /* yacc.c:1646  */
+#line 2465 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 70:
-#line 324 "parser.y" /* yacc.c:1646  */
+#line 323 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(Attr *)malloc(sizeof(Attr));(yyval.attr)->code=NULL;}
-#line 2472 "y.tab.c" /* yacc.c:1646  */
+#line 2471 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 71:
-#line 327 "parser.y" /* yacc.c:1646  */
+#line 326 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 2478 "y.tab.c" /* yacc.c:1646  */
+#line 2477 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 72:
-#line 328 "parser.y" /* yacc.c:1646  */
+#line 327 "parser.y" /* yacc.c:1646  */
     {(yyvsp[-1].attr)->code=append((yyvsp[-1].attr)->code,(yyvsp[0].attr)->code);
 							 (yyval.attr)=(yyvsp[-1].attr);}
-#line 2485 "y.tab.c" /* yacc.c:1646  */
+#line 2484 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 73:
-#line 332 "parser.y" /* yacc.c:1646  */
+#line 331 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 2491 "y.tab.c" /* yacc.c:1646  */
+#line 2490 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 74:
-#line 333 "parser.y" /* yacc.c:1646  */
+#line 332 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 2497 "y.tab.c" /* yacc.c:1646  */
+#line 2496 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 75:
-#line 336 "parser.y" /* yacc.c:1646  */
+#line 335 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[-1].attr);}
-#line 2503 "y.tab.c" /* yacc.c:1646  */
+#line 2502 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 76:
-#line 339 "parser.y" /* yacc.c:1646  */
+#line 338 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 2509 "y.tab.c" /* yacc.c:1646  */
+#line 2508 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 77:
-#line 342 "parser.y" /* yacc.c:1646  */
+#line 341 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 2515 "y.tab.c" /* yacc.c:1646  */
+#line 2514 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 78:
-#line 343 "parser.y" /* yacc.c:1646  */
+#line 342 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 2521 "y.tab.c" /* yacc.c:1646  */
+#line 2520 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 79:
-#line 344 "parser.y" /* yacc.c:1646  */
+#line 343 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 2527 "y.tab.c" /* yacc.c:1646  */
+#line 2526 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 80:
-#line 345 "parser.y" /* yacc.c:1646  */
+#line 344 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 2533 "y.tab.c" /* yacc.c:1646  */
+#line 2532 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 81:
-#line 346 "parser.y" /* yacc.c:1646  */
+#line 345 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 2539 "y.tab.c" /* yacc.c:1646  */
+#line 2538 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 82:
-#line 347 "parser.y" /* yacc.c:1646  */
+#line 346 "parser.y" /* yacc.c:1646  */
     {yyerrok;}
-#line 2545 "y.tab.c" /* yacc.c:1646  */
+#line 2544 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 83:
-#line 348 "parser.y" /* yacc.c:1646  */
+#line 347 "parser.y" /* yacc.c:1646  */
     {yyerrok;}
-#line 2551 "y.tab.c" /* yacc.c:1646  */
+#line 2550 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 84:
-#line 351 "parser.y" /* yacc.c:1646  */
+#line 350 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 2557 "y.tab.c" /* yacc.c:1646  */
+#line 2556 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 85:
-#line 352 "parser.y" /* yacc.c:1646  */
+#line 351 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 2563 "y.tab.c" /* yacc.c:1646  */
+#line 2562 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 86:
-#line 353 "parser.y" /* yacc.c:1646  */
+#line 352 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 2569 "y.tab.c" /* yacc.c:1646  */
+#line 2568 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 87:
-#line 354 "parser.y" /* yacc.c:1646  */
+#line 353 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 2575 "y.tab.c" /* yacc.c:1646  */
+#line 2574 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 88:
-#line 357 "parser.y" /* yacc.c:1646  */
+#line 356 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 2581 "y.tab.c" /* yacc.c:1646  */
+#line 2580 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 89:
-#line 358 "parser.y" /* yacc.c:1646  */
+#line 357 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 2587 "y.tab.c" /* yacc.c:1646  */
+#line 2586 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 90:
-#line 359 "parser.y" /* yacc.c:1646  */
+#line 358 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 2593 "y.tab.c" /* yacc.c:1646  */
+#line 2592 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 91:
-#line 360 "parser.y" /* yacc.c:1646  */
+#line 359 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 2599 "y.tab.c" /* yacc.c:1646  */
+#line 2598 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 92:
-#line 361 "parser.y" /* yacc.c:1646  */
+#line 360 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 2605 "y.tab.c" /* yacc.c:1646  */
+#line 2604 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 93:
-#line 362 "parser.y" /* yacc.c:1646  */
+#line 361 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 2611 "y.tab.c" /* yacc.c:1646  */
+#line 2610 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 94:
-#line 363 "parser.y" /* yacc.c:1646  */
+#line 362 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 2617 "y.tab.c" /* yacc.c:1646  */
+#line 2616 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 95:
-#line 364 "parser.y" /* yacc.c:1646  */
+#line 363 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 2623 "y.tab.c" /* yacc.c:1646  */
+#line 2622 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 96:
-#line 365 "parser.y" /* yacc.c:1646  */
+#line 364 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[-2].attr);
 							sprintf(t,", scan, %s",(yyvsp[-2].attr)->place);
 							p=look_up(table,(yyvsp[-2].attr)->place);
@@ -2633,11 +2632,11 @@ yyreduce:
 							p->assign=true;
 							(yyvsp[-2].attr)->assign=true;
 							(yyval.attr)->code=newList(t);}
-#line 2637 "y.tab.c" /* yacc.c:1646  */
+#line 2636 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 97:
-#line 375 "parser.y" /* yacc.c:1646  */
+#line 374 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[-2].attr);  p = look_up(table, (yyvsp[-2].attr)->place);
 							if(p && p->assign){
 								sprintf(t,", print, %s",(yyvsp[-2].attr)->place);
@@ -2645,73 +2644,73 @@ yyreduce:
 							else{
 								fprintf(stderr,"Error: Variable %s not declared on line %d\n",(yyvsp[-2].attr)->place,yylineno);
 								exit(1);}}
-#line 2649 "y.tab.c" /* yacc.c:1646  */
+#line 2648 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 98:
-#line 384 "parser.y" /* yacc.c:1646  */
+#line 383 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(Attr *)malloc(sizeof(Attr));(yyval.attr)->code=NULL;}
-#line 2655 "y.tab.c" /* yacc.c:1646  */
+#line 2654 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 99:
-#line 387 "parser.y" /* yacc.c:1646  */
+#line 386 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[-1].attr);}
-#line 2661 "y.tab.c" /* yacc.c:1646  */
+#line 2660 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 100:
-#line 390 "parser.y" /* yacc.c:1646  */
+#line 389 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 2667 "y.tab.c" /* yacc.c:1646  */
+#line 2666 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 101:
-#line 391 "parser.y" /* yacc.c:1646  */
+#line 390 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 2673 "y.tab.c" /* yacc.c:1646  */
+#line 2672 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 102:
-#line 392 "parser.y" /* yacc.c:1646  */
+#line 391 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 2679 "y.tab.c" /* yacc.c:1646  */
+#line 2678 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 103:
-#line 393 "parser.y" /* yacc.c:1646  */
+#line 392 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 2685 "y.tab.c" /* yacc.c:1646  */
+#line 2684 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 104:
-#line 394 "parser.y" /* yacc.c:1646  */
+#line 393 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 2691 "y.tab.c" /* yacc.c:1646  */
+#line 2690 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 105:
-#line 395 "parser.y" /* yacc.c:1646  */
+#line 394 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);
 					sprintf(t,", call, %s",(yyvsp[0].attr)->place);
 					(yyval.attr)->code=append((yyvsp[0].attr)->code,newList(t));}
-#line 2699 "y.tab.c" /* yacc.c:1646  */
+#line 2698 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 106:
-#line 398 "parser.y" /* yacc.c:1646  */
+#line 397 "parser.y" /* yacc.c:1646  */
     {(yyval.attr) = (yyvsp[0].attr);}
-#line 2705 "y.tab.c" /* yacc.c:1646  */
+#line 2704 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 107:
-#line 399 "parser.y" /* yacc.c:1646  */
+#line 398 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(Attr *)malloc(sizeof(Attr));(yyval.attr)->code=NULL;}
-#line 2711 "y.tab.c" /* yacc.c:1646  */
+#line 2710 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 108:
-#line 402 "parser.y" /* yacc.c:1646  */
+#line 401 "parser.y" /* yacc.c:1646  */
     { char end[5];
 									  strcpy(end,newLabel());
 									  (yyval.attr)=(Attr *)malloc(sizeof(Attr));	
@@ -2721,11 +2720,11 @@ yyreduce:
 									  (yyval.attr)->code = append((yyval.attr)->code,(yyvsp[0].attr)->code);
 									  sprintf(t,", label, %s",end);
        								          (yyval.attr)->code = append((yyval.attr)->code,newList(t));  }
-#line 2725 "y.tab.c" /* yacc.c:1646  */
+#line 2724 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 109:
-#line 413 "parser.y" /* yacc.c:1646  */
+#line 412 "parser.y" /* yacc.c:1646  */
     { char end[5],else_beg[5];
 									  strcpy(end,newLabel()); strcpy(else_beg,newLabel());		
 									  (yyval.attr)=(Attr *)malloc(sizeof(Attr));	
@@ -2741,11 +2740,11 @@ yyreduce:
 									  sprintf(t,", label, %s",end);
        								          (yyval.attr)->code = append((yyval.attr)->code,newList(t));  
 									   	  }
-#line 2745 "y.tab.c" /* yacc.c:1646  */
+#line 2744 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 110:
-#line 431 "parser.y" /* yacc.c:1646  */
+#line 430 "parser.y" /* yacc.c:1646  */
     { char end[5],else_beg[5];
 									  strcpy(end,newLabel()); strcpy(else_beg,newLabel());
 									  (yyval.attr)=(Attr *)malloc(sizeof(Attr));	
@@ -2760,11 +2759,11 @@ yyreduce:
 									  (yyval.attr)->code = append((yyval.attr)->code,(yyvsp[0].attr)->code);
 									  sprintf(t,", label, %s",end);
        								          (yyval.attr)->code = append((yyval.attr)->code,newList(t)); }
-#line 2764 "y.tab.c" /* yacc.c:1646  */
+#line 2763 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 111:
-#line 447 "parser.y" /* yacc.c:1646  */
+#line 446 "parser.y" /* yacc.c:1646  */
     {  char end[5];
 							 	strcpy(end,newLabel());
 								(yyval.attr)=(yyvsp[0].attr);
@@ -2773,42 +2772,42 @@ yyreduce:
 								(yyval.attr)->code = append((yyval.attr)->code,newList(t));
 								patchSwitch((yyval.attr)->code,(yyvsp[-2].attr)->place);
 								}
-#line 2777 "y.tab.c" /* yacc.c:1646  */
+#line 2776 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 112:
-#line 457 "parser.y" /* yacc.c:1646  */
+#line 456 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[-1].attr);}
-#line 2783 "y.tab.c" /* yacc.c:1646  */
+#line 2782 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 113:
-#line 460 "parser.y" /* yacc.c:1646  */
+#line 459 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 2789 "y.tab.c" /* yacc.c:1646  */
+#line 2788 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 114:
-#line 461 "parser.y" /* yacc.c:1646  */
+#line 460 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(Attr *)malloc(sizeof(Attr));(yyval.attr)->code=NULL;}
-#line 2795 "y.tab.c" /* yacc.c:1646  */
+#line 2794 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 115:
-#line 464 "parser.y" /* yacc.c:1646  */
+#line 463 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 2801 "y.tab.c" /* yacc.c:1646  */
+#line 2800 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 116:
-#line 465 "parser.y" /* yacc.c:1646  */
+#line 464 "parser.y" /* yacc.c:1646  */
     {   (yyval.attr)=(yyvsp[-1].attr);
 									(yyval.attr)->code= append((yyval.attr)->code,(yyvsp[0].attr)->code);}
-#line 2808 "y.tab.c" /* yacc.c:1646  */
+#line 2807 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 117:
-#line 469 "parser.y" /* yacc.c:1646  */
+#line 468 "parser.y" /* yacc.c:1646  */
     { (yyval.attr)=(Attr*)malloc(sizeof(Attr));
 								char nexLabel[5];
 								strcpy(nexLabel,newLabel());
@@ -2819,18 +2818,18 @@ yyreduce:
 								(yyval.attr)->code=append((yyval.attr)->code,newList(t));
 								(yyval.attr)->code->swt = 1;
 								(yyval.attr)->code->swt_len += strlen((yyvsp[-2].attr)->place);}
-#line 2823 "y.tab.c" /* yacc.c:1646  */
+#line 2822 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 118:
-#line 480 "parser.y" /* yacc.c:1646  */
+#line 479 "parser.y" /* yacc.c:1646  */
     { (yyval.attr)=(Attr*)malloc(sizeof(Attr));
 								(yyval.attr)->code = append((yyval.attr)->code,(yyvsp[0].attr)->code);	}
-#line 2830 "y.tab.c" /* yacc.c:1646  */
+#line 2829 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 119:
-#line 484 "parser.y" /* yacc.c:1646  */
+#line 483 "parser.y" /* yacc.c:1646  */
     { char begin[5],end[5];
 									   strcpy(begin,newLabel());
 									   strcpy(end,newLabel());	
@@ -2847,11 +2846,11 @@ yyreduce:
        								          (yyval.attr)->code = append((yyval.attr)->code,newList(t));
 									  sprintf(t,", label, %s",end);
        								          (yyval.attr)->code = append((yyval.attr)->code,newList(t));  }
-#line 2851 "y.tab.c" /* yacc.c:1646  */
+#line 2850 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 120:
-#line 502 "parser.y" /* yacc.c:1646  */
+#line 501 "parser.y" /* yacc.c:1646  */
     { char begin[5],end[5];
 									   strcpy(begin,newLabel());
 									   strcpy(end,newLabel());
@@ -2868,11 +2867,11 @@ yyreduce:
        								          (yyval.attr)->code = append((yyval.attr)->code,newList(t));
 									  sprintf(t,", label, %s",end);
        								          (yyval.attr)->code = append((yyval.attr)->code,newList(t));  }
-#line 2872 "y.tab.c" /* yacc.c:1646  */
+#line 2871 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 121:
-#line 520 "parser.y" /* yacc.c:1646  */
+#line 519 "parser.y" /* yacc.c:1646  */
     { char begin[5],end[5];
 									   strcpy(begin,newLabel());
 									   strcpy(end,newLabel());
@@ -2889,11 +2888,11 @@ yyreduce:
        								          (yyval.attr)->code = append((yyval.attr)->code,newList(t));
 									  sprintf(t,", label, %s",end);
        								          (yyval.attr)->code = append((yyval.attr)->code,newList(t));  }
-#line 2893 "y.tab.c" /* yacc.c:1646  */
+#line 2892 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 122:
-#line 538 "parser.y" /* yacc.c:1646  */
+#line 537 "parser.y" /* yacc.c:1646  */
     { char begin[5],end[5],cont[5];
 									  			strcpy(begin,newLabel());
 									  			strcpy(end,newLabel());
@@ -2915,11 +2914,11 @@ yyreduce:
        								          		        (yyval.attr)->code = append((yyval.attr)->code,newList(t));
 									  		        sprintf(t,", label, %s",end);
        								          	                (yyval.attr)->code = append((yyval.attr)->code,newList(t));}
-#line 2919 "y.tab.c" /* yacc.c:1646  */
+#line 2918 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 123:
-#line 562 "parser.y" /* yacc.c:1646  */
+#line 561 "parser.y" /* yacc.c:1646  */
     { char begin[5],end[5],cont[5];		 
 									  			strcpy(begin,newLabel());
 									  			strcpy(end,newLabel());
@@ -2941,95 +2940,95 @@ yyreduce:
        								          		        (yyval.attr)->code = append((yyval.attr)->code,newList(t));
 									  		        sprintf(t,", label, %s",end);
        								          	               (yyval.attr)->code = append((yyval.attr)->code,newList(t));}
-#line 2945 "y.tab.c" /* yacc.c:1646  */
+#line 2944 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 124:
-#line 585 "parser.y" /* yacc.c:1646  */
+#line 584 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 2951 "y.tab.c" /* yacc.c:1646  */
+#line 2950 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 125:
-#line 586 "parser.y" /* yacc.c:1646  */
+#line 585 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(Attr *)malloc(sizeof(Attr));(yyval.attr)->code=NULL;(yyval.attr)->assign=true;}
-#line 2957 "y.tab.c" /* yacc.c:1646  */
+#line 2956 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 126:
-#line 589 "parser.y" /* yacc.c:1646  */
+#line 588 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 2963 "y.tab.c" /* yacc.c:1646  */
+#line 2962 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 127:
-#line 590 "parser.y" /* yacc.c:1646  */
+#line 589 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 2969 "y.tab.c" /* yacc.c:1646  */
+#line 2968 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 128:
-#line 593 "parser.y" /* yacc.c:1646  */
+#line 592 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 2975 "y.tab.c" /* yacc.c:1646  */
+#line 2974 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 129:
-#line 594 "parser.y" /* yacc.c:1646  */
+#line 593 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(Attr *)malloc(sizeof(Attr));(yyval.attr)->code=NULL;strcpy((yyval.attr)->place,"");(yyval.attr)->assign=true;}
-#line 2981 "y.tab.c" /* yacc.c:1646  */
+#line 2980 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 130:
-#line 597 "parser.y" /* yacc.c:1646  */
+#line 596 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 2987 "y.tab.c" /* yacc.c:1646  */
+#line 2986 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 131:
-#line 598 "parser.y" /* yacc.c:1646  */
+#line 597 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(Attr *)malloc(sizeof(Attr));(yyval.attr)->code=NULL;(yyval.attr)->assign=true;}
-#line 2993 "y.tab.c" /* yacc.c:1646  */
+#line 2992 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 132:
-#line 601 "parser.y" /* yacc.c:1646  */
+#line 600 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 2999 "y.tab.c" /* yacc.c:1646  */
+#line 2998 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 133:
-#line 604 "parser.y" /* yacc.c:1646  */
+#line 603 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 3005 "y.tab.c" /* yacc.c:1646  */
+#line 3004 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 134:
-#line 605 "parser.y" /* yacc.c:1646  */
+#line 604 "parser.y" /* yacc.c:1646  */
     {(yyvsp[-2].attr)->code=append((yyvsp[-2].attr)->code,(yyvsp[0].attr)->code);(yyval.attr)=(yyvsp[-2].attr);}
-#line 3011 "y.tab.c" /* yacc.c:1646  */
+#line 3010 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 135:
-#line 608 "parser.y" /* yacc.c:1646  */
+#line 607 "parser.y" /* yacc.c:1646  */
     {  (yyval.attr) = (Attr *)malloc(sizeof(Attr));
 				     	sprintf(t,", Goto, ");
 					(yyval.attr)->code = newList(t);
 					(yyval.attr)->code->br = 1;}
-#line 3020 "y.tab.c" /* yacc.c:1646  */
+#line 3019 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 136:
-#line 614 "parser.y" /* yacc.c:1646  */
+#line 613 "parser.y" /* yacc.c:1646  */
     {  (yyval.attr) = (Attr *)malloc(sizeof(Attr));
 				     	sprintf(t,", Goto, ");
 					(yyval.attr)->code = newList(t);
 					(yyval.attr)->code->cont = 1;}
-#line 3029 "y.tab.c" /* yacc.c:1646  */
+#line 3028 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 137:
-#line 620 "parser.y" /* yacc.c:1646  */
+#line 619 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[-1].attr);
 					ret=true;
 					if (!strcmp((yyvsp[-1].attr)->place,"") && !strcmp(methodType,"void"))
@@ -3048,23 +3047,23 @@ yyreduce:
 						exit(1);
 					}
 					 (yyval.attr)->code=append((yyvsp[-1].attr)->code,newList(t));}
-#line 3052 "y.tab.c" /* yacc.c:1646  */
+#line 3051 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 138:
-#line 640 "parser.y" /* yacc.c:1646  */
+#line 639 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 3058 "y.tab.c" /* yacc.c:1646  */
+#line 3057 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 139:
-#line 641 "parser.y" /* yacc.c:1646  */
+#line 640 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 3064 "y.tab.c" /* yacc.c:1646  */
+#line 3063 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 140:
-#line 645 "parser.y" /* yacc.c:1646  */
+#line 644 "parser.y" /* yacc.c:1646  */
     {sprintf(t,", =, %s, %s",(yyvsp[-2].attr)->place,(yyvsp[0].attr)->place);
 						(yyval.attr)->code = append((yyvsp[-2].attr)->code, (yyvsp[0].attr)->code);
 						char tr[50];
@@ -3082,11 +3081,11 @@ yyreduce:
 						}
 						(yyval.attr)->code=append((yyval.attr)->code,newList(t));
 						}
-#line 3086 "y.tab.c" /* yacc.c:1646  */
+#line 3085 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 141:
-#line 663 "parser.y" /* yacc.c:1646  */
+#line 662 "parser.y" /* yacc.c:1646  */
     {if(!(yyvsp[0].attr)->assign){
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,(yyvsp[0].attr)->place);
 								exit(1);
@@ -3134,109 +3133,109 @@ yyreduce:
 							(yyval.attr)=(yyvsp[-2].attr);
 							(yyval.attr)->code=append((yyvsp[0].attr)->code,newList(t));
 						}}
-#line 3138 "y.tab.c" /* yacc.c:1646  */
+#line 3137 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 142:
-#line 712 "parser.y" /* yacc.c:1646  */
+#line 711 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 3144 "y.tab.c" /* yacc.c:1646  */
+#line 3143 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 143:
-#line 713 "parser.y" /* yacc.c:1646  */
+#line 712 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 3150 "y.tab.c" /* yacc.c:1646  */
+#line 3149 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 144:
-#line 714 "parser.y" /* yacc.c:1646  */
-    {(yyval.attr)=(yyvsp[0].attr);sprintf(t, "%s[%s]",(yyvsp[0].attr)->place, (yyvsp[0].attr)->idx);
+#line 713 "parser.y" /* yacc.c:1646  */
+    {(yyval.attr)=(yyvsp[0].attr);/*(Attr *)malloc(sizeof(Attr));*/sprintf(t, "%s[%s]",(yyvsp[0].attr)->place, (yyvsp[0].attr)->idx);
 					strcpy((yyval.attr)->place, t);
 					/*$$->code = append($$->code,$1->code);*/}
-#line 3158 "y.tab.c" /* yacc.c:1646  */
+#line 3157 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 145:
-#line 721 "parser.y" /* yacc.c:1646  */
+#line 720 "parser.y" /* yacc.c:1646  */
     {flag1=1;}
-#line 3164 "y.tab.c" /* yacc.c:1646  */
+#line 3163 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 146:
-#line 722 "parser.y" /* yacc.c:1646  */
+#line 721 "parser.y" /* yacc.c:1646  */
     {flag1=2;}
-#line 3170 "y.tab.c" /* yacc.c:1646  */
+#line 3169 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 147:
-#line 723 "parser.y" /* yacc.c:1646  */
+#line 722 "parser.y" /* yacc.c:1646  */
     {flag1=3;}
-#line 3176 "y.tab.c" /* yacc.c:1646  */
+#line 3175 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 148:
-#line 724 "parser.y" /* yacc.c:1646  */
+#line 723 "parser.y" /* yacc.c:1646  */
     {flag1=4;}
-#line 3182 "y.tab.c" /* yacc.c:1646  */
+#line 3181 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 149:
-#line 725 "parser.y" /* yacc.c:1646  */
+#line 724 "parser.y" /* yacc.c:1646  */
     {flag1=5;}
-#line 3188 "y.tab.c" /* yacc.c:1646  */
+#line 3187 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 150:
-#line 726 "parser.y" /* yacc.c:1646  */
+#line 725 "parser.y" /* yacc.c:1646  */
     {flag1=6;}
-#line 3194 "y.tab.c" /* yacc.c:1646  */
+#line 3193 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 151:
-#line 727 "parser.y" /* yacc.c:1646  */
+#line 726 "parser.y" /* yacc.c:1646  */
     {flag1=7;}
-#line 3200 "y.tab.c" /* yacc.c:1646  */
+#line 3199 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 152:
-#line 728 "parser.y" /* yacc.c:1646  */
+#line 727 "parser.y" /* yacc.c:1646  */
     {flag1=8;}
-#line 3206 "y.tab.c" /* yacc.c:1646  */
+#line 3205 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 153:
-#line 729 "parser.y" /* yacc.c:1646  */
+#line 728 "parser.y" /* yacc.c:1646  */
     {flag1=9;}
-#line 3212 "y.tab.c" /* yacc.c:1646  */
+#line 3211 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 154:
-#line 730 "parser.y" /* yacc.c:1646  */
+#line 729 "parser.y" /* yacc.c:1646  */
     {flag1=10;}
-#line 3218 "y.tab.c" /* yacc.c:1646  */
+#line 3217 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 155:
-#line 731 "parser.y" /* yacc.c:1646  */
+#line 730 "parser.y" /* yacc.c:1646  */
     {flag1=11;}
-#line 3224 "y.tab.c" /* yacc.c:1646  */
+#line 3223 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 156:
-#line 734 "parser.y" /* yacc.c:1646  */
+#line 733 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 3230 "y.tab.c" /* yacc.c:1646  */
+#line 3229 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 158:
-#line 738 "parser.y" /* yacc.c:1646  */
+#line 737 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 3236 "y.tab.c" /* yacc.c:1646  */
+#line 3235 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 159:
-#line 739 "parser.y" /* yacc.c:1646  */
+#line 738 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(Attr *)malloc(sizeof(Attr));
 							if(!(yyvsp[-2].attr)->assign){
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,(yyvsp[-2].attr)->place);
@@ -3246,31 +3245,31 @@ yyreduce:
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,(yyvsp[0].attr)->place);
 								exit(1);
 							}
-							if(strcmp((yyvsp[-2].attr)->type,"int"))
-								typeError(yylineno);
-							else if(strcmp((yyvsp[0].attr)->type,"int"))
-								typeError(yylineno);
-							(yyval.attr)=(yyvsp[-2].attr);
-							sprintf(temp,"%s",tempVar());
-							p=Insert(table,temp,(yyvsp[-2].attr)->type,true);
-							strcpy((yyval.attr)->place,temp);
+							if(strcmp("int",(yyvsp[-2].attr)->type))
+									typeError(yylineno);
+							else if(strcmp("int",(yyvsp[0].attr)->type))
+									typeError(yylineno);
+							(yyval.attr)->assign=true;
+							sprintf(t,"%s",tempVar());
+							p=Insert(table,t,(yyvsp[-2].attr)->type,true);
+							strcpy((yyval.attr)->place,t);
 							totalOff+=8;
 							p->offset=totalOff;
 							(yyval.attr)->code=append((yyvsp[-2].attr)->code,(yyvsp[0].attr)->code);
 							sprintf(t,", ||, %s, %s, %s",(yyval.attr)->place,(yyvsp[-2].attr)->place,(yyvsp[0].attr)->place);
 							(yyval.attr)->code=append((yyval.attr)->code,newList(t));
 							}
-#line 3264 "y.tab.c" /* yacc.c:1646  */
+#line 3263 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 160:
-#line 764 "parser.y" /* yacc.c:1646  */
+#line 763 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 3270 "y.tab.c" /* yacc.c:1646  */
+#line 3269 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 161:
-#line 765 "parser.y" /* yacc.c:1646  */
+#line 764 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(Attr *)malloc(sizeof(Attr));
 							if(!(yyvsp[-2].attr)->assign){
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,(yyvsp[-2].attr)->place);
@@ -3280,16 +3279,17 @@ yyreduce:
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,(yyvsp[0].attr)->place);
 								exit(1);
 							}
-							if(strcmp((yyvsp[-2].attr)->type,"int"))
-								typeError(yylineno);
-							else if(strcmp((yyvsp[0].attr)->type,"int"))
-								typeError(yylineno);
-							(yyval.attr)=(yyvsp[-2].attr);
+							if(strcmp("int",(yyvsp[-2].attr)->type))
+									typeError(yylineno);
+							else if(strcmp("int",(yyvsp[0].attr)->type))
+									typeError(yylineno);
+							(yyval.attr)->assign=true;
 							sprintf(temp,"%s",tempVar());
 							p=Insert(table,temp,(yyvsp[-2].attr)->type,true);
 							strcpy((yyval.attr)->place,temp);
 							totalOff+=8;
 							p->offset=totalOff;
+							strcpy((yyval.attr)->type,(yyvsp[-2].attr)->type);
 							(yyval.attr)->code=append((yyvsp[-2].attr)->code,(yyvsp[0].attr)->code);
 							sprintf(t,", &&, %s, %s, %s",(yyval.attr)->place,(yyvsp[-2].attr)->place,(yyvsp[0].attr)->place);
 							(yyval.attr)->code=append((yyval.attr)->code,newList(t));
@@ -3314,31 +3314,32 @@ yyreduce:
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,(yyvsp[0].attr)->place);
 								exit(1);
 							}
-							if(strcmp((yyvsp[-2].attr)->type,"int"))
-								typeError(yylineno);
-							else if(strcmp((yyvsp[0].attr)->type,"int"))
-								typeError(yylineno);
-							(yyval.attr)=(yyvsp[-2].attr);
+							if(strcmp("int",(yyvsp[-2].attr)->type))
+									typeError(yylineno);
+							else if(strcmp("int",(yyvsp[0].attr)->type))
+									typeError(yylineno);
+							(yyval.attr)->assign=true;
 							sprintf(temp,"%s",tempVar());
 							p=Insert(table,temp,(yyvsp[-2].attr)->type,true);
 							strcpy((yyval.attr)->place,temp);
 							totalOff+=8;
 							p->offset=totalOff;
+							strcpy((yyval.attr)->type,(yyvsp[-2].attr)->type);
 							(yyval.attr)->code=append((yyvsp[-2].attr)->code,(yyvsp[0].attr)->code);
 							sprintf(t,", |, %s, %s, %s",(yyval.attr)->place,(yyvsp[-2].attr)->place,(yyvsp[0].attr)->place);
 							(yyval.attr)->code=append((yyval.attr)->code,newList(t));
 							}
-#line 3332 "y.tab.c" /* yacc.c:1646  */
+#line 3333 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 164:
-#line 816 "parser.y" /* yacc.c:1646  */
+#line 817 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 3338 "y.tab.c" /* yacc.c:1646  */
+#line 3339 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 165:
-#line 817 "parser.y" /* yacc.c:1646  */
+#line 818 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(Attr *)malloc(sizeof(Attr));
 							if(!(yyvsp[-2].attr)->assign){
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,(yyvsp[-2].attr)->place);
@@ -3348,31 +3349,32 @@ yyreduce:
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,(yyvsp[0].attr)->place);
 								exit(1);
 							}
-							if(strcmp((yyvsp[-2].attr)->type,"int"))
-								typeError(yylineno);
-							else if(strcmp((yyvsp[0].attr)->type,"int"))
-								typeError(yylineno);
-							(yyval.attr)=(yyvsp[-2].attr);
+							if(strcmp("int",(yyvsp[-2].attr)->type))
+									typeError(yylineno);
+							else if(strcmp("int",(yyvsp[0].attr)->type))
+									typeError(yylineno);
+							(yyval.attr)->assign=true;
 							sprintf(temp,"%s",tempVar());
 							p=Insert(table,temp,(yyvsp[-2].attr)->type,true);
 							strcpy((yyval.attr)->place,temp);
 							totalOff+=8;
 							p->offset=totalOff;
+							strcpy((yyval.attr)->type,(yyvsp[-2].attr)->type);
 							(yyval.attr)->code=append((yyvsp[-2].attr)->code,(yyvsp[0].attr)->code);
 							sprintf(t,", ^, %s, %s, %s",(yyval.attr)->place,(yyvsp[-2].attr)->place,(yyvsp[0].attr)->place);
 							(yyval.attr)->code=append((yyval.attr)->code,newList(t));
 							}
-#line 3366 "y.tab.c" /* yacc.c:1646  */
+#line 3368 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 166:
-#line 842 "parser.y" /* yacc.c:1646  */
+#line 844 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 3372 "y.tab.c" /* yacc.c:1646  */
+#line 3374 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 167:
-#line 843 "parser.y" /* yacc.c:1646  */
+#line 845 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(Attr *)malloc(sizeof(Attr));
 							if(!(yyvsp[-2].attr)->assign){
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,(yyvsp[-2].attr)->place);
@@ -3382,31 +3384,32 @@ yyreduce:
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,(yyvsp[0].attr)->place);
 								exit(1);
 							}
-							if(strcmp((yyvsp[-2].attr)->type,"int"))
-								typeError(yylineno);
-							else if(strcmp((yyvsp[0].attr)->type,"int"))
-								typeError(yylineno);
-							(yyval.attr)=(yyvsp[-2].attr);
+							if(strcmp("int",(yyvsp[-2].attr)->type))
+									typeError(yylineno);
+							else if(strcmp("int",(yyvsp[0].attr)->type))
+									typeError(yylineno);
+							(yyval.attr)->assign=true;
 							sprintf(temp,"%s",tempVar());
 							p=Insert(table,temp,(yyvsp[-2].attr)->type,true);
 							strcpy((yyval.attr)->place,temp);
 							totalOff+=8;
 							p->offset=totalOff;
+							strcpy((yyval.attr)->type,(yyvsp[-2].attr)->type);
 							(yyval.attr)->code=append((yyvsp[-2].attr)->code,(yyvsp[0].attr)->code);
 							sprintf(t,", &, %s, %s, %s",(yyval.attr)->place,(yyvsp[-2].attr)->place,(yyvsp[0].attr)->place);
 							(yyval.attr)->code=append((yyval.attr)->code,newList(t));
 							}
-#line 3400 "y.tab.c" /* yacc.c:1646  */
+#line 3403 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 168:
-#line 868 "parser.y" /* yacc.c:1646  */
+#line 871 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 3406 "y.tab.c" /* yacc.c:1646  */
+#line 3409 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 169:
-#line 869 "parser.y" /* yacc.c:1646  */
+#line 872 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(Attr *)malloc(sizeof(Attr));
 							if(!(yyvsp[-2].attr)->assign){
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,(yyvsp[-2].attr)->place);
@@ -3416,16 +3419,17 @@ yyreduce:
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,(yyvsp[0].attr)->place);
 								exit(1);
 							}
-							if(strcmp((yyvsp[-2].attr)->type,"int"))
-								typeError(yylineno);
-							else if(strcmp((yyvsp[0].attr)->type,"int"))
-								typeError(yylineno);
-							(yyval.attr)=(yyvsp[-2].attr);
-					sprintf(temp,"%s",tempVar());
-					p=Insert(table,temp,(yyvsp[-2].attr)->type,true);
-					strcpy((yyval.attr)->place,temp);
-					totalOff+=8;
-					p->offset=totalOff;
+					if(strcmp("int",(yyvsp[-2].attr)->type))
+									typeError(yylineno);
+							else if(strcmp("int",(yyvsp[0].attr)->type))
+									typeError(yylineno);
+							(yyval.attr)->assign=true;
+							sprintf(temp,"%s",tempVar());
+							p=Insert(table,temp,(yyvsp[-2].attr)->type,true);
+							strcpy((yyval.attr)->place,temp);
+							totalOff+=8;
+							p->offset=totalOff;
+							strcpy((yyval.attr)->type,(yyvsp[-2].attr)->type);
 					(yyval.attr)->code=append((yyvsp[-2].attr)->code,(yyvsp[0].attr)->code);
 					char end[5],begin[5];
 					strcpy(end,newLabel()); strcpy(begin,newLabel());
@@ -3441,11 +3445,11 @@ yyreduce:
 					(yyval.attr)->code=append((yyval.attr)->code,newList(t));
 					sprintf(t,", label , %s",end);
 					(yyval.attr)->code=append((yyval.attr)->code,newList(t));}
-#line 3445 "y.tab.c" /* yacc.c:1646  */
+#line 3449 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 170:
-#line 904 "parser.y" /* yacc.c:1646  */
+#line 908 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(Attr *)malloc(sizeof(Attr));
 							if(!(yyvsp[-2].attr)->assign){
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,(yyvsp[-2].attr)->place);
@@ -3455,16 +3459,17 @@ yyreduce:
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,(yyvsp[0].attr)->place);
 								exit(1);
 							}
-							if(strcmp((yyvsp[-2].attr)->type,"int"))
-								typeError(yylineno);
-							else if(strcmp((yyvsp[0].attr)->type,"int"))
-								typeError(yylineno);
-							(yyval.attr)=(yyvsp[-2].attr);
-					sprintf(temp,"%s",tempVar());
-					p=Insert(table,temp,(yyvsp[-2].attr)->type,true);
-					strcpy((yyval.attr)->place,temp);
-					totalOff+=8;
-					p->offset=totalOff;
+							if(strcmp("int",(yyvsp[-2].attr)->type))
+									typeError(yylineno);
+							else if(strcmp("int",(yyvsp[0].attr)->type))
+									typeError(yylineno);
+							(yyval.attr)->assign=true;
+							sprintf(temp,"%s",tempVar());
+							p=Insert(table,temp,(yyvsp[-2].attr)->type,true);
+							strcpy((yyval.attr)->place,temp);
+							totalOff+=8;
+							p->offset=totalOff;
+							strcpy((yyval.attr)->type,(yyvsp[-2].attr)->type);
 					(yyval.attr)->code=append((yyvsp[-2].attr)->code,(yyvsp[0].attr)->code);
 					char end[5],begin[5];
 					strcpy(end,newLabel()); strcpy(begin,newLabel());
@@ -3480,17 +3485,17 @@ yyreduce:
 					(yyval.attr)->code=append((yyval.attr)->code,newList(t));
 					sprintf(t,", label , %s",end);
 					(yyval.attr)->code=append((yyval.attr)->code,newList(t));}
-#line 3484 "y.tab.c" /* yacc.c:1646  */
+#line 3489 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 171:
-#line 941 "parser.y" /* yacc.c:1646  */
+#line 946 "parser.y" /* yacc.c:1646  */
     {(yyval.attr) = (yyvsp[0].attr);}
-#line 3490 "y.tab.c" /* yacc.c:1646  */
+#line 3495 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 172:
-#line 942 "parser.y" /* yacc.c:1646  */
+#line 947 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(Attr *)malloc(sizeof(Attr));
 							if(!(yyvsp[-2].attr)->assign){
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,(yyvsp[-2].attr)->place);
@@ -3500,16 +3505,18 @@ yyreduce:
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,(yyvsp[0].attr)->place);
 								exit(1);
 							}
-							if(strcmp((yyvsp[-2].attr)->type,"int"))
-								typeError(yylineno);
-							else if(strcmp((yyvsp[0].attr)->type,"int"))
-								typeError(yylineno);
-							(yyval.attr)=(yyvsp[-2].attr);
-					sprintf(temp,"%s",tempVar());
-					p=Insert(table,temp,(yyvsp[-2].attr)->type,true);
-					strcpy((yyval.attr)->place,temp);
-					totalOff+=8;
-					p->offset=totalOff;
+							(yyval.attr)->assign=true;
+					if(strcmp("int",(yyvsp[-2].attr)->type))
+									typeError(yylineno);
+							else if(strcmp("int",(yyvsp[0].attr)->type))
+									typeError(yylineno);
+							(yyval.attr)->assign=true;
+							sprintf(temp,"%s",tempVar());
+							p=Insert(table,temp,(yyvsp[-2].attr)->type,true);
+							strcpy((yyval.attr)->place,temp);
+							totalOff+=8;
+							p->offset=totalOff;
+							strcpy((yyval.attr)->type,(yyvsp[-2].attr)->type);
 					(yyval.attr)->code=append((yyvsp[-2].attr)->code,(yyvsp[0].attr)->code);
 					char end[5],begin[5];
 					strcpy(end,newLabel()); strcpy(begin,newLabel());
@@ -3525,11 +3532,11 @@ yyreduce:
 					(yyval.attr)->code=append((yyval.attr)->code,newList(t));
 					sprintf(t,", label , %s",end);
 					(yyval.attr)->code=append((yyval.attr)->code,newList(t));}
-#line 3529 "y.tab.c" /* yacc.c:1646  */
+#line 3536 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 173:
-#line 977 "parser.y" /* yacc.c:1646  */
+#line 984 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(Attr *)malloc(sizeof(Attr));
 							if(!(yyvsp[-2].attr)->assign){
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,(yyvsp[-2].attr)->place);
@@ -3539,16 +3546,18 @@ yyreduce:
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,(yyvsp[0].attr)->place);
 								exit(1);
 							}
-							if(strcmp((yyvsp[-2].attr)->type,"int"))
-								typeError(yylineno);
-							else if(strcmp((yyvsp[0].attr)->type,"int"))
-								typeError(yylineno);
-							(yyval.attr)=(yyvsp[-2].attr);
-					sprintf(temp,"%s",tempVar());
-					p=Insert(table,temp,(yyvsp[-2].attr)->type,true);
-					strcpy((yyval.attr)->place,temp);
-					totalOff+=8;
-					p->offset=totalOff;
+							(yyval.attr)->assign=true;
+					if(strcmp("int",(yyvsp[-2].attr)->type))
+									typeError(yylineno);
+							else if(strcmp("int",(yyvsp[0].attr)->type))
+									typeError(yylineno);
+							(yyval.attr)->assign=true;
+							sprintf(temp,"%s",tempVar());
+							p=Insert(table,temp,(yyvsp[-2].attr)->type,true);
+							strcpy((yyval.attr)->place,temp);
+							totalOff+=8;
+							p->offset=totalOff;
+							strcpy((yyval.attr)->type,(yyvsp[-2].attr)->type);
 					(yyval.attr)->code=append((yyvsp[-2].attr)->code,(yyvsp[0].attr)->code);
 					char end[5],begin[5];
 					strcpy(end,newLabel()); strcpy(begin,newLabel());
@@ -3564,11 +3573,11 @@ yyreduce:
 					(yyval.attr)->code=append((yyval.attr)->code,newList(t));
 					sprintf(t,", label , %s",end);
 					(yyval.attr)->code=append((yyval.attr)->code,newList(t));}
-#line 3568 "y.tab.c" /* yacc.c:1646  */
+#line 3577 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 174:
-#line 1012 "parser.y" /* yacc.c:1646  */
+#line 1021 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(Attr *)malloc(sizeof(Attr));
 							if(!(yyvsp[-2].attr)->assign){
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,(yyvsp[-2].attr)->place);
@@ -3578,16 +3587,18 @@ yyreduce:
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,(yyvsp[0].attr)->place);
 								exit(1);
 							}
-							if(strcmp((yyvsp[-2].attr)->type,"int"))
-								typeError(yylineno);
-							else if(strcmp((yyvsp[0].attr)->type,"int"))
-								typeError(yylineno);
-							(yyval.attr)=(yyvsp[-2].attr);
-					sprintf(temp,"%s",tempVar());
-					p=Insert(table,temp,(yyvsp[-2].attr)->type,true);
-					strcpy((yyval.attr)->place,temp);
-					totalOff+=8;
-					p->offset=totalOff;
+							(yyval.attr)->assign=true;
+					if(strcmp("int",(yyvsp[-2].attr)->type))
+									typeError(yylineno);
+							else if(strcmp("int",(yyvsp[0].attr)->type))
+									typeError(yylineno);
+							(yyval.attr)->assign=true;
+							sprintf(temp,"%s",tempVar());
+							p=Insert(table,temp,(yyvsp[-2].attr)->type,true);
+							strcpy((yyval.attr)->place,temp);
+							totalOff+=8;
+							p->offset=totalOff;
+							strcpy((yyval.attr)->type,(yyvsp[-2].attr)->type);
 					(yyval.attr)->code=append((yyvsp[-2].attr)->code,(yyvsp[0].attr)->code);
 					char end[5],begin[5];
 					strcpy(end,newLabel()); strcpy(begin,newLabel());
@@ -3603,11 +3614,11 @@ yyreduce:
 					(yyval.attr)->code=append((yyval.attr)->code,newList(t));
 					sprintf(t,", label , %s",end);
 					(yyval.attr)->code=append((yyval.attr)->code,newList(t));}
-#line 3607 "y.tab.c" /* yacc.c:1646  */
+#line 3618 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 175:
-#line 1047 "parser.y" /* yacc.c:1646  */
+#line 1058 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(Attr *)malloc(sizeof(Attr));
 							if(!(yyvsp[-2].attr)->assign){
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,(yyvsp[-2].attr)->place);
@@ -3617,16 +3628,18 @@ yyreduce:
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,(yyvsp[0].attr)->place);
 								exit(1);
 							}
-							if(strcmp((yyvsp[-2].attr)->type,"int"))
-								typeError(yylineno);
-							else if(strcmp((yyvsp[0].attr)->type,"int"))
-								typeError(yylineno);
-							(yyval.attr)=(yyvsp[-2].attr);
-					sprintf(temp,"%s",tempVar());
-					p=Insert(table,temp,(yyvsp[-2].attr)->type,true);
-					strcpy((yyval.attr)->place,temp);
-					totalOff+=8;
-					p->offset=totalOff;
+							(yyval.attr)->assign=true;
+					if(strcmp("int",(yyvsp[-2].attr)->type))
+									typeError(yylineno);
+							else if(strcmp("int",(yyvsp[0].attr)->type))
+									typeError(yylineno);
+							(yyval.attr)->assign=true;
+							sprintf(temp,"%s",tempVar());
+							p=Insert(table,temp,(yyvsp[-2].attr)->type,true);
+							strcpy((yyval.attr)->place,temp);
+							totalOff+=8;
+							p->offset=totalOff;
+							strcpy((yyval.attr)->type,(yyvsp[-2].attr)->type);
 					(yyval.attr)->code=append((yyvsp[-2].attr)->code,(yyvsp[0].attr)->code);
 					char end[5],begin[5];
 					strcpy(end,newLabel()); strcpy(begin,newLabel());
@@ -3642,17 +3655,17 @@ yyreduce:
 					(yyval.attr)->code=append((yyval.attr)->code,newList(t));
 					sprintf(t,", label , %s",end);
 					(yyval.attr)->code=append((yyval.attr)->code,newList(t));}
-#line 3646 "y.tab.c" /* yacc.c:1646  */
+#line 3659 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 177:
-#line 1086 "parser.y" /* yacc.c:1646  */
+#line 1099 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 3652 "y.tab.c" /* yacc.c:1646  */
+#line 3665 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 178:
-#line 1087 "parser.y" /* yacc.c:1646  */
+#line 1100 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(Attr *)malloc(sizeof(Attr));
 							if(!(yyvsp[-2].attr)->assign){
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,(yyvsp[-2].attr)->place);
@@ -3662,23 +3675,27 @@ yyreduce:
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,(yyvsp[0].attr)->place);
 								exit(1);
 							}
-							if(strcmp((yyvsp[-2].attr)->type,"int"))
-								typeError(yylineno);
-							else if(strcmp((yyvsp[0].attr)->type,"int"))
-								typeError(yylineno);
-							(yyval.attr)=(yyvsp[-2].attr);
+							(yyval.attr)->assign=true;
+							if(strcmp("int",(yyvsp[-2].attr)->type))
+									typeError(yylineno);
+							else if(strcmp("int",(yyvsp[0].attr)->type))
+									typeError(yylineno);
+							(yyval.attr)->assign=true;
 							sprintf(temp,"%s",tempVar());
-					p=Insert(table,temp,(yyvsp[-2].attr)->type,true);
-					strcpy((yyval.attr)->place,temp);
+							p=Insert(table,temp,(yyvsp[-2].attr)->type,true);
+							strcpy((yyval.attr)->place,temp);
+							totalOff+=8;
+							p->offset=totalOff;
+							strcpy((yyval.attr)->type,(yyvsp[-2].attr)->type);
 							(yyval.attr)->code=append((yyvsp[-2].attr)->code,(yyvsp[0].attr)->code);
 							sprintf(t,", <<, %s, %s, %s",(yyval.attr)->place,(yyvsp[-2].attr)->place,(yyvsp[0].attr)->place);
 							(yyval.attr)->code=append((yyval.attr)->code,newList(t));
 							}
-#line 3678 "y.tab.c" /* yacc.c:1646  */
+#line 3695 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 179:
-#line 1108 "parser.y" /* yacc.c:1646  */
+#line 1125 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(Attr *)malloc(sizeof(Attr));
 							if(!(yyvsp[-2].attr)->assign){
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,(yyvsp[-2].attr)->place);
@@ -3688,25 +3705,27 @@ yyreduce:
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,(yyvsp[0].attr)->place);
 								exit(1);
 							}
-							if(strcmp((yyvsp[-2].attr)->type,"int"))
-								typeError(yylineno);
-							else if(strcmp((yyvsp[0].attr)->type,"int"))
-								typeError(yylineno);
-							(yyval.attr)=(yyvsp[-2].attr);
+							(yyval.attr)->assign=true;
+							if(strcmp("int",(yyvsp[-2].attr)->type))
+									typeError(yylineno);
+							else if(strcmp("int",(yyvsp[0].attr)->type))
+									typeError(yylineno);
+							(yyval.attr)->assign=true;
 							sprintf(temp,"%s",tempVar());
-					p=Insert(table,temp,(yyvsp[-2].attr)->type,true);
-					strcpy((yyval.attr)->place,temp);
+							p=Insert(table,temp,(yyvsp[-2].attr)->type,true);
+							strcpy((yyval.attr)->place,temp);
 							totalOff+=8;
 							p->offset=totalOff;
+							strcpy((yyval.attr)->type,(yyvsp[-2].attr)->type);
 							(yyval.attr)->code=append((yyvsp[-2].attr)->code,(yyvsp[0].attr)->code);
 							sprintf(t,", >>, %s, %s, %s",(yyval.attr)->place,(yyvsp[-2].attr)->place,(yyvsp[0].attr)->place);
 							(yyval.attr)->code=append((yyval.attr)->code,newList(t));
 							}
-#line 3706 "y.tab.c" /* yacc.c:1646  */
+#line 3725 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 180:
-#line 1131 "parser.y" /* yacc.c:1646  */
+#line 1150 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(Attr *)malloc(sizeof(Attr));
 							if(!(yyvsp[-2].attr)->assign){
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,(yyvsp[-2].attr)->place);
@@ -3716,61 +3735,33 @@ yyreduce:
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,(yyvsp[0].attr)->place);
 								exit(1);
 							}
-							if(strcmp((yyvsp[-2].attr)->type,"int"))
-								typeError(yylineno);
-							else if(strcmp((yyvsp[0].attr)->type,"int"))
-								typeError(yylineno);
-							(yyval.attr)=(yyvsp[-2].attr);
+							(yyval.attr)->assign=true;
+							if(strcmp("int",(yyvsp[-2].attr)->type))
+									typeError(yylineno);
+							else if(strcmp("int",(yyvsp[0].attr)->type))
+									typeError(yylineno);
+							(yyval.attr)->assign=true;
 							sprintf(temp,"%s",tempVar());
-					p=Insert(table,temp,(yyvsp[-2].attr)->type,true);
-					strcpy((yyval.attr)->place,temp);
+							p=Insert(table,temp,(yyvsp[-2].attr)->type,true);
+							strcpy((yyval.attr)->place,temp);
 							totalOff+=8;
 							p->offset=totalOff;
-							strcpy((yyval.attr)->place,t);
+							strcpy((yyval.attr)->type,(yyvsp[-2].attr)->type);
 							(yyval.attr)->code=append((yyvsp[-2].attr)->code,(yyvsp[0].attr)->code);
 							sprintf(t,", >>>, %s, %s, %s",(yyval.attr)->place,(yyvsp[-2].attr)->place,(yyvsp[0].attr)->place);
 							(yyval.attr)->code=append((yyval.attr)->code,newList(t));
 							}
-#line 3735 "y.tab.c" /* yacc.c:1646  */
+#line 3755 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 181:
-#line 1158 "parser.y" /* yacc.c:1646  */
+#line 1178 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 3741 "y.tab.c" /* yacc.c:1646  */
+#line 3761 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 182:
-#line 1159 "parser.y" /* yacc.c:1646  */
-    {
-							(yyval.attr)=(Attr *)malloc(sizeof(Attr));
-							if(!(yyvsp[-2].attr)->assign){
-								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,(yyvsp[-2].attr)->place);
-								/*exit(1);*/
-							}
-							if(!(yyvsp[0].attr)->assign){
-								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,(yyvsp[0].attr)->place);
-								exit(1);
-							}
-							if(strcmp((yyvsp[-2].attr)->type,"int"))
-								typeError(yylineno);
-							else if(strcmp((yyvsp[0].attr)->type,"int"))
-								typeError(yylineno);
-							sprintf(temp,"%s",tempVar());
-							p=Insert(table,temp,(yyvsp[-2].attr)->type,true);
-							strcpy((yyval.attr)->place,temp);
-							strcpy((yyval.attr)->type,(yyvsp[-2].attr)->type);
-							totalOff+=8;
-							p->offset=totalOff;
-							(yyval.attr)->code=append((yyvsp[-2].attr)->code,(yyvsp[0].attr)->code);
-							sprintf(t,", +, %s, %s, %s",temp,(yyvsp[-2].attr)->place,(yyvsp[0].attr)->place);
-							(yyval.attr)->code=append((yyval.attr)->code,newList(t));
-							}
-#line 3770 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 183:
-#line 1183 "parser.y" /* yacc.c:1646  */
+#line 1179 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(Attr *)malloc(sizeof(Attr));
 							if(!(yyvsp[-2].attr)->assign){
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,(yyvsp[-2].attr)->place);
@@ -3780,31 +3771,60 @@ yyreduce:
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,(yyvsp[0].attr)->place);
 								exit(1);
 							}
-							if(strcmp((yyvsp[-2].attr)->type,"int"))
-								typeError(yylineno);
-							else if(strcmp((yyvsp[0].attr)->type,"int"))
-								typeError(yylineno);
-							(yyval.attr)=(yyvsp[-2].attr);
-sprintf(temp,"%s",tempVar());
-					p=Insert(table,temp,(yyvsp[-2].attr)->type,true);
-					strcpy((yyval.attr)->place,temp);
+							if(strcmp("int",(yyvsp[-2].attr)->type))
+								if(strcmp("int",(yyvsp[0].attr)->type))
+									typeError(yylineno);
+							(yyval.attr)->assign=true;
+							sprintf(temp,"%s",tempVar());
+							p=Insert(table,temp,(yyvsp[-2].attr)->type,true);
+							strcpy((yyval.attr)->place,temp);
 							totalOff+=8;
 							p->offset=totalOff;
+							strcpy((yyval.attr)->type,(yyvsp[-2].attr)->type);
+							(yyval.attr)->code=append((yyvsp[-2].attr)->code,(yyvsp[0].attr)->code);
+							sprintf(t,", +, %s, %s, %s",(yyval.attr)->place,(yyvsp[-2].attr)->place,(yyvsp[0].attr)->place);
+							(yyval.attr)->code=append((yyval.attr)->code,newList(t));
+							}
+#line 3789 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 183:
+#line 1202 "parser.y" /* yacc.c:1646  */
+    {(yyval.attr)=(Attr *)malloc(sizeof(Attr));
+							if(!(yyvsp[-2].attr)->assign){
+								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,(yyvsp[-2].attr)->place);
+								exit(1);
+							}
+							if(!(yyvsp[0].attr)->assign){
+								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,(yyvsp[0].attr)->place);
+								exit(1);
+							}
+							if(strcmp("int",(yyvsp[-2].attr)->type))
+									typeError(yylineno);
+							else if(strcmp("int",(yyvsp[0].attr)->type))
+									typeError(yylineno);
+							(yyval.attr)->assign=true;
+							sprintf(temp,"%s",tempVar());
+							p=Insert(table,temp,(yyvsp[-2].attr)->type,true);
+							strcpy((yyval.attr)->place,temp);
+							totalOff+=8;
+							p->offset=totalOff;
+							strcpy((yyval.attr)->type,(yyvsp[-2].attr)->type);
 							(yyval.attr)->code=append((yyvsp[-2].attr)->code,(yyvsp[0].attr)->code);
 							sprintf(t,", -, %s, %s, %s",(yyval.attr)->place,(yyvsp[-2].attr)->place,(yyvsp[0].attr)->place);
 							(yyval.attr)->code=append((yyval.attr)->code,newList(t));
 							}
-#line 3798 "y.tab.c" /* yacc.c:1646  */
+#line 3818 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 184:
-#line 1208 "parser.y" /* yacc.c:1646  */
+#line 1228 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 3804 "y.tab.c" /* yacc.c:1646  */
+#line 3824 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 185:
-#line 1209 "parser.y" /* yacc.c:1646  */
+#line 1229 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(Attr *)malloc(sizeof(Attr));
 							if(!(yyvsp[-2].attr)->assign){
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,(yyvsp[-2].attr)->place);
@@ -3814,25 +3834,26 @@ sprintf(temp,"%s",tempVar());
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,(yyvsp[0].attr)->place);
 								exit(1);
 							}
-							if(strcmp((yyvsp[-2].attr)->type,"int"))
-								typeError(yylineno);
-							else if(strcmp((yyvsp[0].attr)->type,"int"))
-								typeError(yylineno);
-							(yyval.attr)=(yyvsp[-2].attr);
-sprintf(temp,"%s",tempVar());
-					p=Insert(table,temp,(yyvsp[-2].attr)->type,true);
-					strcpy((yyval.attr)->place,temp);
+							if(strcmp("int",(yyvsp[-2].attr)->type))
+									typeError(yylineno);
+							else if(strcmp("int",(yyvsp[0].attr)->type))
+									typeError(yylineno);
+							(yyval.attr)->assign=true;
+							sprintf(temp,"%s",tempVar());
+							p=Insert(table,temp,(yyvsp[-2].attr)->type,true);
+							strcpy((yyval.attr)->place,temp);
 							totalOff+=8;
 							p->offset=totalOff;
+							strcpy((yyval.attr)->type,(yyvsp[-2].attr)->type);
 							(yyval.attr)->code=append((yyvsp[-2].attr)->code,(yyvsp[0].attr)->code);
 							sprintf(t,", *, %s, %s, %s",(yyval.attr)->place,(yyvsp[-2].attr)->place,(yyvsp[0].attr)->place);
 							(yyval.attr)->code=append((yyval.attr)->code,newList(t));
 							}
-#line 3832 "y.tab.c" /* yacc.c:1646  */
+#line 3853 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 186:
-#line 1232 "parser.y" /* yacc.c:1646  */
+#line 1253 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(Attr *)malloc(sizeof(Attr));
 							if(!(yyvsp[-2].attr)->assign){
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,(yyvsp[-2].attr)->place);
@@ -3842,28 +3863,31 @@ sprintf(temp,"%s",tempVar());
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,(yyvsp[0].attr)->place);
 								exit(1);
 							}
-							if(strcmp((yyvsp[-2].attr)->type,"int"))
-								typeError(yylineno);
-							else if(strcmp((yyvsp[0].attr)->type,"int"))
-								typeError(yylineno);
-							else if(atoi((yyvsp[0].attr)->place)==0){
-								fprintf(stderr,"Error on line %d: Division by 0\n",yylineno);
-								exit(1);}
-							(yyval.attr)=(yyvsp[-2].attr);
+							(yyval.attr)->assign=true;
+							if(strcmp("int",(yyvsp[-2].attr)->type))
+									typeError(yylineno);
+							else if(strcmp("int",(yyvsp[0].attr)->type))
+									typeError(yylineno);
+							if(atoi((yyvsp[0].attr)->place)==0){
+								fprintf(stderr,"Error on %d: Division with 0 as divisor\n",yylineno);
+								exit(1);
+							}
+							(yyval.attr)->assign=true;
 							sprintf(temp,"%s",tempVar());
-					p=Insert(table,temp,(yyvsp[-2].attr)->type,true);
-					strcpy((yyval.attr)->place,temp);
+							p=Insert(table,temp,(yyvsp[-2].attr)->type,true);
+							strcpy((yyval.attr)->place,temp);
 							totalOff+=8;
 							p->offset=totalOff;
+							strcpy((yyval.attr)->type,(yyvsp[-2].attr)->type);
 							(yyval.attr)->code=append((yyvsp[-2].attr)->code,(yyvsp[0].attr)->code);
 							sprintf(t,", /, %s, %s, %s",(yyval.attr)->place,(yyvsp[-2].attr)->place,(yyvsp[0].attr)->place);
 							(yyval.attr)->code=append((yyval.attr)->code,newList(t));
 							}
-#line 3863 "y.tab.c" /* yacc.c:1646  */
+#line 3887 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 187:
-#line 1258 "parser.y" /* yacc.c:1646  */
+#line 1282 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(Attr *)malloc(sizeof(Attr));
 							if(!(yyvsp[-2].attr)->assign){
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,(yyvsp[-2].attr)->place);
@@ -3873,90 +3897,92 @@ sprintf(temp,"%s",tempVar());
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,(yyvsp[0].attr)->place);
 								exit(1);
 							}
-							if(strcmp((yyvsp[-2].attr)->type,"int"))
-								typeError(yylineno);
-							else if(strcmp((yyvsp[0].attr)->type,"int"))
-								typeError(yylineno);
-							else if(atoi((yyvsp[0].attr)->place)==0){
-								fprintf(stderr,"Error on line %d: Modulus by 0\n",yylineno);
-								exit(1);}
-							(yyval.attr)=(yyvsp[-2].attr);
+							if(strcmp("int",(yyvsp[-2].attr)->type))
+									typeError(yylineno);
+							else if(strcmp("int",(yyvsp[0].attr)->type))
+									typeError(yylineno);
+							if(atoi((yyvsp[0].attr)->place)==0){
+								fprintf(stderr,"Error on %d: Modulus with 0 as divisor\n",yylineno);
+								exit(1);
+							}
+							(yyval.attr)->assign=true;
 							sprintf(temp,"%s",tempVar());
-					p=Insert(table,temp,(yyvsp[-2].attr)->type,true);
-					strcpy((yyval.attr)->place,temp);
+							p=Insert(table,temp,(yyvsp[-2].attr)->type,true);
+							strcpy((yyval.attr)->place,temp);
 							totalOff+=8;
 							p->offset=totalOff;
+							strcpy((yyval.attr)->type,(yyvsp[-2].attr)->type);
 							(yyval.attr)->code=append((yyvsp[-2].attr)->code,(yyvsp[0].attr)->code);
 							sprintf(t,", %%, %s, %s, %s",(yyval.attr)->place,(yyvsp[-2].attr)->place,(yyvsp[0].attr)->place);
 							(yyval.attr)->code=append((yyval.attr)->code,newList(t));
 							}
-#line 3894 "y.tab.c" /* yacc.c:1646  */
+#line 3920 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 190:
-#line 1290 "parser.y" /* yacc.c:1646  */
+#line 1316 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 3900 "y.tab.c" /* yacc.c:1646  */
+#line 3926 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 191:
-#line 1291 "parser.y" /* yacc.c:1646  */
+#line 1317 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 3906 "y.tab.c" /* yacc.c:1646  */
+#line 3932 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 192:
-#line 1292 "parser.y" /* yacc.c:1646  */
-    {char temp[10];
+#line 1318 "parser.y" /* yacc.c:1646  */
+    {
 							if(!(yyvsp[0].attr)->assign){
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,(yyvsp[0].attr)->place);
 								exit(1);
 							}
-							(yyval.attr)=(yyvsp[0].attr);
-							if(strcmp((yyvsp[0].attr)->type,"int"))
-								typeError(yylineno);
 							sprintf(temp,"%s",tempVar());
-					p=Insert(table,temp,(yyvsp[0].attr)->type,true);
-					strcpy((yyval.attr)->place,temp);
+							p=Insert(table,temp,(yyvsp[0].attr)->type,true);
 							totalOff+=8;
 							p->offset=totalOff;
+							strcpy((yyval.attr)->place,temp);
 							sprintf(t,", =, %s, %s",temp,(yyvsp[0].attr)->place);
 							(yyvsp[0].attr)->code=append((yyvsp[0].attr)->code,newList(t));
 							sprintf((yyvsp[0].attr)->place,"%s",temp);
+							(yyval.attr)=(yyvsp[0].attr);
 							}
-#line 3928 "y.tab.c" /* yacc.c:1646  */
+#line 3952 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 193:
-#line 1309 "parser.y" /* yacc.c:1646  */
-    {char temp[10];
+#line 1333 "parser.y" /* yacc.c:1646  */
+    {
 							if(!(yyvsp[0].attr)->assign){
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,(yyvsp[0].attr)->place);
 								exit(1);
 							}
-							if(strcmp((yyvsp[0].attr)->type,"int"))
-								typeError(yylineno);
 							sprintf(temp,"%s",tempVar());
-					p=Insert(table,temp,(yyvsp[0].attr)->type,true);
-					strcpy((yyval.attr)->place,temp);
+							p=Insert(table,t,(yyvsp[0].attr)->type,true);
 							totalOff+=8;
 							p->offset=totalOff;
+							strcpy((yyval.attr)->place,temp);
 							sprintf(t,", -, %s, 0, %s",temp,(yyvsp[0].attr)->place);
 							(yyvsp[0].attr)->code=append((yyvsp[0].attr)->code,newList(t));
 							sprintf((yyvsp[0].attr)->place,"%s",temp);
 							(yyval.attr)=(yyvsp[0].attr);
 							}
-#line 3950 "y.tab.c" /* yacc.c:1646  */
+#line 3972 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 194:
-#line 1326 "parser.y" /* yacc.c:1646  */
-    {(yyval.attr)=(yyvsp[0].attr);}
-#line 3956 "y.tab.c" /* yacc.c:1646  */
+#line 1348 "parser.y" /* yacc.c:1646  */
+    {(yyval.attr)=(yyvsp[0].attr);
+						if(strcmp((yyvsp[0].attr)->type,"int0")==0)
+							strcpy((yyval.attr)->type,"int");
+						else if(strcmp((yyvsp[0].attr)->type,"float0")==0)
+							strcpy((yyval.attr)->type,"float");}
+#line 3982 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 195:
-#line 1329 "parser.y" /* yacc.c:1646  */
+#line 1355 "parser.y" /* yacc.c:1646  */
     {sprintf(t,", +, %s, %s, 1",(yyvsp[0].attr)->place,(yyvsp[0].attr)->place);
 							if(!(yyvsp[0].attr)->assign){
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,(yyvsp[0].attr)->place);
@@ -3967,11 +3993,11 @@ sprintf(temp,"%s",tempVar());
 							(yyvsp[0].attr)->code=append((yyvsp[0].attr)->code,newList(t));
 							(yyval.attr)=(yyvsp[0].attr);
 							}
-#line 3971 "y.tab.c" /* yacc.c:1646  */
+#line 3997 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 196:
-#line 1341 "parser.y" /* yacc.c:1646  */
+#line 1367 "parser.y" /* yacc.c:1646  */
     {sprintf(t,", -, %s, %s, 1",(yyvsp[0].attr)->place,(yyvsp[0].attr)->place);
 							if(!(yyvsp[0].attr)->assign){
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,(yyvsp[0].attr)->place);
@@ -3982,46 +4008,45 @@ sprintf(temp,"%s",tempVar());
 							(yyvsp[0].attr)->code=append((yyvsp[0].attr)->code,newList(t));
 							(yyval.attr)=(yyvsp[0].attr);
 							}
-#line 3986 "y.tab.c" /* yacc.c:1646  */
+#line 4012 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 197:
-#line 1353 "parser.y" /* yacc.c:1646  */
+#line 1379 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 3992 "y.tab.c" /* yacc.c:1646  */
+#line 4018 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 198:
-#line 1354 "parser.y" /* yacc.c:1646  */
-    {char temp[10];
+#line 1380 "parser.y" /* yacc.c:1646  */
+    {
 							if(!(yyvsp[0].attr)->assign){
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,(yyvsp[0].attr)->place);
 								exit(1);
 							}
 							if(strcmp((yyvsp[0].attr)->type,"int"))
 								typeError(yylineno);
-							strcpy(temp,tempVar());
+							sprintf(temp,"%s",tempVar());
 							p=Insert(table,temp,(yyvsp[0].attr)->type,true);
 							totalOff+=8;
 							p->offset=totalOff;
-							strcpy((yyval.attr)->place,temp);
 							sprintf(t,", !, %s, %s",temp,(yyvsp[0].attr)->place);
 							(yyvsp[0].attr)->code=append((yyvsp[0].attr)->code,newList(t));
-							sprintf((yyvsp[0].attr)->place,"%s",temp);
+							strcpy((yyvsp[0].attr)->place,temp);
 							(yyval.attr)=(yyvsp[0].attr);
 							}
-#line 4014 "y.tab.c" /* yacc.c:1646  */
+#line 4039 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 199:
-#line 1371 "parser.y" /* yacc.c:1646  */
+#line 1396 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(Attr *)malloc(sizeof(Attr));(yyval.attr)->code=NULL;}
-#line 4020 "y.tab.c" /* yacc.c:1646  */
+#line 4045 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 200:
-#line 1374 "parser.y" /* yacc.c:1646  */
-    {char temp[10];
+#line 1399 "parser.y" /* yacc.c:1646  */
+    {
 							if(!(yyvsp[-1].attr)->assign){
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,(yyvsp[-1].attr)->place);
 								exit(1);
@@ -4033,18 +4058,15 @@ sprintf(temp,"%s",tempVar());
 							(yyvsp[-1].attr)->code=append((yyvsp[-1].attr)->code,newList(t));
 							sprintf(t,", -, %s, %s, 1",(yyvsp[-1].attr)->place,(yyvsp[-1].attr)->place);
 							(yyvsp[-1].attr)->code=append((yyvsp[-1].attr)->code,newList(t));
-							sprintf((yyvsp[-1].attr)->place,"%s",temp);
 							(yyval.attr)=(yyvsp[-1].attr);
-							p=Insert(table,temp,(yyvsp[-1].attr)->type,true);
-							totalOff+=8;
-							p->offset=totalOff;
+							strcpy((yyval.attr)->place,temp);
 							}
-#line 4043 "y.tab.c" /* yacc.c:1646  */
+#line 4065 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 201:
-#line 1394 "parser.y" /* yacc.c:1646  */
-    {char temp[10];
+#line 1416 "parser.y" /* yacc.c:1646  */
+    {
 							if(!(yyvsp[-1].attr)->assign){
 								fprintf(stderr,"Error on %d: %s not assigned\n",yylineno,(yyvsp[-1].attr)->place);
 								exit(1);
@@ -4054,151 +4076,132 @@ sprintf(temp,"%s",tempVar());
 							strcpy(temp,tempVar());
 							sprintf(t,", =, %s, %s",temp,(yyvsp[-1].attr)->place);
 							(yyvsp[-1].attr)->code=append((yyvsp[-1].attr)->code,newList(t));
-							sprintf(t,", -, %s, %s, 1",(yyvsp[-1].attr)->place,(yyvsp[-1].attr)->place);
+							sprintf(t,", +, %s, %s, 1",(yyvsp[-1].attr)->place,(yyvsp[-1].attr)->place);
 							(yyvsp[-1].attr)->code=append((yyvsp[-1].attr)->code,newList(t));
-							sprintf((yyvsp[-1].attr)->place,"%s",temp);
 							(yyval.attr)=(yyvsp[-1].attr);
-							p=Insert(table,temp,(yyvsp[-1].attr)->type,true);
-							totalOff+=8;
-							p->offset=totalOff;
+							strcpy((yyval.attr)->place,temp);
 							}
-#line 4066 "y.tab.c" /* yacc.c:1646  */
+#line 4085 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 202:
-#line 1414 "parser.y" /* yacc.c:1646  */
+#line 1433 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 4072 "y.tab.c" /* yacc.c:1646  */
+#line 4091 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 203:
-#line 1415 "parser.y" /* yacc.c:1646  */
+#line 1434 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 4078 "y.tab.c" /* yacc.c:1646  */
+#line 4097 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 204:
-#line 1416 "parser.y" /* yacc.c:1646  */
+#line 1435 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 4084 "y.tab.c" /* yacc.c:1646  */
+#line 4103 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 205:
-#line 1417 "parser.y" /* yacc.c:1646  */
+#line 1436 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 4090 "y.tab.c" /* yacc.c:1646  */
+#line 4109 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 206:
-#line 1420 "parser.y" /* yacc.c:1646  */
+#line 1439 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[-3].attr);}
-#line 4096 "y.tab.c" /* yacc.c:1646  */
+#line 4115 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 207:
-#line 1421 "parser.y" /* yacc.c:1646  */
+#line 1440 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(Attr *)malloc(sizeof(Attr));(yyval.attr)->code=NULL;}
-#line 4102 "y.tab.c" /* yacc.c:1646  */
+#line 4121 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 208:
-#line 1422 "parser.y" /* yacc.c:1646  */
+#line 1441 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(Attr *)malloc(sizeof(Attr));(yyval.attr)->code=NULL;}
-#line 4108 "y.tab.c" /* yacc.c:1646  */
+#line 4127 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 209:
-#line 1425 "parser.y" /* yacc.c:1646  */
+#line 1444 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(Attr *)malloc(sizeof(Attr));(yyval.attr)->code=NULL;}
-#line 4114 "y.tab.c" /* yacc.c:1646  */
+#line 4133 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 210:
-#line 1426 "parser.y" /* yacc.c:1646  */
+#line 1445 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(Attr *)malloc(sizeof(Attr));(yyval.attr)->code=NULL;}
-#line 4120 "y.tab.c" /* yacc.c:1646  */
+#line 4139 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 211:
-#line 1429 "parser.y" /* yacc.c:1646  */
+#line 1448 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 4126 "y.tab.c" /* yacc.c:1646  */
+#line 4145 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 212:
-#line 1430 "parser.y" /* yacc.c:1646  */
-    {(yyval.attr)=(yyvsp[0].attr);
-					char temp[15];
-					strcpy(temp,tempVar());
-					if(strcmp((yyvsp[0].attr)->type,"int2")==0){strcpy((yyval.attr)->type,"int");}
-					if(strcmp((yyvsp[0].attr)->type,"float2")==0){strcpy((yyval.attr)->type,"float");}
-					sprintf((yyvsp[0].attr)->place, "%s[%s]",(yyvsp[0].attr)->place,(yyvsp[0].attr)->idx);
-					sprintf(t,", =, %s, %s",temp,(yyvsp[0].attr)->place);
-					(yyval.attr)->code=append((yyvsp[0].attr)->code,newList(t));
-					strcpy((yyval.attr)->place,temp);
-					}
-#line 4141 "y.tab.c" /* yacc.c:1646  */
+#line 1449 "parser.y" /* yacc.c:1646  */
+    {(yyval.attr)=(yyvsp[0].attr);sprintf(t, "%s[%s]",(yyvsp[0].attr)->place,(yyvsp[0].attr)->idx);
+					strcpy((yyval.attr)->place,t);}
+#line 4152 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 213:
-#line 1443 "parser.y" /* yacc.c:1646  */
-    {(yyval.attr)=(yyvsp[0].attr);(yyval.attr)->assign=true;
+#line 1454 "parser.y" /* yacc.c:1646  */
+    {(yyval.attr)=(yyvsp[0].attr);
 							sprintf(t,"%s","const");
 							if(!look_up(table,(yyvsp[0].attr)->place))
-							p=Insert(table,(yyvsp[0].attr)->place,t,true);
-							if(strcmp((yyvsp[0].attr)->type,"int0")==0)
-								strcpy((yyval.attr)->type,"int");
+								p=Insert(table,(yyvsp[0].attr)->place,t,true);
 							}
-#line 4153 "y.tab.c" /* yacc.c:1646  */
+#line 4162 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 214:
-#line 1450 "parser.y" /* yacc.c:1646  */
+#line 1459 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(Attr *)malloc(sizeof(Attr));(yyval.attr)->code=NULL;}
-#line 4159 "y.tab.c" /* yacc.c:1646  */
+#line 4168 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 215:
-#line 1451 "parser.y" /* yacc.c:1646  */
+#line 1460 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[-1].attr);}
-#line 4165 "y.tab.c" /* yacc.c:1646  */
+#line 4174 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 216:
-#line 1452 "parser.y" /* yacc.c:1646  */
+#line 1461 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(Attr *)malloc(sizeof(Attr));(yyval.attr)->code=NULL;}
-#line 4171 "y.tab.c" /* yacc.c:1646  */
+#line 4180 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 217:
-#line 1453 "parser.y" /* yacc.c:1646  */
+#line 1462 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 4177 "y.tab.c" /* yacc.c:1646  */
+#line 4186 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 218:
-#line 1454 "parser.y" /* yacc.c:1646  */
-    {(yyval.attr)=(yyvsp[0].attr);
-						if(strcmp((yyvsp[0].attr)->type,"int1"))
-							typeError(yylineno);
+#line 1463 "parser.y" /* yacc.c:1646  */
+    {
 						sprintf(t,", =, %s, call, %s",tempVar(),(yyvsp[0].attr)->place);
-						(yyval.attr)->code=append((yyvsp[0].attr)->code,newList(t));
+						(yyval.attr)=(yyvsp[0].attr);
 						strcpy((yyval.attr)->place,TEMP);
 						strcpy(t,"int");
 						p=Insert(table,TEMP,t,true);
 						totalOff+=8;
 						p->offset=totalOff;
-						strcpy((yyval.attr)->type,t);
-						}
-#line 4194 "y.tab.c" /* yacc.c:1646  */
+						(yyval.attr)->code=newList(t);}
+#line 4200 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 224:
-#line 1479 "parser.y" /* yacc.c:1646  */
-    {(yyval.attr) = (yyvsp[0].attr);
-							 if((yyvsp[-2].attr)->type[strlen((yyvsp[-2].attr)->type)-1]!='2'){
-								fprintf(stderr,"Error on %d: Variable used is not array\n",yylineno);
-								exit(1);}
+#line 1485 "parser.y" /* yacc.c:1646  */
+    {(yyval.attr) = (yyvsp[-2].attr);
 							 p=look_up(table,(yyvsp[-2].attr)->place);
 							 if(p)
 								p->assign=true;
@@ -4209,14 +4212,14 @@ sprintf(temp,"%s",tempVar());
 							p->arrLength=length;
 							totalOff+=(length-1)*offset;
 							p->offset=totalOff;
+							p->assign=true;
 							length=1;
-							(yyval.attr)->assign=true;
 							}
-#line 4216 "y.tab.c" /* yacc.c:1646  */
+#line 4219 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 225:
-#line 1498 "parser.y" /* yacc.c:1646  */
+#line 1501 "parser.y" /* yacc.c:1646  */
     {(yyval.attr) = (yyvsp[0].attr);int r;
 						p = look_up(table,(yyvsp[-3].attr)->place);
 						if(p!=NULL){
@@ -4230,23 +4233,23 @@ sprintf(temp,"%s",tempVar());
 							}
 						sprintf(t, ", array, %s[%d]", (yyvsp[-3].attr)->place,r);
 						(yyval.attr)->code = append((yyval.attr)->code, newList(t));}
-#line 4234 "y.tab.c" /* yacc.c:1646  */
+#line 4237 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 226:
-#line 1511 "parser.y" /* yacc.c:1646  */
+#line 1514 "parser.y" /* yacc.c:1646  */
     {(yyval.attr) = (yyvsp[0].attr);}
-#line 4240 "y.tab.c" /* yacc.c:1646  */
+#line 4243 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 227:
-#line 1514 "parser.y" /* yacc.c:1646  */
+#line 1517 "parser.y" /* yacc.c:1646  */
     {(yyval.attr) = (yyvsp[0].attr);}
-#line 4246 "y.tab.c" /* yacc.c:1646  */
+#line 4249 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 229:
-#line 1518 "parser.y" /* yacc.c:1646  */
+#line 1521 "parser.y" /* yacc.c:1646  */
     {(yyval.attr) = (yyvsp[-1].attr);p = look_up(table,(yyvsp[(-2) - (3)].attr)->place);
 					if(!(yyvsp[-1].attr)->assign){
 						fprintf(stderr,"Error: Index not assigned on line %d\n",yylineno);
@@ -4268,11 +4271,11 @@ sprintf(temp,"%s",tempVar());
 					}
 					else p->arr_dim = a;}
 				}
-#line 4272 "y.tab.c" /* yacc.c:1646  */
+#line 4275 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 230:
-#line 1541 "parser.y" /* yacc.c:1646  */
+#line 1544 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[-3].attr);
 					(yyval.attr)->code = append((yyvsp[-3].attr)->code, (yyvsp[-1].attr)->code);
 					p = look_up(table,(yyvsp[-3].attr)->place);
@@ -4280,6 +4283,9 @@ sprintf(temp,"%s",tempVar());
 						fprintf(stderr,"Error: Index not assigned on line %d\n",yylineno);
 						exit(1);
 					}
+					else if(strcmp((yyvsp[-1].attr)->type,"int"))
+							if(strcmp((yyvsp[-1].attr)->type,"int0"))
+								typeError(yylineno);
 					if(p){	
 						h = p->arr_dim;
 						if(h && h->next){
@@ -4305,19 +4311,22 @@ sprintf(temp,"%s",tempVar());
 					else{
 						fprintf(stderr,"Error: Variable %s not declared on line %d\n",(yyvsp[-3].attr)->place,yylineno);
 						exit(1);}
-					(yyval.attr)->assign=(yyvsp[-3].attr)->assign;
+					(yyval.attr)->assign=p->assign;
 					}
-#line 4311 "y.tab.c" /* yacc.c:1646  */
+#line 4317 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 231:
-#line 1576 "parser.y" /* yacc.c:1646  */
+#line 1582 "parser.y" /* yacc.c:1646  */
     {
 						(yyval.attr)=(yyvsp[-3].attr);
 						if(!(yyvsp[-1].attr)->assign){
 							fprintf(stderr,"Error: Index not assigned on line %d\n",yylineno);
 							exit(1);
 						}
+						else if(strcmp((yyvsp[-1].attr)->type,"int"))
+							if(strcmp((yyvsp[-1].attr)->type,"int0"))
+								typeError(yylineno);
 						if(h && h->next){
 							strcpy(t,"int");
 							p=Insert(table,tempVar(),t,true);
@@ -4343,112 +4352,111 @@ sprintf(temp,"%s",tempVar());
 							(yyval.attr)->code=append((yyvsp[-3].attr)->code,newList(t));
 							}
 						h = h->next;
-						(yyval.attr)->assign=(yyvsp[-3].attr)->assign;
 						}
-#line 4349 "y.tab.c" /* yacc.c:1646  */
+#line 4357 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 232:
-#line 1611 "parser.y" /* yacc.c:1646  */
+#line 1619 "parser.y" /* yacc.c:1646  */
     {(yyval.sval)=(yyvsp[0].sval);}
-#line 4355 "y.tab.c" /* yacc.c:1646  */
+#line 4363 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 233:
-#line 1612 "parser.y" /* yacc.c:1646  */
+#line 1620 "parser.y" /* yacc.c:1646  */
     {yyerrok;}
-#line 4361 "y.tab.c" /* yacc.c:1646  */
+#line 4369 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 234:
-#line 1615 "parser.y" /* yacc.c:1646  */
+#line 1623 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(yyvsp[0].attr);}
-#line 4367 "y.tab.c" /* yacc.c:1646  */
+#line 4375 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 236:
-#line 1619 "parser.y" /* yacc.c:1646  */
+#line 1627 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(Attr *)malloc(sizeof(Attr));
-					sprintf((yyval.attr)->place,"%d",(yyvsp[0].ival));
+					sprintf((yyval.attr)->place,"%d",(yyvsp[0].ival));(yyval.attr)->assign=true;
 					strcpy((yyval.attr)->type,"int0");
-					(yyval.attr)->code=NULL;(yyval.attr)->assign=true;}
-#line 4376 "y.tab.c" /* yacc.c:1646  */
+					(yyval.attr)->code=NULL;}
+#line 4384 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 237:
-#line 1623 "parser.y" /* yacc.c:1646  */
+#line 1631 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(Attr *)malloc(sizeof(Attr));
-					sprintf((yyval.attr)->place,"%f",(yyvsp[0].fval));
+					sprintf((yyval.attr)->place,"%f",(yyvsp[0].fval));(yyval.attr)->assign=true;
 					strcpy((yyval.attr)->type,"float0");
-					(yyval.attr)->code=NULL;(yyval.attr)->assign=true;}
-#line 4385 "y.tab.c" /* yacc.c:1646  */
+					(yyval.attr)->code=NULL;}
+#line 4393 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 238:
-#line 1627 "parser.y" /* yacc.c:1646  */
+#line 1635 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(Attr *)malloc(sizeof(Attr));
-					strcpy((yyval.attr)->place,(yyvsp[0].sval));
+					strcpy((yyval.attr)->place,(yyvsp[0].sval));(yyval.attr)->assign=true;
 					strcpy((yyval.attr)->type,"char0");
-					(yyval.attr)->code=NULL;(yyval.attr)->assign=true;}
-#line 4394 "y.tab.c" /* yacc.c:1646  */
+					(yyval.attr)->code=NULL;}
+#line 4402 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 239:
-#line 1631 "parser.y" /* yacc.c:1646  */
+#line 1639 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(Attr *)malloc(sizeof(Attr));
-					strcpy((yyval.attr)->place,(yyvsp[0].sval));
+					strcpy((yyval.attr)->place,(yyvsp[0].sval));(yyval.attr)->assign=true;
 					strcpy((yyval.attr)->type,"str0");
-					(yyval.attr)->code=NULL;(yyval.attr)->assign=true;}
-#line 4403 "y.tab.c" /* yacc.c:1646  */
+					(yyval.attr)->code=NULL;}
+#line 4411 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 240:
-#line 1635 "parser.y" /* yacc.c:1646  */
+#line 1643 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(Attr *)malloc(sizeof(Attr));
-					strcpy((yyval.attr)->place,"1");
+					strcpy((yyval.attr)->place,"1");(yyval.attr)->assign=true;
 					strcpy((yyval.attr)->type,"bool0");
-					(yyval.attr)->code=NULL;(yyval.attr)->assign=true;}
-#line 4412 "y.tab.c" /* yacc.c:1646  */
+					(yyval.attr)->code=NULL;}
+#line 4420 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 241:
-#line 1639 "parser.y" /* yacc.c:1646  */
+#line 1647 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(Attr *)malloc(sizeof(Attr));
-					strcpy((yyval.attr)->type,"bool0");
-					(yyval.attr)->code=NULL;(yyval.attr)->assign=true;
+					strcpy((yyval.attr)->type,"bool0");(yyval.attr)->assign=true;
+					(yyval.attr)->code=NULL;
 					strcpy((yyval.attr)->place,"0");}
-#line 4421 "y.tab.c" /* yacc.c:1646  */
+#line 4429 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 242:
-#line 1643 "parser.y" /* yacc.c:1646  */
+#line 1651 "parser.y" /* yacc.c:1646  */
     {(yyval.attr)=(Attr *)malloc(sizeof(Attr));
-					strcpy((yyval.attr)->type,"bool0");
-					(yyval.attr)->code=NULL;(yyval.attr)->assign=true;
+					strcpy((yyval.attr)->type,"bool0");(yyval.attr)->assign=true;
+					(yyval.attr)->code=NULL;
 					strcpy((yyval.attr)->place,"null");}
-#line 4430 "y.tab.c" /* yacc.c:1646  */
+#line 4438 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 243:
-#line 1649 "parser.y" /* yacc.c:1646  */
+#line 1657 "parser.y" /* yacc.c:1646  */
     {(yyval.ival)=(yyvsp[0].ival);}
-#line 4436 "y.tab.c" /* yacc.c:1646  */
+#line 4444 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 244:
-#line 1650 "parser.y" /* yacc.c:1646  */
+#line 1658 "parser.y" /* yacc.c:1646  */
     {(yyval.ival)=(yyvsp[0].ival);}
-#line 4442 "y.tab.c" /* yacc.c:1646  */
+#line 4450 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 245:
-#line 1651 "parser.y" /* yacc.c:1646  */
+#line 1659 "parser.y" /* yacc.c:1646  */
     {(yyval.ival)=(yyvsp[0].ival);}
-#line 4448 "y.tab.c" /* yacc.c:1646  */
+#line 4456 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 246:
-#line 1654 "parser.y" /* yacc.c:1646  */
+#line 1662 "parser.y" /* yacc.c:1646  */
     {SymtabEntry *tempo=look_up(table,(yyvsp[0].sval));
 					if(tempo!=NULL){
 						(yyval.attr)=(Attr *)malloc(sizeof(Attr));
@@ -4460,11 +4468,11 @@ sprintf(temp,"%s",tempVar());
 					else{
 						yyerrok;
 						}}
-#line 4464 "y.tab.c" /* yacc.c:1646  */
+#line 4472 "y.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 4468 "y.tab.c" /* yacc.c:1646  */
+#line 4476 "y.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -4699,7 +4707,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 1666 "parser.y" /* yacc.c:1906  */
+#line 1674 "parser.y" /* yacc.c:1906  */
 
 int main(int argc, char** argv){
 	totalOff=0;
