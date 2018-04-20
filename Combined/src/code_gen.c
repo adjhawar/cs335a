@@ -106,8 +106,8 @@ void getReg(int i)
 	{
 		if(ir[i].op==assgn){
 			if(strcmp(ir[i].in1->type,"const")==0){
-				if(ir[i].out->add_des.reg_no==-1)
-					printf("movq $%d,%s\n",atoi(ir[i].in1->lexeme),ir[i].out->lexeme);
+				if(ir[i].out->add_des.reg_no==-1){
+					printf("movq $%d,%s\n",atoi(ir[i].in1->lexeme),ir[i].out->lexeme);}
 				else{
 					ir[i].out->add_des.mem=true;
 					printf("movq $%d,%s\n",atoi(ir[i].in1->lexeme),registers[ir[i].out->add_des.reg_no]);

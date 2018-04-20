@@ -54,17 +54,6 @@ typedef struct Symtab{
 
 // Data structure for address descriptor
 
-
-//Data structure to hold symbol table
-typedef struct liveTable{
-	char lexeme[100];
-	char type[100];
-	Add_des add_des;
-	int nextuse;
-	bool liveness;
-	struct SymtabEntry *next;
-}liveTable;
-
 //Data structure to hold 3ac instruction
 typedef struct Instruction3AC{
 	enum InstrType typ; // assign, goto...

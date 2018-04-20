@@ -1,15 +1,12 @@
 class $abc{
-	int x=0;
+	int x=11;
 	void main(){
-		int a,b=0;
 		int c=5;
-		a=5;
-		b=11;
-		b=b*c;
-		print(b);
+		int a,bc;
+		a=c*c;
+		bc=a+c;
 		hello();
-	}
+		}
 	void hello(){
 		print(x);
-}
-}
+}}
