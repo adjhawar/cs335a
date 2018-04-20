@@ -1634,7 +1634,8 @@ array_access	: name ARRAY_S expr ARRAY_E	{$$=$1;
 					}
 			
 		| array_access ARRAY_S expr ARRAY_E		{
-						$$=$1;
+						$$=(Attr *)malloc(sizeof(Attr));
+						strcpy($$->place, $1->place);
 						if(!$3->assign){
 							fprintf(stderr,"Error: Index not assigned on line %d\n",yylineno);
 							exit(1);
