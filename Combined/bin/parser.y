@@ -15,13 +15,13 @@ void yyerror(const char *s);
 char TEMP[7];
 char LABEL[5];
 char t[100];
-char idr[15];
+char idr[15],methodType[10];
 int flag1;
 bool ret;	//to check if function has a return statement or not
-SymtabEntry *p;
+SymtabEntry *p,*currFunc;
 Arr_dim *h;
 Symtab *mainTable,*table;
-int offset,totalOff;
+int offset,totalOff,length=1;
 list3AC *finalList;
 
 /*
@@ -228,7 +228,8 @@ method_decl		: method_header method_body 	{$$=$2;
 									$$->code=append($$->code,newList(t));}
 								else{
 									fprintf(stderr,"Error: Missing return statement in function %s\n",$1->place);
-									/*exit(1);*/}} 
+									exit(1);}}
+							currFunc->offset=totalOff;
 							table=table->prev;}
 			;	
 
@@ -240,6 +241,12 @@ method_header		: type method_declarator 	{$$=(Attr *)malloc(sizeof(Attr));
 								sprintf(t,", func, %s",$2);
 								$$->code=newList(t);
 				  				p=Insert(table,$2,$$->type,true);
+								currFunc=p;
+								strcpy(methodType,$1);
+							if(strcmp(methodType,"void") && strcmp(methodType,"int")){
+								fprintf(stderr,"Error on %d: Invalid method type\n",yylineno);
+								exit(1);
+							}
 							if(p==NULL){
 								fprintf(stderr,"Error: Variable %s redeclared on line %d\n",$2,yylineno);
 								exit(1);
@@ -296,7 +303,7 @@ numeric_type	: integer_type 	{$$=$1;}
 
 integer_type	: BYTE 	{$$=$1;}		
 		| CHAR 	{$$=$1;offset=1;}					
-		| INT 	{$$=$1;offset=4;}					
+		| INT 	{$$=$1;offset=8;}					
 		;
 
 reference_type	: class_type 							
@@ -611,10 +618,21 @@ continue_st	: CONT TRM	      {  $$ = (Attr *)malloc(sizeof(Attr));
 
 return_st	: RETURN expr_e TRM	{$$=$2;
 					ret=true;
-					if(strcmp($2->place,""))
-					 	sprintf(t,", ret, %s",$2->place);
-					else
+					if (!strcmp($2->place,"") && !strcmp(methodType,"void"))
 						strcpy(t,", ret");
+					else if(strcmp($2->place,"") || strcmp(methodType,"void")){
+						if(!strcmp($2->type,"int")) 
+					 		sprintf(t,", ret, %s",$2->place);
+						else if(!strcmp($2->type,"int0")) 
+					 		sprintf(t,", ret, %s",$2->place);
+						else{
+						fprintf(stderr,"Error %d: Return type mismatch\n",yylineno);
+						exit(1);
+					}}
+					else{
+						fprintf(stderr,"Error %d: Return type mismatch\n",yylineno);
+						exit(1);
+					}
 					 $$->code=append($2->code,newList(t));}
 		;
 
@@ -730,6 +748,8 @@ cond_or_expr	: cond_and_expr					{$$=$1;}
 							sprintf(t,"%s",tempVar());
 							p=Insert(table,t,$1->type,true);
 							strcpy($$->place,t);
+							totalOff+=8;
+							p->offset=totalOff;
 							$$->code=append($1->code,$3->code);
 							sprintf(t,", ||, %s, %s, %s",$$->place,$1->place,$3->place);
 							$$->code=append($$->code,newList(t));
@@ -750,6 +770,8 @@ cond_and_expr	: incl_or_expr						{$$=$1;}
 							sprintf(t,"%s",tempVar());
 							p=Insert(table,t,$1->type,true);
 							strcpy($$->place,t);
+							totalOff+=8;
+							p->offset=totalOff;
 							$$->code=append($1->code,$3->code);
 							sprintf(t,", &&, %s, %s, %s",$$->place,$1->place,$3->place);
 							$$->code=append($$->code,newList(t));
@@ -770,6 +792,8 @@ incl_or_expr	: excl_or_expr	{$$=$1;}
 							sprintf(t,"%s",tempVar());
 							p=Insert(table,t,$1->type,true);
 							strcpy($$->place,t);
+							totalOff+=8;
+							p->offset=totalOff;
 							$$->code=append($1->code,$3->code);
 							sprintf(t,", |, %s, %s, %s",$$->place,$1->place,$3->place);
 							$$->code=append($$->code,newList(t));
@@ -790,6 +814,8 @@ excl_or_expr	: and_expr			{$$=$1;}
 							sprintf(t,"%s",tempVar());
 							p=Insert(table,t,$1->type,true);
 							strcpy($$->place,t);
+							totalOff+=8;
+							p->offset=totalOff;
 							$$->code=append($1->code,$3->code);
 							sprintf(t,", ^, %s, %s, %s",$$->place,$1->place,$3->place);
 							$$->code=append($$->code,newList(t));
@@ -810,6 +836,8 @@ and_expr 	: equality_expr					{$$=$1;}
 							sprintf(t,"%s",tempVar());
 							p=Insert(table,t,$1->type,true);
 							strcpy($$->place,t);
+							totalOff+=8;
+							p->offset=totalOff;
 							$$->code=append($1->code,$3->code);
 							sprintf(t,", &, %s, %s, %s",$$->place,$1->place,$3->place);
 							$$->code=append($$->code,newList(t));
@@ -830,6 +858,8 @@ equality_expr	: rel_expr						{$$=$1;}
 					sprintf(t,"%s",tempVar());
 					p=Insert(table,t,$1->type,true);
 					strcpy($$->place,t);
+					totalOff+=8;
+					p->offset=totalOff;
 					$$->code=append($1->code,$3->code);
 					char end[5],begin[5];
 					strcpy(end,newLabel()); strcpy(begin,newLabel());
@@ -859,6 +889,8 @@ equality_expr	: rel_expr						{$$=$1;}
 					sprintf(t,"%s",tempVar());
 					p=Insert(table,t,$1->type,true);
 					strcpy($$->place,t);
+					totalOff+=8;
+					p->offset=totalOff;
 					$$->code=append($1->code,$3->code);
 					char end[5],begin[5];
 					strcpy(end,newLabel()); strcpy(begin,newLabel());
@@ -891,6 +923,8 @@ rel_expr	: shift_expr			{$$ = $1;}
 					sprintf(t,"%s",tempVar());
 					p=Insert(table,t,$1->type,true);
 					strcpy($$->place,t);
+					totalOff+=8;
+					p->offset=totalOff;
 					$$->code=append($1->code,$3->code);
 					char end[5],begin[5];
 					strcpy(end,newLabel()); strcpy(begin,newLabel());
@@ -920,6 +954,8 @@ rel_expr	: shift_expr			{$$ = $1;}
 					sprintf(t,"%s",tempVar());
 							p=Insert(table,t,$1->type,true);
 							strcpy($$->place,t);
+					totalOff+=8;
+					p->offset=totalOff;
 					$$->code=append($1->code,$3->code);
 					char end[5],begin[5];
 					strcpy(end,newLabel()); strcpy(begin,newLabel());
@@ -949,6 +985,8 @@ rel_expr	: shift_expr			{$$ = $1;}
 					sprintf(t,"%s",tempVar());
 							p=Insert(table,t,$1->type,true);
 							strcpy($$->place,t);
+					totalOff+=8;
+					p->offset=totalOff;
 					$$->code=append($1->code,$3->code);
 					char end[5],begin[5];
 					strcpy(end,newLabel()); strcpy(begin,newLabel());
@@ -978,6 +1016,8 @@ rel_expr	: shift_expr			{$$ = $1;}
 					sprintf(t,"%s",tempVar());
 							p=Insert(table,t,$1->type,true);
 							strcpy($$->place,t);
+					totalOff+=8;
+					p->offset=totalOff;
 					$$->code=append($1->code,$3->code);
 					char end[5],begin[5];
 					strcpy(end,newLabel()); strcpy(begin,newLabel());
@@ -1029,6 +1069,8 @@ shift_expr	: add_expr				{$$=$1;}
 							sprintf(t,"%s",tempVar());
 							p=Insert(table,t,$1->type,true);
 							strcpy($$->place,t);
+							totalOff+=8;
+							p->offset=totalOff;
 							$$->code=append($1->code,$3->code);
 							sprintf(t,", >>, %s, %s, %s",$$->place,$1->place,$3->place);
 							$$->code=append($$->code,newList(t));
@@ -1045,6 +1087,8 @@ shift_expr	: add_expr				{$$=$1;}
 							$$->assign=true;
 							sprintf(t,"%s",tempVar());
 							p=Insert(table,t,$1->type,true);
+							totalOff+=8;
+							p->offset=totalOff;
 							strcpy($$->place,t);
 							$$->code=append($1->code,$3->code);
 							sprintf(t,", >>>, %s, %s, %s",$$->place,$1->place,$3->place);
@@ -1066,6 +1110,8 @@ add_expr	: mul_expr				{$$=$1;}
 							$$->assign=true;
 							sprintf(t,"%s",tempVar());
 							p=Insert(table,t,$1->type,true);
+							totalOff+=8;
+							p->offset=totalOff;
 							strcpy($$->place,t);
 							$$->code=append($1->code,$3->code);
 							sprintf(t,", +, %s, %s, %s",$$->place,$1->place,$3->place);
@@ -1081,8 +1127,10 @@ add_expr	: mul_expr				{$$=$1;}
 								exit(1);
 							}
 							$$->assign=true;
-							sprintf(t,"%s",tempVar());
+							sprintf(t,"%s",tempVar());	
 							p=Insert(table,t,$1->type,true);
+							totalOff+=8;
+							p->offset=totalOff;
 							strcpy($$->place,t);
 							$$->code=append($1->code,$3->code);
 							sprintf(t,", -, %s, %s, %s",$$->place,$1->place,$3->place);
@@ -1103,6 +1151,8 @@ mul_expr	: unary_expr				{$$=$1;}
 							$$->assign=true;
 							sprintf(t,"%s",tempVar());
 							p=Insert(table,t,$1->type,true);
+							totalOff+=8;
+							p->offset=totalOff;
 							strcpy($$->place,t);
 							$$->code=append($1->code,$3->code);
 							sprintf(t,", *, %s, %s, %s",$$->place,$1->place,$3->place);
@@ -1120,6 +1170,8 @@ mul_expr	: unary_expr				{$$=$1;}
 							$$->assign=true;
 							sprintf(t,"%s",tempVar());
 							p=Insert(table,t,$1->type,true);
+							totalOff+=8;
+							p->offset=totalOff;
 							strcpy($$->place,t);
 							$$->code=append($1->code,$3->code);
 							sprintf(t,", /, %s, %s, %s",$$->place,$1->place,$3->place);
@@ -1137,6 +1189,8 @@ mul_expr	: unary_expr				{$$=$1;}
 							$$->assign=true;
 							sprintf(t,"%s",tempVar());
 							p=Insert(table,t,$1->type,true);
+							totalOff+=8;
+							p->offset=totalOff;
 							strcpy($$->place,t);
 							$$->code=append($1->code,$3->code);
 							sprintf(t,", %%, %s, %s, %s",$$->place,$1->place,$3->place);
@@ -1157,6 +1211,8 @@ unary_expr	: preinc_expr			{$$=$1;}
 							}
 							sprintf(t,"%s",tempVar());
 							p=Insert(table,t,$2->type,true);
+							totalOff+=8;
+							p->offset=totalOff;
 							strcpy($$->place,t);
 							sprintf(t,", =, %s, %s",temp,$2->place);
 							$2->code=append($2->code,newList(t));
@@ -1170,6 +1226,8 @@ unary_expr	: preinc_expr			{$$=$1;}
 							}
 							sprintf(t,"%s",tempVar());
 							p=Insert(table,t,$2->type,true);
+							totalOff+=8;
+							p->offset=totalOff;
 							strcpy($$->place,t);
 							sprintf(t,", -, %s, 0, %s",temp,$2->place);
 							$2->code=append($2->code,newList(t));
@@ -1211,6 +1269,8 @@ unary_expr_not_plus_minus	: postfix_expr		{$$=$1;}
 							}
 							sprintf(t,"%s",tempVar());
 							p=Insert(table,t,$2->type,true);
+							totalOff+=8;
+							p->offset=totalOff;
 							strcpy($$->place,t);
 							sprintf(t,", !, %s, %s",temp,$2->place);
 							$2->code=append($2->code,newList(t));
@@ -1284,6 +1344,8 @@ primary_no_new_array	: literal			{$$=$1;$$->assign=true;
 						strcpy($$->place,TEMP);
 						strcpy(t,"int");
 						p=Insert(table,TEMP,t,true);
+						totalOff+=8;
+						p->offset=totalOff;
 						$$->code=newList(t);}	
 			;
 
@@ -1305,7 +1367,12 @@ arr_assgn		: lhs OP_ASS array_creat_expr	{$$ = $3;
 							 else{
 								fprintf(stderr,"Error: Variable %s not declared on line %d\n",$1->place, yylineno);
 						exit(1);
-							}}
+							}
+							p->arrLength=length;
+							totalOff+=(length-1)*offset;
+							p->offset=totalOff;
+							length=1;
+							}
 		;
 
 array_creat_expr	:NEW primitive_type dim_exprs		{$$ = $3;int r;
@@ -1333,9 +1400,14 @@ dim_expr	: ARRAY_S expr ARRAY_E		{$$ = $2;p = look_up(table,$<attr>-2->place);
 						fprintf(stderr,"Error: Index not assigned on line %d\n",yylineno);
 						exit(1);
 					}
-				if(p!=NULL){ Arr_dim *a = (Arr_dim*)malloc(sizeof(Arr_dim));
+					else if(strcmp($2->type,"int0")!=0){
+						fprintf(stderr,"Error on line %d: Index is not an integer literal int value \n",yylineno);
+						exit(1);
+					}
+					if(p!=NULL){ Arr_dim *a = (Arr_dim*)malloc(sizeof(Arr_dim));
 					strcpy(a->d, $2->place);
 					Arr_dim *b = p->arr_dim;
+					length*=atoi($2->place);
 					if(b){
 					while(b->next!=NULL){
 						b = b->next;
@@ -1359,6 +1431,8 @@ array_access	: name ARRAY_S expr ARRAY_E	{$$=(Attr *)malloc(sizeof(Attr));
 						if(h && h->next){
 							strcpy(t,"int");
 							p=Insert(table,tempVar(),t,true);
+							totalOff+=8;
+							p->offset=totalOff;
 							strcpy($$->idx,TEMP);
 							sprintf(t,", =, %s, 1",$$->idx);
 							$$->code=append($1->code,newList(t));
@@ -1390,6 +1464,8 @@ array_access	: name ARRAY_S expr ARRAY_E	{$$=(Attr *)malloc(sizeof(Attr));
 						if(h && h->next){
 							strcpy(t,"int");
 							p=Insert(table,tempVar(),t,true);
+							totalOff+=8;
+							p->offset=totalOff;
 							strcpy($$->idx,TEMP);
 							sprintf(t,", =, %s, 1",$$->idx);
 							$$->code=append($1->code,newList(t));
@@ -1495,3 +1571,4 @@ int main(int argc, char** argv){
 	fclose(fptr);
 	return 0;
 }
+

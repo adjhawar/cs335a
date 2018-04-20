@@ -3,10 +3,9 @@
 #include <string.h>
 #include "list.h"
 
-//Data structure to hold symbol table
- SymtabEntry* look_up(Symtab *table, char *lex){
+SymtabEntry* look_up(Symtab *table, char *lex){
 	SymtabEntry* temp = table->head;
-	if(strcmp(lex, "0")==0 || strcmp(lex, "0\n")==0 || atoi(lex)) 
+	if(strcmp(lex, "0")==0 || strcmp(lex, "0\n")==0)
 		return NULL;
 	while(temp!=NULL && strcmp(temp->lexeme,lex))
 		temp=temp->next;
@@ -20,7 +19,7 @@
 
 SymtabEntry* look_upTable(Symtab *table, char *lex){
 	SymtabEntry* temp = table->head;
-	if(strcmp(lex, "0")==0 || strcmp(lex, "0\n")==0 || atoi(lex)) 
+	if(strcmp(lex, "0")==0 || strcmp(lex, "0\n")==0) 
 		return NULL;
 	while(temp!=NULL && strcmp(temp->lexeme,lex))
 		temp=temp->next;
@@ -40,6 +39,7 @@ SymtabEntry* Insert(Symtab *table, char* lex, char *type, bool assign)
 		temp->nextuse = -1;
 		temp->func=NULL;
 		temp->assign=assign;
+		temp->arrLength=1;
 		strcpy(temp->lexeme,lex);
 		strcpy(temp->type,type);
 		if(strcmp(lex, "0")==0 || atoi(lex)) 
@@ -73,3 +73,4 @@ void printSymtab(Symtab *table){
 	}
 	printf("%s ends\n",table->name);
 }
+

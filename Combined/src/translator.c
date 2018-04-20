@@ -232,7 +232,7 @@ void translator(list3AC *list){
 		nline++;
 	}
 	printSymtab(mainTable);
-		reg_alloc();
+		/*reg_alloc();
 		
 		SymtabEntry *temp=mainTable->head;            // setting up data regions for global variables
 		printf(".data\n");
@@ -261,6 +261,6 @@ void translator(list3AC *list){
 		}
 
 		free(ir);
-		free(leaders);
+		free(leaders);*/
 	}
 

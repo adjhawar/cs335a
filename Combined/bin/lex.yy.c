@@ -624,7 +624,7 @@ int yy_flex_debug = 0;
 char *yytext;
 #line 1 "lexer.l"
 #line 2 "lexer.l"
-#include "list.h"
+#include "global.h"
 #include "y.tab.h"
 #include <string.h>
 int yylineno;

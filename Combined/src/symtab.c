@@ -39,6 +39,7 @@ SymtabEntry* Insert(Symtab *table, char* lex, char *type, bool assign)
 		temp->nextuse = -1;
 		temp->func=NULL;
 		temp->assign=assign;
+		temp->arrLength=1;
 		strcpy(temp->lexeme,lex);
 		strcpy(temp->type,type);
 		if(strcmp(lex, "0")==0 || atoi(lex)) 

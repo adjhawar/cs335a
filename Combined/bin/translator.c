@@ -232,21 +232,19 @@ void translator(list3AC *list){
 		nline++;
 	}
 	printSymtab(mainTable);
-	//	reg_alloc();
+		/*reg_alloc();
 		
 		SymtabEntry *temp=mainTable->head;            // setting up data regions for global variables
 		printf(".data\n");
-		while(temp!=NULL)
-		{	if(temp->type[strlen(temp->type)-1]!='1'&& temp->type[strlen(temp->type)-1]!='2'&& strcmp("const",temp->type))
-				printf("%s:  .quad  0\n",temp->lexeme);
-					printf("%s\n",temp->type);
-			temp=temp->next;
+		int k =0;
+		while(ir[k].typ!=func){
+			printf("%s:	.quad %s\n",ir[k].out->lexeme,ir[k].in1->lexeme);
+			k++;
 		}
 		printf("str:   .string \"%%d \\n\"\n");   // for printf
 		printf("str1:   .string \"%%d\"\n");      // for scanf  
 		printf(" .text\n");
-		int k =0;
-		for(int i=0;i<nline;i++){
+		for(int i=k;i<nline;i++){
 			if (leaders[i])
 			{
 				for (int j = 0; j < 14; j++)
@@ -263,5 +261,6 @@ void translator(list3AC *list){
 		}
 
 		free(ir);
-		free(leaders);
+		free(leaders);*/
 	}
+

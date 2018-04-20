@@ -41,6 +41,7 @@ typedef struct SymtabEntry{
 	struct Symtab *func;
 	bool assign;			//checks if symbol table entry has been declared
 	int offset;
+	int arrLength;
 	Add_des add_des;
 	int nextuse;
 	bool liveness;

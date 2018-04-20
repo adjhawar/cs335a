@@ -61,3 +61,4 @@ void getReg(int i);
 int empty_reg(int i);
 void reg_alloc();
 void update(int i, int j);
+

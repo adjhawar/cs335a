@@ -4,6 +4,7 @@ extern int maxsize;
 extern int nline;
 extern int size;
 
+
 enum InstrType{ Assignment , Pointer , Ind_Ass_1 , Ind_Ass_2 , ifgoto , Goto , Ret , call , label , print , scan , func};
 enum TACkeywords{add , sub , mul , divi , mod , gt , lt , ge , le , ne , eq , assgn ,  and, or , neg , rsh , lsh ,assgn_call};
 
@@ -40,6 +41,7 @@ typedef struct SymtabEntry{
 	struct Symtab *func;
 	bool assign;			//checks if symbol table entry has been declared
 	int offset;
+	int arrLength;
 	Add_des add_des;
 	int nextuse;
 	bool liveness;
@@ -53,17 +55,6 @@ typedef struct Symtab{
 }Symtab;
 
 // Data structure for address descriptor
-
-
-//Data structure to hold symbol table
-typedef struct liveTable{
-	char lexeme[100];
-	char type[100];
-	Add_des add_des;
-	int nextuse;
-	bool liveness;
-	struct SymtabEntry *next;
-}liveTable;
 
 //Data structure to hold 3ac instruction
 typedef struct Instruction3AC{
@@ -84,6 +75,7 @@ typedef struct Instruction3AC{
 } Instruction3AC;
 
 extern Symtab *mainTable;
+extern SymtabEntry *currentTable;
 SymtabEntry *reg_des[14] ; //array of pointers for register descriptor
 
 char registers[14][5];
