@@ -6,6 +6,7 @@
 char registers[14][5] = { "%rax","%rbx","%rcx","%rdx","%rsi","%rdi","%r8","%r9","%r10","%r11","%r12","%r13","%r14","%r15" };
 int R_x,R_y,R_z;
 SymtabEntry *currentTable; 
+int parCounter=0;
   
 void getReg(int i)
 {
@@ -16,8 +17,8 @@ void getReg(int i)
 		printf("%s:\t",ir[i].target);
 		currentTable = look_up(mainTable, ir[i].target);
 		printf("\n\t pushq %%rbp \n\t movq %%rsp, %%rbp ");
-		//printf("\n\t pushq %%rdi \n\t pushq %%rsi \n\t pushq %%rdx");
-		printf("\n\t subq $%d, %%rsp\n",look_up(mainTable, ir[i].target)->offset );
+		printf("\n\t pushq %%rdi \n\t pushq %%rsi \n\t pushq %%rdx");
+		printf("\n\t subq $%d, %%rsp\n",look_up(mainTable, ir[i].target)->offset - look_up(mainTable, ir[i].target)->nargs*8 );
 		//printf("\n\t pushq %%rbx \n\t pushq %%r12 \n\t pushq %%r13 \n\t pushq %%r14 \n\t pushq %%r15");
 	}
 	else if(ir[i].typ==label)
@@ -497,6 +498,7 @@ void getReg(int i)
 			{
 				printf("movq %s,%s\n",registers[0],registers[ir[i].out->add_des.reg_no]);
 			}
+			parCounter=0;
 
 		}
 		else if(ir[i].op==lsh){
@@ -540,8 +542,11 @@ void getReg(int i)
 				printf("\t movq %s,%s\n",registers[r],registers[ir[i].out->add_des.reg_no]);
 		}
 	}
-	else if(ir[i].typ==call)
+	else if(ir[i].typ==call){
+		
 		printf("\t call %s\n",ir[i].target);
+		parCounter=0;
+	}
 	else if(ir[i].typ==Goto)
 		printf("\t jmp %s\n",ir[i].target);
 	else if(ir[i].typ==ifgoto){
@@ -666,6 +671,27 @@ void getReg(int i)
 		else
 			printf("push %%rbp \n movq $0, %%rax  \n movq $str1, %%rdi  \n movq $%s, %%rsi  \n call scanf \n pop %%rbp\n",ir[i].in1->lexeme);
 		
+	}
+	else if(ir[i].typ == params){
+		switch(parCounter)
+		{
+			case 0 : if(var=look_upTable(currentTable->func, ir[nline].in1->lexeme))
+					printf("\t movq -%d(%%rbp),%%rdi\n",var->offset);
+				else
+					printf("movq %s,%%rdi\n",ir[nline].in1->lexeme);
+				break;
+			case 1 : if(var=look_upTable(currentTable->func, ir[nline].in1->lexeme))
+					printf("\t movq -%d(%%rbp),%%rsi\n",var->offset);
+				else
+					printf("movq %s,%%rsi\n",ir[nline].in1->lexeme);
+				break;
+			case 2 : if(var=look_upTable(currentTable->func, ir[nline].in1->lexeme))
+					printf("\t movq -%d(%%rbp),%%rdx\n",var->offset);
+				else
+					printf("movq %s,%%rdx\n",ir[nline].in1->lexeme);
+				break;
+		}
+		parCounter++;
 	}
 }
 

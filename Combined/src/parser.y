@@ -16,13 +16,13 @@ char TEMP[7];
 char LABEL[5];
 char t[100];
 char idr[15],methodType[10],temp[15];
-int flag1;
+int flag1,nargs=0,callArgs=0;
 bool ret;	//to check if function has a return statement or not
 SymtabEntry *p,*currFunc;
 Arr_dim *h;
 Symtab *mainTable,*table;
 int offset,totalOff,length=1;
-list3AC *finalList;
+list3AC *finalList,*argList,*funcArgList;
 
 /*
 	type is int:	normal variable of int type
@@ -101,6 +101,7 @@ void typeError(int line){
 %type <attr>switch_block switch_block_st_grp 
 %type <attr>dim_expr array_init dim_exprs
 %type <attr>class_body_decls class_body_decl class_mem_decl
+%type <attr>arg_list_e argument_list
 %%
 
 compilation_unit	: type_declarations_e 							
@@ -144,7 +145,7 @@ class_body_decl		: class_mem_decl 		{$$=$1;}
 			| const_decl 			{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}					
 			;
 
-class_mem_decl		: field_decl 			{$$=$1;totalOff=0;}						
+class_mem_decl		: field_decl 			{$$=$1;totalOff=0;argList=NULL;nargs=0;}
 			| method_decl 			{totalOff=0;$$=$1;}			
 			;
 
@@ -162,10 +163,10 @@ formal_para_list	: formal_para
 			| formal_para_list SEP formal_para 					
 			;
 
-formal_para		: type var_decl_id			{$$=(Attr *)malloc(sizeof(Attr));
-						 /*strcpy($$->place,$2);
-						 strcpy($$->type,$1);
-						 p=Insert(table,$2,$1);*/
+formal_para		: INT var_decl_id			{$$=(Attr *)malloc(sizeof(Attr));
+						 strcpy(t,$2);
+						 argList=append(argList,newList(t));
+						 nargs++;
 						 $$->code=NULL;}
 			;
 
@@ -255,7 +256,21 @@ method_header		: type method_declarator 	{$$=(Attr *)malloc(sizeof(Attr));
 								p->func->prev=table;
 								table=p->func;
 								strcpy(table->name,$2);
+								p->nargs=nargs;
+								while(argList){
+									p=Insert(table,argList->instr,"int",true);
+									if(p==NULL){
+										fprintf(stderr,"Error: Variable %s redeclared on line %d\n",$2,yylineno);
+								exit(1);
+							}
+									totalOff+=8;
+									p->offset=totalOff;
+									argList=argList->next;
+							}
+								Insert(table,"1","const",true);
 								Insert(table,"0","const",true);}}
+
+								
 			;
 
 method_declarator	: ID PAREN_S formal_para_list_e PAREN_E 	{$$=$1;}			;
@@ -1446,7 +1461,13 @@ postfix_expr	: primary		{$$=$1;}
 		| postdec_expr		{$$=$1;}
 		;
 
-method_invo	: name PAREN_S arg_list_e PAREN_E 			{$$=$1;}
+method_invo	: name PAREN_S arg_list_e PAREN_E 			{$$=$1;/*p=look_up(mainTable,$1->place);
+									 if(p->nargs!=callArgs){
+										fprintf(stderr,"Error %d: Arguments mismatch",yylineno);
+										exit(1);}*/
+									 callArgs=0;
+									 $$->code=$3->code;
+									}
 		| primary OP_DOT identifier PAREN_S arg_list_e PAREN_E		{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}
 		| SUPER OP_DOT identifier PAREN_S arg_list_e PAREN_E		{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}
 		;
@@ -1472,7 +1493,8 @@ primary_no_new_array	: literal			{$$=$1;
 			| field_access		{$$=$1;}	
 			| method_invo			{
 						sprintf(t,", =, %s, call, %s",tempVar(),$1->place);
-						$$=$1;$$->code=newList(t);
+						$$=$1;
+						$$->code=append($1->code,newList(t));
 						strcpy($$->place,TEMP);
 						strcpy(t,"int");
 						p=Insert(table,TEMP,t,true);
@@ -1484,12 +1506,27 @@ primary_no_new_array	: literal			{$$=$1;
 object_expr	: NEW class_type PAREN_S arg_list_e PAREN_E		
 		;
 
-arg_list_e	: argument_list		
-		| /* empty */		
+arg_list_e	: argument_list			{$$=$1;}
+		| /* empty */			{$$=(Attr *)malloc(sizeof(Attr));$$->code=NULL;}
 		;
 
-argument_list	: expr				
-		| argument_list SEP expr	
+argument_list	: expr				{if(strcmp($1->type,"int"))
+							if(strcmp($1->type,"int0"))
+								typeError(yylineno);
+						$$=$1;
+						callArgs++;
+						sprintf(t,", params, %s",$1->place);
+						$$->code=append($1->code,newList(t));
+						}		
+		| argument_list SEP expr	{if(strcmp($3->type,"int"))
+							if(strcmp($3->type,"int0"))
+								typeError(yylineno);
+						$$=$3;
+						callArgs++;
+						sprintf(t,", params, %s",$3->place);
+						$$->code=append($1->code,$3->code);
+						$$->code=append($$->code,newList(t));
+						}
 		;
 		
 arr_assgn		: lhs OP_ASS array_creat_expr	{$$ = $1;
