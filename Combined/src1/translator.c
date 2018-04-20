@@ -2,9 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
-#include "global.h"
+#include "list.h"
 #include <ctype.h>
-
+/*
 int nline, size;
 SymtabEntry *head,*tail;
 int *leaders;
@@ -54,35 +54,29 @@ SymtabEntry* Insert(char* lex)
 }
 }
 
-
-int main(int argc,char* argv[]){
-	if(argc==2)
-	{
-		nline=0;
-		size=200;
-		head=NULL;
-		tail=NULL;
- 		char* file;
-		file = argv[1];
-		FILE *fptr = fopen(file,"r");
-		ir = (Instruction3AC *) malloc(size * sizeof(Instruction3AC));
-		if(fptr==NULL){
-			printf("Error in opening %s .\n  Aborting....",file);
-			exit(0);
+*/
+void translator(list3AC *list){
+	nline=0;
+	size=200;
+	head=NULL;
+	tail=NULL;
+	ir = (Instruction3AC *) malloc(size * sizeof(Instruction3AC));
+	char line[1024];
+	while (list){
+		char *token,*rest;
+		if (size == nline) {
+			size = 2*size;
+			ir = realloc(ir, size * sizeof(Instruction3AC));
 		}
-		else {
+		strcpy(rest,list->instr);
+		list=list->next;
+		print("%s",rest);
+	}
+}
 
-			char line[1024];
-			while (fgets(line, 1024, fptr)){
-				if (size == nline) {
-					size = 2*size;
-					ir = realloc(ir, size * sizeof(Instruction3AC));
-				}
-				char *token;
-				char *rest = strtok(line, "\n");
-				char strs[6][100];
-				int i = 0;
-				while ((token = strtok_r(rest, ", ", &rest))){
+	/*	char strs[6][100];
+		int i = 0;
+		while ((token = strtok_r(rest, ", ", &rest))){
 					strcpy(strs[i], token);
 					i++;
 				}
@@ -284,4 +278,4 @@ int main(int argc,char* argv[]){
 		free(head);
 		free(leaders);
 	}
-}
+}*/
