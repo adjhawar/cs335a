@@ -685,7 +685,6 @@ void getReg(int i)
 			printf("\n movq $0, %%rax  \n movq $str1, %%rdi  \n movq %%rbp,%%rbx \n subq $%d,%%rbx \n movq  %%rbx,%%rsi  \n call scanf \n",var->offset);
 		else
 			printf(" \nmovq $0, %%rax  \n movq $str1, %%rdi  \n movq $%s, %%rsi  \n call scanf \n",ir[i].in1->lexeme);
-		
 	}
 	else if(ir[i].typ == params){
 		switch(parCounter)

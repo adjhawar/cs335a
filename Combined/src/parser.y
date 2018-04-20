@@ -1461,10 +1461,13 @@ postfix_expr	: primary		{$$=$1;}
 		| postdec_expr		{$$=$1;}
 		;
 
-method_invo	: name PAREN_S arg_list_e PAREN_E 			{$$=$1;/*p=look_up(mainTable,$1->place);
-									 if(p->nargs!=callArgs){
-										fprintf(stderr,"Error %d: Arguments mismatch",yylineno);
-										exit(1);}*/
+method_invo	: name PAREN_S arg_list_e PAREN_E 			{$$=$1;p=look_up(mainTable,$1->place);
+									if(p==NULL){
+									fprintf(stderr,"Error %d: Declare function before use\n",yylineno);
+										exit(1);}
+									 else if(p->nargs!=callArgs){
+										fprintf(stderr,"Error %d: Arguments mismatch\n",yylineno);
+										exit(1);}
 									 callArgs=0;
 									 $$->code=$3->code;
 									}
@@ -1500,6 +1503,10 @@ primary_no_new_array	: literal			{$$=$1;
 						p=Insert(table,TEMP,t,true);
 						totalOff+=8;
 						p->offset=totalOff;
+						if(strcmp($1->type,"int1")==0)
+							strcpy($$->type,"int");
+						else
+							typeError(yylineno);
 						}	
 			;
 
@@ -1627,7 +1634,8 @@ array_access	: name ARRAY_S expr ARRAY_E	{$$=$1;
 					}
 			
 		| array_access ARRAY_S expr ARRAY_E		{
-						$$=$1;
+						$$=(Attr *)malloc(sizeof(Attr));
+						strcpy($$->place, $1->place);
 						if(!$3->assign){
 							fprintf(stderr,"Error: Index not assigned on line %d\n",yylineno);
 							exit(1);
