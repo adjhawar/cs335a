@@ -42,6 +42,7 @@ typedef struct SymtabEntry{
 	bool assign;			//checks if symbol table entry has been declared
 	int offset;
 	int arrLength;
+	int nargs;			//counts the number of arguments in a function
 	Add_des add_des;
 	int nextuse;
 	bool liveness;
