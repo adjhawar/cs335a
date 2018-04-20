@@ -31,7 +31,7 @@ list3AC* newList(char *str){
         head->cont = 0;
         head->br = 0;
 	head->swt=0;
-	head->swt_len=19;
+	head->swt_len=17;
 	head->next=NULL;
 	return head;
 }

@@ -556,7 +556,17 @@ void getReg(int i)
 		printf("\t jmp %s\n",ir[i].target);
 	else if(ir[i].typ==ifgoto){
 		//implement the cmp call
-		if(ir[i].in1->add_des.reg_no==-1)
+		if(strcmp(ir[i].in1->type,"const")==0){
+			if(strcmp(ir[i].in2->type,"const")==0)
+				printf("\t cmpq $%d,$%d\n",atoi(ir[i].in2->lexeme),atoi(ir[i].in1->lexeme));
+			else if(ir[i].in2->add_des.reg_no==-1){
+				if(var=look_upTable(currentTable->func, ir[i].in2->lexeme))
+					printf(" \t cmpq $%d,-%d(%%rbp)\n",atoi(ir[i].in1->lexeme),var->offset);
+				else
+					printf("\t cmpq $%d,%s\n",atoi(ir[i].in1->lexeme),ir[i].in2->lexeme);
+			}
+		}
+		else if(ir[i].in1->add_des.reg_no==-1)
 		{
 			r=empty_reg(i) ; //this function returns a empty registers
 			if(var=look_upTable(currentTable->func, ir[i].in1->lexeme))
@@ -566,11 +576,11 @@ void getReg(int i)
 			ir[i].in1->add_des.reg_no=r;
 			reg_des[r]=ir[i].in1;
 		}
-		if(strcmp(ir[i].in2->type,"const")==0)
+		else if(strcmp(ir[i].in2->type,"const")==0)
 			printf("\t cmpq $%d,%s\n",atoi(ir[i].in2->lexeme),registers[ir[i].in1->add_des.reg_no]);
 		else if(ir[i].in2->add_des.reg_no==-1){
 			if(var=look_upTable(currentTable->func, ir[i].in2->lexeme))
-				printf("\t cmpq -%d(%%rbp), %s\n",var->offset,registers[ir[i].in1->add_des.reg_no]);
+				printf("\t movq -%d(%%rbp),%%rcx \n\t cmpq %%rcx, %s\n",var->offset,registers[ir[i].in1->add_des.reg_no]);
 			else
 				printf("\t cmpq %s,%s\n",ir[i].in2->lexeme,registers[ir[i].in1->add_des.reg_no]);
 		}
